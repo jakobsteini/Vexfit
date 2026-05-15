@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vexfit – Admin Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a0a;--white:#f5f5f0;--accent:#e8ff00;--gray:#141414;--mid:#1e1e1e;--card:#161616;--text-muted:#666;--border:rgba(255,255,255,0.07)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;color:var(--white);text-decoration:none}
+.logo span{color:var(--accent)}
+
+/* LOGIN */
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-box{background:var(--card);border:1px solid var(--border);padding:40px 32px;border-radius:3px;width:100%;max-width:380px;text-align:center}
+.login-box .logo{display:block;margin-bottom:24px;font-size:28px}
+.login-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;margin-bottom:6px}
+.login-sub{font-size:13px;color:var(--text-muted);margin-bottom:28px;font-weight:300}
+.login-field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;text-align:left}
+.login-field label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)}
+.login-field input{background:var(--gray);border:1px solid rgba(255,255,255,0.12);color:var(--white);padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:15px;border-radius:3px;outline:none;transition:border-color 0.2s;width:100%}
+.login-field input:focus{border-color:rgba(232,255,0,0.4)}
+.login-btn{width:100%;background:var(--accent);color:var(--black);padding:14px;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;margin-top:8px}
+.login-error{color:#ff6b6b;font-size:13px;margin-top:10px;display:none}
+
+/* DASHBOARD */
+.dashboard{display:none}
+nav{background:var(--gray);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;justify-content:space-between;align-items:center}
+.nav-title{font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:2px;color:var(--text-muted)}
+.logout-btn{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:7px 16px;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s}
+.logout-btn:hover{color:var(--white);border-color:rgba(255,255,255,0.3)}
+.content{padding:24px}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;margin-bottom:28px}
+.stat-card{background:var(--card);padding:20px;border-left:3px solid var(--accent)}
+.stat-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;font-weight:600}
+.stat-value{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--accent);letter-spacing:2px;line-height:1}
+.stat-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+
+/* TABS */
+.tabs{display:flex;gap:3px;margin-bottom:20px}
+.tab{padding:10px 20px;background:var(--card);border:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+.tab.active{background:var(--accent);color:var(--black)}
+
+/* TABLE */
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{background:var(--gray);padding:12px 16px;text-align:left;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);font-weight:600;white-space:nowrap}
+td{padding:14px 16px;border-bottom:1px solid var(--border);font-size:13px;color:rgba(245,245,240,0.8)}
+tr:hover td{background:var(--card)}
+.badge{display:inline-block;padding:3px 8px;border-radius:2px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.badge-paid{background:rgba(74,222,128,0.15);color:#4ade80}
+.badge-unpaid{background:rgba(255,80,80,0.12);color:#ff6b6b}
+.badge-active{background:rgba(232,255,0,0.12);color:var(--accent)}
+.btn-activate{background:var(--accent);color:var(--black);border:none;padding:5px 12px;border-radius:2px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
+.loading-text{text-align:center;padding:40px;color:var(--text-muted);font-size:14px}
+.tab-content{display:none}
+.tab-content.active{display:block}
+@media(min-width:768px){
+  .stats-grid{grid-template-columns:repeat(4,1fr)}
+  .content{padding:32px 40px}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <a href="index.html" class="logo">VEX<span>FIT</span></a>
+    <div class="login-title">ADMIN LOGIN</div>
+    <p class="login-sub">Nur für Vexfit Administratoren</p>
+    <div class="login-field"><label>Passwort</label><input type="password" id="adminPw" placeholder="Admin Passwort" onkeydown="if(event.key==='Enter')checkLogin()"></div>
+    <button class="login-btn" onclick="checkLogin()">Einloggen →</button>
+    <div class="login-error" id="loginError">Falsches Passwort!</div>
+  </div>
+</div>
+
+<!-- DASHBOARD -->
+<div class="dashboard" id="dashboardWrap">
+  <nav>
+    <a href="index.html" class="logo">VEX<span>FIT</span> <span style="color:var(--text-muted);font-size:14px;letter-spacing:1px">ADMIN</span></a>
+    <button class="logout-btn" onclick="logout()">Ausloggen</button>
+  </nav>
+
+  <div class="content">
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Trainer gesamt</div><div class="stat-value" id="s-total-trainer">–</div><div class="stat-sub">Registriert</div></div>
+      <div class="stat-card"><div class="stat-label">Zahlende Trainer</div><div class="stat-value" id="s-paid-trainer">–</div><div class="stat-sub">Aktiv €49,99/Mo</div></div>
+      <div class="stat-card"><div class="stat-label">Kunden gesamt</div><div class="stat-value" id="s-total-kunden">–</div><div class="stat-sub">Registriert</div></div>
+      <div class="stat-card"><div class="stat-label">Monatsumsatz</div><div class="stat-value" id="s-umsatz">–</div><div class="stat-sub">Aktuell</div></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active" onclick="showTab('trainers', this)">Trainer</button>
+      <button class="tab" onclick="showTab('kunden', this)">Kunden</button>
+    </div>
+
+    <!-- TRAINERS TAB -->
+    <div class="tab-content active" id="tab-trainers">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Stadt</th>
+              <th>Trainingsart</th>
+              <th>Preis/Std</th>
+              <th>Zahlung</th>
+              <th>Status</th>
+              <th>Aktion</th>
+              <th>Datum</th>
+            </tr>
+          </thead>
+          <tbody id="trainers-tbody">
+            <tr><td colspan="9" class="loading-text">Lade Trainer...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- KUNDEN TAB -->
+    <div class="tab-content" id="tab-kunden">
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Name</th>
+              <th>Email</th>
+              <th>Stadt</th>
+              <th>Ziel</th>
+              <th>Budget</th>
+              <th>Datum</th>
+            </tr>
+          </thead>
+          <tbody id="kunden-tbody">
+            <tr><td colspan="6" class="loading-text">Lade Kunden...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const SUPABASE_URL = 'https://hbapzwxdehfgnputrfjf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYXB6d3hkZWhmZ25wdXRyZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDc0NzQsImV4cCI6MjA5NDQyMzQ3NH0.vIQLcTObF5tmBEuxKL2EEUd4U88k0mdTmsAafG8djN4';
+// ⚠️ ÄNDERE DIESES PASSWORT!
+const ADMIN_PASSWORD = 'steini';
+
+function checkLogin() {
+  const pw = document.getElementById('adminPw').value;
+  if(pw === ADMIN_PASSWORD) {
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('dashboardWrap').style.display = 'block';
+    loadData();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+function logout() {
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('dashboardWrap').style.display = 'none';
+  document.getElementById('adminPw').value = '';
+}
+
+function showTab(tab, btn) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  btn.classList.add('active');
+}
+
+async function loadData() {
+  // Load trainers
+  const trRes = await fetch(`${SUPABASE_URL}/rest/v1/trainers?select=*&order=created_at.desc`, {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+  });
+  const trainers = await trRes.json();
+
+  // Load kunden
+  const kuRes = await fetch(`${SUPABASE_URL}/rest/v1/kunden?select=*&order=created_at.desc`, {
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+  });
+  const kunden = await kuRes.json();
+
+  // Stats
+  const paidCount = trainers.filter(t => t.stripe_bezahlt).length;
+  document.getElementById('s-total-trainer').textContent = trainers.length;
+  document.getElementById('s-paid-trainer').textContent = paidCount;
+  document.getElementById('s-total-kunden').textContent = kunden.length;
+  document.getElementById('s-umsatz').textContent = '€' + (paidCount * 49.99).toFixed(0);
+
+  // Trainers table
+  const tbody = document.getElementById('trainers-tbody');
+  if(trainers.length === 0) {
+    tbody.innerHTML = '<tr><td colspan="9" class="loading-text">Noch keine Trainer registriert</td></tr>';
+  } else {
+    tbody.innerHTML = trainers.map(t => `
+      <tr>
+        <td><strong>${t.vorname} ${t.nachname}</strong></td>
+        <td>${t.email}</td>
+        <td>${t.stadt || '–'}</td>
+        <td>${t.trainingsart || '–'}</td>
+        <td>${t.preis_stunde ? '€' + t.preis_stunde : '–'}</td>
+        <td><span class="badge ${t.stripe_bezahlt ? 'badge-paid' : 'badge-unpaid'}">${t.stripe_bezahlt ? '✓ Bezahlt' : '✕ Ausstehend'}</span></td>
+        <td><span class="badge ${t.aktiv ? 'badge-active' : 'badge-unpaid'}">${t.aktiv ? 'Aktiv' : 'Inaktiv'}</span></td>
+        <td>${!t.aktiv ? `<button class="btn-activate" onclick="activateTrainer('${t.id}')">Aktivieren</button>` : '–'}</td>
+        <td>${new Date(t.created_at).toLocaleDateString('de-AT')}</td>
+      </tr>`).join('');
+  }
+
+  // Kunden table
+  const ktbody = document.getElementById('kunden-tbody');
+  if(kunden.length === 0) {
+    ktbody.innerHTML = '<tr><td colspan="6" class="loading-text">Noch keine Kunden registriert</td></tr>';
+  } else {
+    ktbody.innerHTML = kunden.map(k => `
+      <tr>
+        <td><strong>${k.vorname} ${k.nachname}</strong></td>
+        <td>${k.email}</td>
+        <td>${k.stadt || '–'}</td>
+        <td>${k.ziel || '–'}</td>
+        <td>${k.budget || '–'}</td>
+        <td>${new Date(k.created_at).toLocaleDateString('de-AT')}</td>
+      </tr>`).join('');
+  }
+}
+
+async function activateTrainer(id) {
+  await fetch(`${SUPABASE_URL}/rest/v1/trainers?id=eq.${id}`, {
+    method: 'PATCH',
+    headers: {
+      'Content-Type': 'application/json',
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`
+    },
+    body: JSON.stringify({ aktiv: true, stripe_bezahlt: true })
+  });
+  loadData();
+}
+</script>
+</body>
+</html>

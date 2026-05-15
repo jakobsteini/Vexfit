@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Vexfit – Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a0a;--white:#f5f5f0;--accent:#e8ff00;--gray:#141414;--mid:#1e1e1e;--card:#161616;--text-muted:#666;--border:rgba(255,255,255,0.07);--border-input:rgba(255,255,255,0.12)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--white);text-decoration:none}
+.logo span{color:var(--accent)}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:rgba(10,10,10,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-link{color:var(--text-muted);text-decoration:none;font-size:13px}
+.page-bg{position:fixed;inset:0;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(232,255,0,0.04) 0%,transparent 70%);pointer-events:none}
+.wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:90px 20px 40px;position:relative;z-index:1}
+.box{width:100%;max-width:420px;animation:fadeUp 0.6s ease both}
+.header{text-align:center;margin-bottom:28px}
+.label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:10px}
+.title{font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:0.95;letter-spacing:2px;margin-bottom:8px}
+.sub{font-size:14px;color:var(--text-muted);font-weight:300}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)}
+input{background:var(--card);border:1px solid var(--border-input);color:var(--white);padding:14px 16px;font-family:'DM Sans',sans-serif;font-size:15px;border-radius:3px;outline:none;transition:border-color 0.2s;width:100%}
+input::placeholder{color:rgba(102,102,102,0.6)}
+input:focus{border-color:rgba(232,255,0,0.4);background:var(--mid)}
+.forgot{text-align:right;margin-bottom:20px}
+.forgot a{font-size:13px;color:var(--text-muted);text-decoration:none}
+.forgot a:hover{color:var(--accent)}
+.btn-login{width:100%;background:var(--accent);color:var(--black);padding:15px;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;margin-bottom:16px;transition:transform 0.2s}
+.btn-login:hover{transform:translateY(-2px)}
+.btn-login:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.alert{padding:12px 16px;border-radius:3px;font-size:13px;margin-bottom:14px;display:none}
+.alert.show{display:block}
+.alert-error{background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.3);color:#ff6b6b}
+.alert-success{background:rgba(232,255,0,0.1);border:1px solid rgba(232,255,0,0.3);color:var(--accent)}
+.divider{display:flex;align-items:center;gap:14px;margin-bottom:16px}
+.dl{flex:1;height:1px;background:var(--border)}
+.ds{font-size:12px;color:var(--text-muted)}
+.links{text-align:center;display:flex;flex-direction:column;gap:10px}
+.links p{font-size:14px;color:var(--text-muted)}
+.links a{color:var(--accent);text-decoration:none;font-weight:600}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div class="page-bg"></div>
+<nav>
+  <a href="index.html" class="logo">VEX<span>FIT</span></a>
+  <a href="registrieren.html" class="nav-link">Registrieren →</a>
+</nav>
+<div class="wrap">
+  <div class="box">
+    <div class="header">
+      <div class="label">Willkommen zurück</div>
+      <div class="title">LOGIN</div>
+      <p class="sub">Melde dich mit deinem Trainer-Account an</p>
+    </div>
+    <div class="alert alert-error" id="errorMsg"></div>
+    <div class="alert alert-success" id="successMsg"></div>
+    <div class="field"><label>E-Mail</label><input type="email" placeholder="deine@email.com" id="email" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="field"><label>Passwort</label><input type="password" placeholder="Dein Passwort" id="pw" onkeydown="if(event.key==='Enter')doLogin()"></div>
+    <div class="forgot"><a href="passwort-vergessen.html">Passwort vergessen?</a></div>
+    <button class="btn-login" id="loginBtn" onclick="doLogin()">Einloggen →</button>
+    <div class="divider"><div class="dl"></div><span class="ds">oder</span><div class="dl"></div></div>
+    <div class="links">
+      <p>Noch kein Account? <a href="registrieren.html?typ=trainer">Als Trainer registrieren →</a></p>
+      <p>Trainer suchen? <a href="suche.html">Trainer finden →</a></p>
+    </div>
+  </div>
+</div>
+<script>
+const SUPABASE_URL = 'https://hbapzwxdehfgnputrfjf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYXB6d3hkZWhmZ25wdXRyZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDc0NzQsImV4cCI6MjA5NDQyMzQ3NH0.vIQLcTObF5tmBEuxKL2EEUd4U88k0mdTmsAafG8djN4';
+
+async function doLogin() {
+  const email = document.getElementById('email').value.trim();
+  const pw = document.getElementById('pw').value;
+  if(!email || !pw) { showError('Bitte E-Mail und Passwort eingeben!'); return; }
+
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true;
+  btn.textContent = 'Wird eingeloggt...';
+
+  try {
+    // Check if trainer exists with this email
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/trainers?email=eq.${encodeURIComponent(email)}&select=*`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const trainers = await res.json();
+
+    if(!trainers || trainers.length === 0) {
+      showError('Kein Account mit dieser E-Mail gefunden!');
+      btn.disabled = false; btn.textContent = 'Einloggen →';
+      return;
+    }
+
+    const trainer = trainers[0];
+
+    // Store trainer data in sessionStorage
+    sessionStorage.setItem('vexfit_trainer', JSON.stringify(trainer));
+    sessionStorage.setItem('vexfit_email', email);
+
+    // Redirect to trainer dashboard
+    window.location.href = 'trainer-bereich.html';
+
+  } catch(e) {
+    showError('Verbindungsfehler. Bitte versuche es erneut.');
+    btn.disabled = false; btn.textContent = 'Einloggen →';
+  }
+}
+
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = '⚠️ ' + msg;
+  el.classList.add('show');
+  document.getElementById('successMsg').classList.remove('show');
+}
+
+// Check if already logged in
+if(sessionStorage.getItem('vexfit_trainer')) {
+  window.location.href = 'trainer-bereich.html';
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Vexfit – Betreiber Anleitung</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a0a;--white:#f5f5f0;--accent:#e8ff00;--gray:#141414;--mid:#1e1e1e;--card:#161616;--text-muted:#666;--border:rgba(255,255,255,0.07)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--white);text-decoration:none}
+.logo span{color:var(--accent)}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:rgba(10,10,10,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-back{color:var(--text-muted);text-decoration:none;font-size:13px}
+.wrap{max-width:720px;margin:0 auto;padding:80px 20px 60px}
+.page-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:10px}
+.page-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(44px,10vw,72px);line-height:0.95;letter-spacing:2px;margin-bottom:8px}
+.page-sub{font-size:14px;color:var(--text-muted);margin-bottom:48px;font-weight:300;line-height:1.6}
+
+/* INFO BOX */
+.info-box{background:var(--card);border:1px solid var(--border);padding:24px;border-radius:3px;margin-bottom:32px}
+.info-box h3{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:12px;color:var(--accent)}
+.info-box p{font-size:14px;color:rgba(245,245,240,0.65);line-height:1.8;margin-bottom:10px;font-weight:300}
+.info-box p:last-child{margin-bottom:0}
+.info-box ul{margin-left:18px}
+.info-box ul li{font-size:14px;color:rgba(245,245,240,0.65);line-height:1.8;font-weight:300;margin-bottom:4px}
+.info-box a{color:var(--accent);text-decoration:none}
+.info-box strong{color:var(--white);font-weight:600}
+
+/* STEPS */
+.step-block{margin-bottom:3px}
+.step-card{background:var(--card);padding:28px 24px;display:flex;gap:20px;align-items:flex-start}
+.step-num{font-family:'Bebas Neue',sans-serif;font-size:52px;color:rgba(232,255,0,0.2);line-height:1;min-width:44px;letter-spacing:-2px;flex-shrink:0}
+.step-content{flex:1}
+.step-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:10px;color:var(--white)}
+.step-text{font-size:14px;color:rgba(245,245,240,0.65);line-height:1.8;font-weight:300;margin-bottom:12px}
+.step-text:last-child{margin-bottom:0}
+
+/* CODE BOX */
+.code-box{background:var(--gray);border:1px solid var(--border);padding:16px 18px;border-radius:3px;margin:12px 0}
+.code-box pre{font-family:monospace;font-size:13px;color:rgba(232,255,0,0.85);line-height:1.7;white-space:pre-wrap;word-break:break-word}
+
+/* EMAIL TEMPLATE */
+.email-template{background:var(--gray);border:1px solid rgba(232,255,0,0.2);padding:20px;border-radius:3px;margin:12px 0}
+.email-subject{font-size:12px;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px}
+.email-body{font-size:13px;color:rgba(245,245,240,0.7);line-height:1.8;font-family:monospace}
+
+/* WARN */
+.warn-box{background:rgba(232,255,0,0.06);border:1px solid rgba(232,255,0,0.2);padding:16px 18px;border-radius:3px;margin:12px 0}
+.warn-box p{font-size:13px;color:rgba(232,255,0,0.85);line-height:1.7;margin:0}
+
+/* FLOW */
+.flow{display:flex;flex-direction:column;gap:3px;margin:12px 0}
+.flow-item{background:var(--mid);padding:12px 16px;display:flex;align-items:center;gap:12px;font-size:14px;color:rgba(245,245,240,0.7)}
+.flow-arrow{color:var(--accent);font-size:18px;flex-shrink:0}
+.flow-item:last-child .flow-arrow{display:none}
+
+.divider{height:1px;background:var(--border);margin:32px 0}
+
+footer{border-top:1px solid var(--border);padding:28px 20px;text-align:center;margin-top:40px}
+footer p{font-size:12px;color:var(--text-muted)}
+
+@media(min-width:768px){
+  nav{padding:18px 52px}
+  .wrap{padding:100px 24px 80px}
+}
+</style>
+</head>
+<body>
+<nav>
+  <a href="index.html" class="logo">VEX<span>FIT</span></a>
+  <a href="admin.html" class="nav-back">Admin Dashboard →</a>
+</nav>
+
+<div class="wrap">
+  <div class="page-label">Nur für dich</div>
+  <div class="page-title">BETREIBER<br><span style="color:var(--accent)">ANLEITUNG</span></div>
+  <p class="page-sub">Alles was du wissen musst um Vexfit erfolgreich zu betreiben – von der Trainer-Registrierung bis zur ersten Zahlung.</p>
+
+  <!-- ÜBERSICHT -->
+  <div class="info-box">
+    <h3>🗺️ Das Große Bild</h3>
+    <p>Vexfit funktioniert nach dem <strong>Freemium-Modell</strong>:</p>
+    <ul>
+      <li>Trainer registrieren sich <strong>kostenlos</strong></li>
+      <li>Du schaltest ihr Profil manuell frei</li>
+      <li>Sobald ein Trainer seinen ersten Kunden bekommt → schickst du ihm den Stripe Link</li>
+      <li>Ab dann zahlt er <strong>€49,99/Monat</strong> automatisch</li>
+    </ul>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- SCHRITT 1 -->
+  <div class="step-block">
+    <div class="step-card">
+      <div class="step-num">01</div>
+      <div class="step-content">
+        <div class="step-title">TRAINER REGISTRIERT SICH</div>
+        <p class="step-text">Ein Trainer füllt das Formular auf <strong>vexfit.app/registrieren.html?typ=trainer</strong> aus. Seine Daten werden automatisch in deiner Supabase Datenbank gespeichert.</p>
+        <div class="warn-box"><p>⚠️ Das Profil ist nach der Registrierung noch <strong>nicht sichtbar</strong> – du musst es erst manuell aktivieren!</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHRITT 2 -->
+  <div class="step-block">
+    <div class="step-card">
+      <div class="step-num">02</div>
+      <div class="step-content">
+        <div class="step-title">ADMIN DASHBOARD ÖFFNEN</div>
+        <p class="step-text">Gehe auf <a href="admin.html"><strong>vexfit.app/admin.html</strong></a> und logge dich ein:</p>
+        <div class="code-box"><pre>URL: vexfit.app/admin.html
+Passwort: vexfit2026admin
+
+⚠️ Ändere das Passwort in admin.html!</pre></div>
+        <p class="step-text">Dort siehst du alle registrierten Trainer mit Status. Neue Trainer haben den Status <strong>"Inaktiv"</strong>.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHRITT 3 -->
+  <div class="step-block">
+    <div class="step-card">
+      <div class="step-num">03</div>
+      <div class="step-content">
+        <div class="step-title">PROFIL PRÜFEN & AKTIVIEREN</div>
+        <p class="step-text">Bevor du ein Profil aktivierst prüfe kurz:</p>
+        <ul style="margin-left:18px;margin-bottom:12px">
+          <li style="font-size:14px;color:rgba(245,245,240,0.65);line-height:1.8;margin-bottom:4px">✅ Ist der Name echt und vollständig?</li>
+          <li style="font-size:14px;color:rgba(245,245,240,0.65);line-height:1.8;margin-bottom:4px">✅ Ist die E-Mail gültig?</li>
+          <li style="font-size:14px;color:rgba(245,245,240,0.65);line-height:1.8;margin-bottom:4px">✅ Sind Spezialisierungen ausgefüllt?</li>
+          <li style="font-size:14px;color:rgba(245,245,240,0.65);line-height:1.8;margin-bottom:4px">✅ Hat er einen Preis angegeben?</li>
+        </ul>
+        <p class="step-text">Wenn alles passt → klick auf <strong>"Aktivieren"</strong> im Admin Dashboard. Das Profil erscheint sofort in der Suche.</p>
+        <p class="step-text">Dann schicke dem Trainer eine Willkommens-E-Mail:</p>
+        <div class="email-template">
+          <div class="email-subject">📧 Betreff: Dein Vexfit Profil ist jetzt live! 🚀</div>
+          <div class="email-body">
+Hi [Vorname],<br><br>
+Dein Vexfit Profil ist jetzt aktiv und für Kunden sichtbar!<br><br>
+Du kannst ab sofort Anfragen erhalten. Sobald du deinen<br>
+ersten Kunden über Vexfit gewinnst, melden wir uns bei dir.<br><br>
+Dein Profil: vexfit.app/suche.html<br><br>
+Bei Fragen: vexfit.info@gmail.com<br><br>
+Viel Erfolg! 💪<br>
+Jakob von Vexfit
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHRITT 4 -->
+  <div class="step-block">
+    <div class="step-card">
+      <div class="step-num">04</div>
+      <div class="step-content">
+        <div class="step-title">WANN HAT EIN TRAINER SEINEN ERSTEN KUNDEN?</div>
+        <p class="step-text">So erkennst du es:</p>
+        <ul style="margin-left:18px;margin-bottom:12px">
+          <li style="font-size:14px;color:rgba(245,245,240,0.65);line-height:1.8;margin-bottom:4px">📊 <strong>Supabase Dashboard</strong> → Tabelle "kunden" → schau ob die Stadt/das Ziel zu einem deiner Trainer passt</li>
+          <li style="font-size:14px;color:rgba(245,245,240,0.65);line-height:1.8;margin-bottom:4px">💬 Der Trainer schreibt dir direkt per E-Mail</li>
+          <li style="font-size:14px;color:rgba(245,245,240,0.65);line-height:1.8;margin-bottom:4px">📱 Du checkst regelmäßig das Admin Dashboard</li>
+        </ul>
+        <div class="warn-box"><p>💡 <strong>Tipp:</strong> Am Anfang einfach kurz beim Trainer nachfragen: "Hattest du schon Kontakt mit einem Kunden über Vexfit?" – die meisten Trainer melden sich von selbst!</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHRITT 5 -->
+  <div class="step-block">
+    <div class="step-card">
+      <div class="step-num">05</div>
+      <div class="step-content">
+        <div class="step-title">STRIPE LINK SCHICKEN</div>
+        <p class="step-text">Sobald ein Trainer seinen ersten Kunden hatte → schicke ihm diese E-Mail:</p>
+        <div class="email-template">
+          <div class="email-subject">📧 Betreff: 🎉 Dein erster Vexfit Kunde – Zeit fürs Abo!</div>
+          <div class="email-body">
+Hi [Vorname],<br><br>
+Herzlichen Glückwunsch! Du hast deinen ersten Kunden<br>
+über Vexfit gewonnen. Das ist der Beginn von mehr! 🚀<br><br>
+Wie vereinbart wird das Vexfit Abo jetzt aktiv.<br>
+Aktiviere dein Abonnement hier:<br><br>
+👉 https://buy.stripe.com/eVqdR9gopdNhczNbhw2oE00<br><br>
+Was du bekommst:<br>
+✅ Profil bleibt dauerhaft sichtbar<br>
+✅ Unbegrenzte Kundenanfragen<br>
+✅ Top-Platzierung in der Suche<br>
+✅ Monatlich kündbar – kein Risiko<br><br>
+Preis: €49,99/Monat<br><br>
+Bei Fragen: vexfit.info@gmail.com<br><br>
+Weiter so! 💪<br>
+Jakob von Vexfit
+          </div>
+        </div>
+        <div class="warn-box"><p>⚠️ Stelle sicher dass du vorher auf <strong>Stripe Live-Konto</strong> umgestellt hast! Sonst ist der Link nur ein Test-Link und kein echtes Geld kommt an.</p></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- SCHRITT 6 -->
+  <div class="step-block">
+    <div class="step-card">
+      <div class="step-num">06</div>
+      <div class="step-content">
+        <div class="step-title">NACH DER ZAHLUNG</div>
+        <p class="step-text">Sobald der Trainer gezahlt hat siehst du es im <a href="https://dashboard.stripe.com" target="_blank"><strong>Stripe Dashboard</strong></a>.</p>
+        <p class="step-text">Dann im Admin Dashboard den Trainer als "Bezahlt" markieren – das geht aktuell über Supabase direkt:</p>
+        <div class="code-box"><pre>1. supabase.com → dein Projekt
+2. Table Editor → trainers
+3. Trainer suchen
+4. stripe_bezahlt → true setzen
+5. Speichern ✅</pre></div>
+        <p class="step-text">Das Profil bleibt aktiv solange der Trainer zahlt. Stripe kümmert sich automatisch um die monatliche Abbuchung.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- ÜBERSICHT FLOW -->
+  <div class="info-box">
+    <h3>📋 Kompletter Ablauf auf einen Blick</h3>
+    <div class="flow">
+      <div class="flow-item"><div class="flow-arrow">▶</div>Trainer registriert sich auf vexfit.app → Supabase speichert Daten</div>
+      <div class="flow-item"><div class="flow-arrow">▼</div>Du prüfst Admin Dashboard → klickst "Aktivieren"</div>
+      <div class="flow-item"><div class="flow-arrow">▼</div>Du schickst Willkommens-E-Mail an Trainer</div>
+      <div class="flow-item"><div class="flow-arrow">▼</div>Trainer bekommt ersten Kunden über Vexfit</div>
+      <div class="flow-item"><div class="flow-arrow">▼</div>Du schickst Stripe Link per E-Mail</div>
+      <div class="flow-item"><div class="flow-arrow">▼</div>Trainer zahlt €49,99/Monat → Geld auf deinem Konto</div>
+      <div class="flow-item"><div class="flow-arrow">▼</div>Du markierst als "Bezahlt" in Supabase</div>
+      <div class="flow-item" style="background:rgba(232,255,0,0.08);border:1px solid rgba(232,255,0,0.2)"><div class="flow-arrow" style="color:var(--accent)">🎉</div>Trainer zahlt automatisch jeden Monat!</div>
+    </div>
+  </div>
+
+  <!-- WICHTIGE LINKS -->
+  <div class="info-box">
+    <h3>🔗 Wichtige Links</h3>
+    <ul>
+      <li><a href="admin.html"><strong>Admin Dashboard</strong></a> – Trainer & Kunden verwalten</li>
+      <li><a href="https://supabase.com/dashboard/project/hbapzwxdehfgnputrfjf" target="_blank"><strong>Supabase Dashboard</strong></a> – Datenbank direkt</li>
+      <li><a href="https://dashboard.stripe.com" target="_blank"><strong>Stripe Dashboard</strong></a> – Zahlungen & Abos</li>
+      <li><a href="https://app.netlify.com" target="_blank"><strong>Netlify</strong></a> – Website Hosting</li>
+      <li><strong>Stripe Payment Link:</strong> <a href="https://buy.stripe.com/eVqdR9gopdNhczNbhw2oE00" target="_blank">buy.stripe.com/eVqdR9...</a></li>
+    </ul>
+  </div>
+
+</div>
+
+<footer>
+  <p>© 2026 Vexfit · Diese Seite ist nur für Jakob Steinbacher</p>
+</footer>
+</body>
+</html>
