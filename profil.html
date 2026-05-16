@@ -261,19 +261,42 @@ async function sendContact() {
   btn.textContent = 'Wird gesendet...';
 
   try {
+    // 1. Save to Supabase anfragen table
+    await fetch(`${SUPABASE_URL}/rest/v1/anfragen`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        trainer_id: trainerData ? trainerData.id : null,
+        trainer_name: trainerData ? trainerData.vorname + ' ' + trainerData.nachname : '–',
+        trainer_email: trainerData ? trainerData.email : '–',
+        kunde_name: name,
+        kunde_email: email,
+        kunde_ziel: goal || '–',
+        kunde_nachricht: message,
+        weitergeleitet: false
+      })
+    });
+
+    // 2. Send to Formspree (notify Jakob)
     const res = await fetch(FORMSPREE, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
       body: JSON.stringify({
-        _subject: `🔔 NEUER KUNDE für ${trainerData ? trainerData.vorname + ' ' + trainerData.nachname : 'Trainer'} – Stripe Link schicken?`,
-        '📋 KUNDE - Name': name,
-        '📧 KUNDE - Email': email,
-        '🎯 KUNDE - Ziel': goal || '–',
-        '💬 KUNDE - Nachricht': message,
-        '👤 TRAINER - Name': trainerData ? trainerData.vorname + ' ' + trainerData.nachname : '–',
-        '📍 TRAINER - Stadt': trainerData ? trainerData.stadt : '–',
-        '💳 TRAINER - Stripe Link': 'https://buy.stripe.com/eVqdR9gopdNhczNbhw2oE00',
-        '⚠️ HINWEIS': 'NICHT an Trainer weiterleiten bis er bezahlt hat! Erst Stripe Link schicken.',
+        _subject: `🔔 NEUE ANFRAGE: ${name} → ${trainerData ? trainerData.vorname + ' ' + trainerData.nachname : 'Trainer'}`,
+        '👤 TRAINER Name': trainerData ? trainerData.vorname + ' ' + trainerData.nachname : '–',
+        '📧 TRAINER Email': trainerData ? trainerData.email : '–',
+        '🙋 KUNDE Name': name,
+        '📩 KUNDE Email': email,
+        '🎯 KUNDE Ziel': goal || '–',
+        '💬 KUNDE Nachricht': message,
+        '💳 STRIPE LINK': 'https://buy.stripe.com/eVqdR9gopdNhczNbhw2oE00',
+        '⚠️ WICHTIG': 'Kunden-Daten ERST nach Zahlung weiterleiten!',
+        '🔗 ADMIN': 'https://vexfit.app/admin.html',
         _replyto: 'vexfit.info@gmail.com',
       })
     });
