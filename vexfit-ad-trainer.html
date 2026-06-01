@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vexfit Ad – Trainer</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  background: #1a1a1a;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  font-family: 'DM Sans', sans-serif;
+}
+
+.story {
+  width: 405px;
+  height: 720px;
+  background: #0a0a0a;
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0 40px 100px rgba(0,0,0,0.8);
+}
+
+.bg-glow {
+  position: absolute;
+  inset: 0;
+  background:
+    radial-gradient(ellipse 80% 50% at 50% 80%, rgba(232,255,0,0.1) 0%, transparent 70%),
+    radial-gradient(ellipse 60% 40% at 80% 20%, rgba(232,255,0,0.04) 0%, transparent 60%);
+  pointer-events: none;
+}
+
+.bg-grid {
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events: none;
+}
+.bg-grid::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(ellipse 100% 100% at 50% 50%, transparent 30%, #0a0a0a 100%);
+}
+
+/* TOP HEADLINE */
+.top-section {
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  padding: 48px 32px 0;
+  z-index: 10;
+  animation: fadeDown 0.8s 0.2s ease both;
+}
+
+.headline {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 58px;
+  line-height: 0.88;
+  letter-spacing: 2px;
+  color: #f5f5f0;
+}
+
+.headline em {
+  font-style: normal;
+  color: #e8ff00;
+  display: block;
+}
+
+/* PHONE */
+.phone-wrap {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -52%);
+  z-index: 5;
+  animation: floatPhone 4s ease-in-out infinite;
+}
+
+.phone {
+  width: 200px;
+  height: 380px;
+  background: linear-gradient(145deg, #2a2a2a, #1a1a1a);
+  border-radius: 28px;
+  border: 2px solid rgba(255,255,255,0.12);
+  position: relative;
+  box-shadow:
+    0 40px 80px rgba(0,0,0,0.8),
+    0 0 0 1px rgba(255,255,255,0.05),
+    inset 0 1px 0 rgba(255,255,255,0.1);
+  overflow: hidden;
+}
+
+.notch {
+  position: absolute;
+  top: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 8px;
+  background: #0a0a0a;
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.screen {
+  position: absolute;
+  inset: 6px;
+  background: #0d0d0d;
+  border-radius: 23px;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+}
+
+.phone-nav {
+  padding: 20px 14px 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid rgba(255,255,255,0.06);
+}
+
+.phone-logo {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 16px;
+  letter-spacing: 3px;
+  color: #f5f5f0;
+}
+.phone-logo span { color: #e8ff00; }
+
+.phone-nav-dot {
+  width: 26px;
+  height: 26px;
+  background: #e8ff00;
+  border-radius: 3px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 10px;
+  color: #0a0a0a;
+  font-weight: 700;
+}
+
+.phone-content {
+  flex: 1;
+  padding: 14px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  overflow: hidden;
+}
+
+/* Trainer dashboard inside phone */
+.phone-stat-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 5px;
+}
+
+.phone-stat {
+  background: rgba(255,255,255,0.05);
+  border-radius: 6px;
+  padding: 8px 10px;
+  text-align: center;
+}
+
+.phone-stat-num {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 20px;
+  color: #e8ff00;
+  letter-spacing: 1px;
+  display: block;
+  line-height: 1;
+}
+
+.phone-stat-label {
+  font-size: 8px;
+  color: rgba(255,255,255,0.3);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-top: 2px;
+}
+
+.phone-divider {
+  height: 1px;
+  background: rgba(255,255,255,0.06);
+  margin: 2px 0;
+}
+
+.phone-req-label {
+  font-size: 9px;
+  color: rgba(232,255,0,0.7);
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+  font-weight: 600;
+  margin-bottom: 2px;
+}
+
+.phone-req {
+  background: rgba(255,255,255,0.04);
+  border-radius: 6px;
+  padding: 8px 10px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border: 1px solid rgba(255,255,255,0.05);
+  animation: slideIn 0.6s ease both;
+}
+
+.phone-req:nth-child(3) { animation-delay: 0.2s; }
+
+.req-av {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: rgba(232,255,0,0.12);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 10px;
+  color: #e8ff00;
+  flex-shrink: 0;
+}
+
+.req-info { flex: 1; }
+
+.req-name {
+  font-size: 10px;
+  font-weight: 600;
+  color: #f5f5f0;
+  margin-bottom: 1px;
+}
+
+.req-detail {
+  font-size: 8px;
+  color: rgba(255,255,255,0.3);
+}
+
+.req-badge {
+  background: rgba(232,255,0,0.15);
+  color: #e8ff00;
+  font-size: 7px;
+  font-weight: 700;
+  padding: 2px 5px;
+  border-radius: 2px;
+  letter-spacing: 0.5px;
+  text-transform: uppercase;
+}
+
+.phone-btn {
+  margin: 0 14px 14px;
+  background: #e8ff00;
+  color: #0a0a0a;
+  border-radius: 6px;
+  padding: 9px;
+  text-align: center;
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 12px;
+  letter-spacing: 1.5px;
+}
+
+/* BOTTOM */
+.bottom-section {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: 0 32px 48px;
+  z-index: 10;
+  animation: fadeUp 0.8s 0.4s ease both;
+}
+
+.sub-text {
+  font-size: 14px;
+  color: rgba(245,245,240,0.45);
+  font-weight: 300;
+  margin-bottom: 0;
+  letter-spacing: 0.3px;
+  line-height: 1.5;
+}
+
+.anzeige {
+  position: absolute;
+  bottom: 14px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 10px;
+  color: rgba(255,255,255,0.2);
+  letter-spacing: 2px;
+  text-transform: uppercase;
+  z-index: 20;
+  white-space: nowrap;
+}
+
+@keyframes fadeDown { from{opacity:0;transform:translateY(-20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeUp { from{opacity:0;transform:translateY(20px)} to{opacity:1;transform:translateY(0)} }
+@keyframes floatPhone {
+  0%, 100% { transform: translate(-50%, -52%) rotate(-2deg); }
+  50% { transform: translate(-50%, -55%) rotate(1deg); }
+}
+@keyframes slideIn { from{opacity:0;transform:translateX(20px)} to{opacity:1;transform:translateX(0)} }
+</style>
+</head>
+<body>
+
+<div class="story">
+  <div class="bg-glow"></div>
+  <div class="bg-grid"></div>
+
+  <!-- HEADLINE -->
+  <div class="top-section">
+    <div class="headline">
+      PERSONAL<br>TRAINER?
+      <em>MEHR KUNDEN.</em>
+    </div>
+  </div>
+
+  <!-- PHONE -->
+  <div class="phone-wrap">
+    <div class="phone">
+      <div class="notch"></div>
+      <div class="screen">
+        <div class="phone-nav">
+          <div class="phone-logo">VEX<span>FIT</span></div>
+          <div class="phone-nav-dot">→</div>
+        </div>
+        <div class="phone-content">
+          <div class="phone-stat-row">
+            <div class="phone-stat">
+              <span class="phone-stat-num">3</span>
+              <div class="phone-stat-label">Neue Anfragen</div>
+            </div>
+            <div class="phone-stat">
+              <span class="phone-stat-num">€840</span>
+              <div class="phone-stat-label">Diese Woche</div>
+            </div>
+          </div>
+          <div class="phone-divider"></div>
+          <div class="phone-req-label">Neue Anfragen</div>
+          <div class="phone-req">
+            <div class="req-av">SL</div>
+            <div class="req-info">
+              <div class="req-name">Sarah L.</div>
+              <div class="req-detail">Abnehmen · Wien</div>
+            </div>
+            <div class="req-badge">NEU</div>
+          </div>
+          <div class="phone-req">
+            <div class="req-av">JK</div>
+            <div class="req-info">
+              <div class="req-name">Jakob K.</div>
+              <div class="req-detail">Muskelaufbau · Online</div>
+            </div>
+            <div class="req-badge">NEU</div>
+          </div>
+        </div>
+        <div class="phone-btn">ANFRAGEN ANSEHEN →</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- BOTTOM -->
+  <div class="bottom-section">
+    <p class="sub-text">Kostenlos starten.<br>Kunden kommen zu dir.</p>
+  </div>
+
+  <div class="anzeige">Anzeige</div>
+</div>
+
+</body>
+</html>

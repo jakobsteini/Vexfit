@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<link rel="icon" type="image/png" href="vexfit-logo.png">
+<title>Vexfit – Login</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a0a;--white:#f5f5f0;--accent:#e8ff00;--gray:#141414;--mid:#1e1e1e;--card:#161616;--text-muted:#666;--border:rgba(255,255,255,0.07);--border-input:rgba(255,255,255,0.12)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--white);text-decoration:none}.logo span{color:var(--accent)}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:rgba(10,10,10,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-link{color:var(--text-muted);text-decoration:none;font-size:13px}
+.page-bg{position:fixed;inset:0;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(232,255,0,0.04) 0%,transparent 70%);pointer-events:none}
+.wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:90px 20px 40px;position:relative;z-index:1}
+.box{width:100%;max-width:420px;animation:fadeUp 0.6s ease both}
+.header{text-align:center;margin-bottom:28px}
+.label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:10px}
+.title{font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:0.95;letter-spacing:2px;margin-bottom:8px}
+.sub{font-size:14px;color:var(--text-muted);font-weight:300}
+.tabs{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:28px;background:var(--card);padding:4px;border-radius:4px}
+.tab{padding:11px 8px;text-align:center;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all 0.25s;color:var(--text-muted);border:none;background:transparent;font-family:'DM Sans',sans-serif}
+.tab.active{background:var(--accent);color:var(--black)}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)}
+input{background:var(--card);border:1px solid var(--border-input);color:var(--white);padding:14px 16px;font-family:'DM Sans',sans-serif;font-size:15px;border-radius:3px;outline:none;transition:border-color 0.2s;width:100%}
+input::placeholder{color:rgba(102,102,102,0.6)}
+input:focus{border-color:rgba(232,255,0,0.4);background:var(--mid)}
+.forgot{text-align:right;margin-bottom:20px}.forgot a{font-size:13px;color:var(--text-muted);text-decoration:none}
+.btn-login{width:100%;background:var(--accent);color:var(--black);padding:15px;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;margin-bottom:16px;transition:transform 0.2s}
+.btn-login:disabled{opacity:0.5;cursor:not-allowed}
+.alert{padding:12px 16px;border-radius:3px;font-size:13px;margin-bottom:14px;display:none}
+.alert.show{display:block}
+.alert-error{background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.3);color:#ff6b6b}
+.alert-success{background:rgba(232,255,0,0.1);border:1px solid rgba(232,255,0,0.3);color:var(--accent)}
+.divider{display:flex;align-items:center;gap:14px;margin-bottom:16px}.dl{flex:1;height:1px;background:var(--border)}.ds{font-size:12px;color:var(--text-muted)}
+.links{text-align:center;display:flex;flex-direction:column;gap:10px}.links p{font-size:14px;color:var(--text-muted)}.links a{color:var(--accent);text-decoration:none;font-weight:600}
+@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+<div class="page-bg"></div>
+<nav><a href="index.html" class="logo">VEX<span>FIT</span></a><a href="registrieren.html" class="nav-link">Registrieren →</a></nav>
+<div class="wrap"><div class="box">
+  <div class="header">
+    <div class="label">Willkommen zurück</div>
+    <div class="title">LOGIN</div>
+    <p class="sub">Melde dich mit deinem Trainer-Account an</p>
+  </div>
+  <div class="alert alert-error" id="errorMsg"></div>
+  <div class="alert alert-success" id="successMsg"></div>
+  <div class="field"><label>E-Mail</label><input type="email" placeholder="deine@email.com" id="email" onkeydown="if(event.key==='Enter')doLogin()"></div>
+  <div class="field"><label>Passwort</label><input type="password" placeholder="Dein Passwort" id="pw" onkeydown="if(event.key==='Enter')doLogin()"></div>
+  <div class="forgot"><a href="passwort-vergessen.html">Passwort vergessen?</a></div>
+  <button class="btn-login" id="loginBtn" onclick="doLogin()">Einloggen →</button>
+  <div class="divider"><div class="dl"></div><span class="ds">oder</span><div class="dl"></div></div>
+  <div class="links">
+    <p>Noch kein Account? <a href="registrieren.html?typ=trainer">Als Trainer registrieren →</a></p>
+  </div>
+</div></div>
+<script>
+const SUPABASE_URL = 'https://hbapzwxdehfgnputrfjf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYXB6d3hkZWhmZ25wdXRyZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDc0NzQsImV4cCI6MjA5NDQyMzQ3NH0.vIQLcTObF5tmBEuxKL2EEUd4U88k0mdTmsAafG8djN4';
+
+if(localStorage.getItem('vexfit_session')) window.location.href = 'trainer-bereich.html';
+
+async function doLogin() {
+  const email = document.getElementById('email').value.trim();
+  const pw = document.getElementById('pw').value;
+  if(!email || !pw) { showError('Bitte E-Mail und Passwort eingeben!'); return; }
+  const btn = document.getElementById('loginBtn');
+  btn.disabled = true; btn.textContent = 'Wird eingeloggt...';
+  try {
+    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
+      method: 'POST',
+      headers: {'Content-Type': 'application/json', 'apikey': SUPABASE_KEY},
+      body: JSON.stringify({email, password: pw})
+    });
+    const data = await res.json();
+    if(data.access_token) {
+      localStorage.setItem('vexfit_session', JSON.stringify({
+        access_token: data.access_token,
+        user_id: data.user.id,
+        email: data.user.email
+      }));
+      window.location.href = 'trainer-bereich.html';
+    } else {
+      showError('Falsche E-Mail oder Passwort!');
+      btn.disabled = false; btn.textContent = 'Einloggen →';
+    }
+  } catch(e) {
+    showError('Verbindungsfehler. Bitte versuche es erneut.');
+    btn.disabled = false; btn.textContent = 'Einloggen →';
+  }
+}
+function showError(msg) {
+  const el = document.getElementById('errorMsg');
+  el.textContent = '⚠️ ' + msg; el.classList.add('show');
+}
+</script>
+<!-- WhatsApp Button -->
+<style>
+@keyframes waBounce{0%{opacity:0;transform:scale(0.5) translateY(20px)}60%{transform:scale(1.08) translateY(-4px)}80%{transform:scale(0.96) translateY(2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.wa-btn{position:fixed;bottom:22px;right:20px;z-index:9999;width:46px;height:46px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 16px rgba(37,211,102,0.45);text-decoration:none;opacity:0;animation:waBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) 2.5s forwards;transition:transform 0.2s,box-shadow 0.2s}
+.wa-btn:hover{transform:scale(1.1);box-shadow:0 5px 24px rgba(37,211,102,0.6)}
+</style>
+<a href="https://wa.me/436649275737?text=Name%3A%20%0ANachricht%3A%20Hi%20ich%20habe%20eine%20Frage%20zu%20Vexfit%2C" 
+   target="_blank" class="wa-btn" aria-label="WhatsApp Kontakt">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+</body></html>

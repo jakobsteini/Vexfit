@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="vexfit-logo.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Vexfit – Trainer Profil</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a0a;--white:#f5f5f0;--accent:#e8ff00;--gray:#141414;--mid:#1e1e1e;--card:#161616;--text-muted:#666;--border:rgba(255,255,255,0.07);--border-input:rgba(255,255,255,0.12)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--white);text-decoration:none}
+.logo span{color:var(--accent)}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:rgba(10,10,10,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-back{color:var(--text-muted);text-decoration:none;font-size:13px}
+
+/* HERO */
+.profile-hero{padding:80px 20px 0;background:var(--gray);border-bottom:1px solid var(--border)}
+.profile-top{display:flex;gap:16px;align-items:flex-start;margin-bottom:24px}
+.profile-avatar{width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,#1a1a1a,#2a2a2a);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:24px;color:rgba(232,255,0,0.4);flex-shrink:0;border:2px solid rgba(232,255,0,0.2)}
+.profile-info{flex:1}
+.profile-badge{display:inline-flex;align-items:center;gap:6px;background:rgba(232,255,0,0.1);border:1px solid rgba(232,255,0,0.25);color:var(--accent);padding:4px 10px;border-radius:100px;font-size:9px;font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:8px}
+.profile-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,8vw,52px);line-height:0.95;letter-spacing:2px;margin-bottom:8px}
+.profile-meta{display:flex;flex-direction:column;gap:4px}
+.meta-item{font-size:13px;color:var(--text-muted)}
+.profile-tags{display:flex;gap:6px;flex-wrap:wrap;margin:16px 0}
+.profile-tag{padding:5px 12px;background:rgba(255,255,255,0.06);border-radius:100px;font-size:12px;color:var(--text-muted)}
+.stats-row{display:grid;grid-template-columns:repeat(3,1fr);gap:3px;margin-top:0}
+.stat-box{background:var(--card);padding:16px 12px;text-align:center}
+.stat-box-num{font-family:'Bebas Neue',sans-serif;font-size:28px;color:var(--accent);letter-spacing:1px;display:block;line-height:1}
+.stat-box-label{font-size:9px;color:var(--text-muted);letter-spacing:1.5px;text-transform:uppercase;margin-top:3px}
+
+/* CONTENT */
+.profile-content{padding:24px 20px}
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:14px;color:var(--white)}
+.about-text{font-size:14px;color:rgba(245,245,240,0.7);line-height:1.8;font-weight:300;margin-bottom:28px}
+
+/* CONTACT FORM */
+.contact-section{background:var(--card);border:1px solid var(--border-input);padding:24px;border-radius:3px;margin-bottom:28px}
+.contact-title{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1.5px;margin-bottom:6px}
+.contact-sub{font-size:13px;color:var(--text-muted);margin-bottom:20px;font-weight:300}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)}
+input,textarea{background:var(--gray);border:1px solid var(--border-input);color:var(--white);padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;border-radius:3px;outline:none;transition:border-color 0.2s;width:100%}
+input::placeholder,textarea::placeholder{color:rgba(102,102,102,0.6)}
+input:focus,textarea:focus{border-color:rgba(232,255,0,0.4);background:var(--mid)}
+textarea{resize:vertical;min-height:100px;line-height:1.6}
+.btn-send{width:100%;background:var(--accent);color:var(--black);padding:15px;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:transform 0.2s}
+.btn-send:hover{transform:translateY(-2px)}
+.btn-send:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.contact-success{display:none;text-align:center;padding:20px 0}
+.contact-success-icon{font-size:40px;margin-bottom:12px}
+.contact-success h3{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px;margin-bottom:8px}
+.contact-success h3 span{color:var(--accent)}
+.contact-success p{font-size:13px;color:var(--text-muted);font-weight:300;line-height:1.6}
+.alert-error{background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.3);color:#ff6b6b;padding:12px 16px;border-radius:3px;font-size:13px;margin-bottom:14px;display:none}
+.alert-error.show{display:block}
+
+/* PRICING */
+.pricing-box{background:var(--gray);border:1px solid var(--border);padding:20px;border-radius:3px;margin-bottom:28px}
+.pricing-title{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:14px}
+.pricing-item{display:flex;justify-content:space-between;align-items:center;padding:12px 0;border-bottom:1px solid var(--border)}
+.pricing-item:last-child{border-bottom:none}
+.pricing-label{font-size:14px;font-weight:500}
+.pricing-sub{font-size:11px;color:var(--text-muted);margin-top:2px}
+.pricing-price{font-family:'Bebas Neue',sans-serif;font-size:22px;color:var(--accent);letter-spacing:1px}
+
+/* LOADING */
+.loading-profile{text-align:center;padding:80px 20px}
+.spinner{width:40px;height:40px;border:3px solid rgba(232,255,0,0.2);border-top-color:var(--accent);border-radius:50%;animation:spin 0.8s linear infinite;margin:0 auto 16px}
+
+footer{border-top:1px solid var(--border);padding:28px 20px;text-align:center}
+.footer-logo{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:4px;color:var(--white);text-decoration:none;display:block;margin-bottom:12px}
+.footer-logo span{color:var(--accent)}
+.fl{display:flex;flex-wrap:wrap;gap:14px;justify-content:center;margin-bottom:10px}
+.fl a{font-size:12px;color:var(--text-muted);text-decoration:none}
+footer p{font-size:12px;color:var(--text-muted)}
+
+@media(min-width:768px){
+  nav{padding:18px 52px}
+  .profile-hero{padding:100px 52px 0}
+  .profile-top{gap:28px}
+  .profile-avatar{width:96px;height:96px;font-size:32px}
+  .profile-meta{flex-direction:row;gap:20px}
+  .stats-row{grid-template-columns:repeat(4,1fr)}
+  .profile-content{padding:36px 52px;display:grid;grid-template-columns:1fr 340px;gap:40px}
+  footer{padding:28px 52px;display:flex;justify-content:space-between;align-items:center}
+  .footer-logo{display:inline;margin-bottom:0}
+  .fl{margin-bottom:0}
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">VEX<span>FIT</span></a>
+  <a href="suche.html" class="nav-back">← Zurück zur Suche</a>
+</nav>
+
+<!-- LOADING -->
+<div class="loading-profile" id="loadingProfile">
+  <div class="spinner"></div>
+  <p style="color:var(--text-muted);font-size:14px">Profil wird geladen...</p>
+</div>
+
+<!-- PROFILE (hidden until loaded) -->
+<div id="profileContent" style="display:none">
+  <div class="profile-hero">
+    <div class="profile-top">
+      <div class="profile-avatar" id="pAvatar">MK</div>
+      <div class="profile-info">
+        <div class="profile-badge">✓ Verifiziert</div>
+        <div class="profile-name" id="pName">–</div>
+        <div class="profile-meta">
+          <div class="meta-item" id="pLocation">–</div>
+          <div class="meta-item" id="pExp">–</div>
+        </div>
+        <div class="profile-tags" id="pTags"></div>
+      </div>
+    </div>
+    <div class="stats-row">
+      <div class="stat-box"><span class="stat-box-num" id="pPreis">–</span><div class="stat-box-label">Pro Stunde</div></div>
+      <div class="stat-box"><span class="stat-box-num" id="pOnline">–</span><div class="stat-box-label">Online/Monat</div></div>
+      <div class="stat-box"><span class="stat-box-num">100%</span><div class="stat-box-label">Verifiziert</div></div>
+      <div class="stat-box"><span class="stat-box-num">DACH</span><div class="stat-box-label">Verfügbar</div></div>
+    </div>
+  </div>
+
+  <div class="profile-content">
+    <!-- LEFT COLUMN -->
+    <div>
+      <div class="section-title">ÜBER MICH</div>
+      <p class="about-text" id="pBio">–</p>
+
+      <div class="section-title">SPEZIALISIERUNGEN</div>
+      <div class="profile-tags" id="pTagsDetail" style="margin-bottom:28px"></div>
+
+      <div id="pCertSection" style="display:none">
+        <div class="section-title">ZERTIFIZIERUNGEN</div>
+        <p class="about-text" id="pCert">–</p>
+      </div>
+    </div>
+
+    <!-- RIGHT COLUMN / CONTACT -->
+    <div>
+      <!-- PRICING -->
+      <div class="pricing-box">
+        <div class="pricing-title">Preise</div>
+        <div id="pPricingItems"></div>
+      </div>
+
+      <!-- CONTACT FORM -->
+      <div class="contact-section">
+        <div id="contactForm">
+          <div class="contact-title">TRAINER ANFRAGEN</div>
+          <p class="contact-sub">Sende eine Anfrage – wir vermitteln den Kontakt für dich</p>
+          <div class="alert-error" id="contactError"></div>
+          <div class="field"><label>Dein Name</label><input type="text" placeholder="Anna Muster" id="c-name"></div>
+          <div class="field"><label>Deine E-Mail</label><input type="email" placeholder="anna@example.com" id="c-email"></div>
+          <div class="field"><label>Dein Ziel</label><input type="text" placeholder="z.B. Abnehmen, Muskelaufbau..." id="c-goal"></div>
+          <div class="field"><label>Nachricht</label><textarea placeholder="Erzähl dem Trainer kurz was du suchst..." id="c-message"></textarea></div>
+          <button class="btn-send" id="sendBtn" onclick="sendContact()">Nachricht senden →</button>
+        </div>
+        <div class="contact-success" id="contactSuccess">
+          <div class="contact-success-icon">🎉</div>
+          <h3>NACHRICHT<br><span>GESENDET!</span></h3>
+          <p>Wir haben deine Anfrage erhalten und melden uns so schnell wie möglich bei dir!</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <a href="index.html" class="footer-logo">VEX<span>FIT</span></a>
+  <div class="fl">
+    <a href="rechtliches.html">Impressum</a>
+    <a href="rechtliches.html#datenschutz">Datenschutz</a>
+    <a href="rechtliches.html#agb">AGB</a>
+  </div>
+  <p>© 2026 Vexfit</p>
+</footer>
+
+<script>
+const SUPABASE_URL = 'https://hbapzwxdehfgnputrfjf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYXB6d3hkZWhmZ25wdXRyZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDc0NzQsImV4cCI6MjA5NDQyMzQ3NH0.vIQLcTObF5tmBEuxKL2EEUd4U88k0mdTmsAafG8djN4';
+const FORMSPREE = 'https://formspree.io/f/xaqvodqb';
+
+let trainerData = null;
+
+async function loadProfile() {
+  const urlParams = new URLSearchParams(window.location.search);
+  const id = urlParams.get('id');
+  if(!id) { window.location.href = 'suche.html'; return; }
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/trainers?id=eq.${id}&aktiv=eq.true&select=*`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const data = await res.json();
+    if(!data || data.length === 0) { window.location.href = 'suche.html'; return; }
+    trainerData = data[0];
+    renderProfile(trainerData);
+  } catch(e) {
+    window.location.href = 'suche.html';
+  }
+}
+
+function renderProfile(t) {
+  document.title = `Vexfit – ${t.vorname} ${t.nachname}`;
+  const initials = (t.vorname[0] + t.nachname[0]).toUpperCase();
+  document.getElementById('pAvatar').textContent = initials;
+  document.getElementById('pName').textContent = t.vorname + ' ' + t.nachname;
+  const isOnline = t.trainingsart === 'Online';
+  document.getElementById('pLocation').textContent = isOnline ? '🌐 Online · DACH-weit' : '📍 ' + t.stadt + ' · ' + t.trainingsart;
+  document.getElementById('pExp').textContent = '💪 ' + (t.erfahrung || 'Erfahrener Trainer');
+  document.getElementById('pBio').textContent = t.bio || 'Erfahrener Personal Trainer mit Leidenschaft für Fitness und Gesundheit.';
+  document.getElementById('pPreis').textContent = t.preis_stunde ? '€' + t.preis_stunde : '–';
+  document.getElementById('pOnline').textContent = t.preis_online ? '€' + t.preis_online : '–';
+
+  // Tags
+  const tags = (t.spezialisierungen || []);
+  const tagsHTML = tags.map(tag => `<span class="profile-tag">${tag}</span>`).join('');
+  document.getElementById('pTags').innerHTML = tagsHTML;
+  document.getElementById('pTagsDetail').innerHTML = tagsHTML;
+
+  // Certs
+  if(t.zertifikate) {
+    document.getElementById('pCertSection').style.display = 'block';
+    document.getElementById('pCert').textContent = t.zertifikate;
+  }
+
+  // Pricing
+  let pricingHTML = '';
+  if(t.preis_stunde) pricingHTML += `<div class="pricing-item"><div><div class="pricing-label">Einzelstunde</div><div class="pricing-sub">60 Minuten · Vor Ort</div></div><div class="pricing-price">€${t.preis_stunde}</div></div>`;
+  if(t.preis_online) pricingHTML += `<div class="pricing-item"><div><div class="pricing-label">Online Coaching</div><div class="pricing-sub">Monatlich · inkl. Plan</div></div><div class="pricing-price">€${t.preis_online}</div></div>`;
+  if(!pricingHTML) pricingHTML = `<div class="pricing-item"><div class="pricing-label">Preis auf Anfrage</div></div>`;
+  document.getElementById('pPricingItems').innerHTML = pricingHTML;
+
+  document.getElementById('loadingProfile').style.display = 'none';
+  document.getElementById('profileContent').style.display = 'block';
+}
+
+async function sendContact() {
+  const name = document.getElementById('c-name').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const goal = document.getElementById('c-goal').value.trim();
+  const message = document.getElementById('c-message').value.trim();
+
+  if(!name || !email || !message) {
+    const err = document.getElementById('contactError');
+    err.textContent = '⚠️ Bitte alle Pflichtfelder ausfüllen!';
+    err.classList.add('show');
+    return;
+  }
+
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true;
+  btn.textContent = 'Wird gesendet...';
+
+  try {
+    // 0. Notify n8n webhook
+    try {
+      await fetch('https://n8n.srv1551518.hstgr.cloud/webhook/neue-anfrage', {
+        method: 'POST',
+        headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify({
+          trainer_email: trainerData ? trainerData.email : '',
+          trainer_name: trainerData ? trainerData.vorname + ' ' + trainerData.nachname : '',
+          kunde_name: name,
+          kunde_email: email,
+          kunde_ziel: goal || '–',
+          kunde_nachricht: message
+        })
+      });
+    } catch(e) { console.log('Webhook failed silently'); }
+
+    // 1. Save to Supabase anfragen table
+    await fetch(`${SUPABASE_URL}/rest/v1/anfragen`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'return=minimal'
+      },
+      body: JSON.stringify({
+        trainer_id: trainerData ? trainerData.id : null,
+        trainer_name: trainerData ? trainerData.vorname + ' ' + trainerData.nachname : '–',
+        trainer_email: trainerData ? trainerData.email : '–',
+        kunde_name: name,
+        kunde_email: email,
+        kunde_ziel: goal || '–',
+        kunde_nachricht: message,
+        weitergeleitet: false
+      })
+    });
+
+    // 2. Send to Formspree (notify Jakob)
+    const res = await fetch(FORMSPREE, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+      body: JSON.stringify({
+        _subject: `🔔 NEUE ANFRAGE: ${name} → ${trainerData ? trainerData.vorname + ' ' + trainerData.nachname : 'Trainer'}`,
+        '👤 TRAINER Name': trainerData ? trainerData.vorname + ' ' + trainerData.nachname : '–',
+        '📧 TRAINER Email': trainerData ? trainerData.email : '–',
+        '🙋 KUNDE Name': name,
+        '📩 KUNDE Email': email,
+        '🎯 KUNDE Ziel': goal || '–',
+        '💬 KUNDE Nachricht': message,
+        '💳 STRIPE LINK': 'https://buy.stripe.com/eVqdR9gopdNhczNbhw2oE00',
+        '⚠️ WICHTIG': 'Kunden-Daten ERST nach Zahlung weiterleiten!',
+        '🔗 ADMIN': 'https://vexfit.app/admin.html',
+        _replyto: 'vexfit.info@gmail.com',
+      })
+    });
+
+    if(res.ok) {
+      document.getElementById('contactForm').style.display = 'none';
+      document.getElementById('contactSuccess').style.display = 'block';
+    } else {
+      throw new Error('Send failed');
+    }
+  } catch(e) {
+    const err = document.getElementById('contactError');
+    err.textContent = '⚠️ Fehler beim Senden. Bitte versuche es erneut.';
+    err.classList.add('show');
+    btn.disabled = false;
+    btn.textContent = 'Nachricht senden →';
+  }
+}
+
+loadProfile();
+</script>
+<!-- WhatsApp Button -->
+<style>
+@keyframes waBounce{0%{opacity:0;transform:scale(0.5) translateY(20px)}60%{transform:scale(1.08) translateY(-4px)}80%{transform:scale(0.96) translateY(2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.wa-btn{position:fixed;bottom:22px;right:20px;z-index:9999;width:46px;height:46px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 16px rgba(37,211,102,0.45);text-decoration:none;opacity:0;animation:waBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) 2.5s forwards;transition:transform 0.2s,box-shadow 0.2s}
+.wa-btn:hover{transform:scale(1.1);box-shadow:0 5px 24px rgba(37,211,102,0.6)}
+</style>
+<a href="https://wa.me/436649275737?text=Name%3A%20%0ANachricht%3A%20Hi%20ich%20habe%20eine%20Frage%20zu%20Vexfit%2C" 
+   target="_blank" class="wa-btn" aria-label="WhatsApp Kontakt">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+</body>
+</html>

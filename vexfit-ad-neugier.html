@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vexfit Ad – Neugier</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#1a1a1a;display:flex;align-items:center;justify-content:center;min-height:100vh;font-family:'DM Sans',sans-serif}
+.story{width:405px;height:720px;background:#0a0a0a;position:relative;overflow:hidden;border-radius:12px;box-shadow:0 40px 100px rgba(0,0,0,0.8)}
+.bg-glow{position:absolute;inset:0;background:radial-gradient(ellipse 70% 70% at 50% 40%,rgba(232,255,0,0.06) 0%,transparent 70%);pointer-events:none}
+.bg-grid{position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,0.03) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,0.03) 1px,transparent 1px);background-size:40px 40px;pointer-events:none}
+.bg-grid::after{content:'';position:absolute;inset:0;background:radial-gradient(ellipse 100% 100% at 50% 50%,transparent 20%,#0a0a0a 100%)}
+
+.big-q{position:absolute;top:50%;left:50%;transform:translate(-50%,-58%);font-family:'Bebas Neue',sans-serif;font-size:340px;color:rgba(232,255,0,0.03);line-height:1;z-index:1;animation:pulse 5s ease-in-out infinite;user-select:none}
+
+.top{position:absolute;top:0;left:0;right:0;padding:52px 32px 0;z-index:10;animation:fadeDown 0.8s 0.1s ease both}
+.badge{display:inline-flex;align-items:center;gap:8px;background:rgba(232,255,0,0.08);border:1px solid rgba(232,255,0,0.2);color:#e8ff00;padding:6px 14px;border-radius:100px;font-size:11px;font-weight:600;letter-spacing:2px;text-transform:uppercase;margin-bottom:20px}
+.badge-dot{width:6px;height:6px;background:#e8ff00;border-radius:50%;animation:blink 2s infinite}
+
+.question{font-family:'Bebas Neue',sans-serif;font-size:56px;line-height:0.88;letter-spacing:2px;color:#f5f5f0}
+.question em{font-style:normal;color:#e8ff00;display:block}
+
+/* STATS */
+.stats{position:absolute;top:310px;left:32px;right:32px;z-index:10;display:grid;grid-template-columns:1fr 1fr;gap:3px;animation:fadeUp 0.8s 0.3s ease both}
+.stat-box{background:rgba(255,255,255,0.04);border:1px solid rgba(255,255,255,0.07);padding:20px 18px}
+.stat-box.ac{background:rgba(232,255,0,0.07);border-color:rgba(232,255,0,0.18)}
+.stat-num{font-family:'Bebas Neue',sans-serif;font-size:44px;color:#f5f5f0;letter-spacing:2px;line-height:1;display:block}
+.stat-box.ac .stat-num{color:#e8ff00}
+.stat-label{font-size:11px;color:rgba(255,255,255,0.3);text-transform:uppercase;letter-spacing:1px;margin-top:4px}
+
+/* ANSWER */
+.answer{position:absolute;bottom:120px;left:32px;right:32px;z-index:10;animation:fadeUp 0.8s 0.5s ease both}
+.ans-line{width:36px;height:2px;background:#e8ff00;margin-bottom:14px}
+.ans-text{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;line-height:0.95;color:#f5f5f0}
+.ans-text span{color:#e8ff00}
+
+/* LINK PLACEHOLDER */
+.link-area{position:absolute;bottom:28px;left:32px;right:32px;height:52px;border:1px dashed rgba(255,255,255,0.1);border-radius:4px;display:flex;align-items:center;justify-content:center;z-index:10}
+.link-hint{font-size:11px;color:rgba(255,255,255,0.15);letter-spacing:1.5px;text-transform:uppercase}
+
+.anzeige{position:absolute;bottom:10px;left:50%;transform:translateX(-50%);font-size:10px;color:rgba(255,255,255,0.15);letter-spacing:2px;text-transform:uppercase;z-index:20;white-space:nowrap}
+
+@keyframes fadeDown{from{opacity:0;transform:translateY(-20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes fadeUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0.3}}
+@keyframes pulse{0%,100%{opacity:1;transform:translate(-50%,-58%) scale(1)}50%{opacity:0.5;transform:translate(-50%,-58%) scale(1.04)}}
+</style>
+</head>
+<body>
+<div class="story">
+  <div class="bg-glow"></div>
+  <div class="bg-grid"></div>
+  <div class="big-q">?</div>
+
+  <div class="top">
+    <div class="badge"><div class="badge-dot"></div>Wusstest du?</div>
+    <div class="question">WARUM<br>SCHEITERN<br><em>SO VIELE?</em></div>
+  </div>
+
+  <div class="stats">
+    <div class="stat-box ac"><span class="stat-num">73%</span><div class="stat-label">geben ohne Trainer auf</div></div>
+    <div class="stat-box"><span class="stat-num">3x</span><div class="stat-label">schneller mit Coach</div></div>
+    <div class="stat-box"><span class="stat-num">0€</span><div class="stat-label">kostet die Suche</div></div>
+    <div class="stat-box ac"><span class="stat-num">2min</span><div class="stat-label">bis zum Trainer</div></div>
+  </div>
+
+  <div class="answer">
+    <div class="ans-line"></div>
+    <div class="ans-text">DIE ANTWORT?<br><span>VEXFIT.</span></div>
+  </div>
+
+  <div class="link-area"><div class="link-hint">← Dein Link hier →</div></div>
+  <div class="anzeige">Anzeige</div>
+</div>
+</body>
+</html>

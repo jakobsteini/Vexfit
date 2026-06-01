@@ -1,0 +1,452 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vexfit – Admin</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a0a;--white:#f5f5f0;--accent:#e8ff00;--gray:#141414;--mid:#1e1e1e;--card:#161616;--text-muted:#666;--border:rgba(255,255,255,0.07)}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;color:var(--white);text-decoration:none}
+.logo span{color:var(--accent)}
+.login-wrap{min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+.login-box{background:var(--card);border:1px solid var(--border);padding:40px 32px;border-radius:3px;width:100%;max-width:380px;text-align:center}
+.login-box .logo{display:block;margin-bottom:24px;font-size:28px}
+.login-title{font-family:'Bebas Neue',sans-serif;font-size:36px;letter-spacing:2px;margin-bottom:6px}
+.login-sub{font-size:13px;color:var(--text-muted);margin-bottom:28px;font-weight:300}
+.login-field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px;text-align:left}
+.login-field label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)}
+.login-field input{background:var(--gray);border:1px solid rgba(255,255,255,0.12);color:var(--white);padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:15px;border-radius:3px;outline:none;transition:border-color 0.2s;width:100%}
+.login-field input:focus{border-color:rgba(232,255,0,0.4)}
+.login-btn{width:100%;background:var(--accent);color:var(--black);padding:14px;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;margin-top:8px}
+.login-error{color:#ff6b6b;font-size:13px;margin-top:10px;display:none}
+.dashboard{display:none}
+nav{background:var(--gray);border-bottom:1px solid var(--border);padding:16px 24px;display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:10px}
+.logout-btn{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:7px 16px;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer}
+.content{padding:24px}
+.header-row{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:24px;flex-wrap:wrap;gap:12px}
+.header-left div:first-child{font-family:'Bebas Neue',sans-serif;font-size:28px;letter-spacing:2px}
+.header-left div:last-child{font-size:12px;color:var(--text-muted);margin-top:2px}
+.header-right{display:flex;flex-direction:column;align-items:flex-end;gap:8px}
+.report-btn{background:var(--accent);color:var(--black);border:none;padding:12px 24px;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer}
+.congrats-msg{font-size:12px;color:rgba(232,255,0,0.7);font-weight:300;max-width:320px;text-align:right;line-height:1.5}
+.stats-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:3px;margin-bottom:28px}
+.stat-card{background:var(--card);padding:20px;border-left:3px solid var(--accent)}
+.stat-card.unrealized{border-left-color:rgba(232,255,0,0.3)}
+.stat-label{font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);margin-bottom:8px;font-weight:600}
+.stat-value{font-family:'Bebas Neue',sans-serif;font-size:40px;color:var(--accent);letter-spacing:2px;line-height:1}
+.stat-card.unrealized .stat-value{color:rgba(232,255,0,0.4)}
+.stat-sub{font-size:12px;color:var(--text-muted);margin-top:4px}
+.tabs{display:flex;gap:3px;margin-bottom:20px}
+.tab{padding:10px 20px;background:var(--card);border:none;color:var(--text-muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase;cursor:pointer;transition:all 0.2s}
+.tab.active{background:var(--accent);color:var(--black)}
+.table-wrap{overflow-x:auto}
+table{width:100%;border-collapse:collapse}
+th{background:var(--gray);padding:12px 16px;text-align:left;font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted);font-weight:600;white-space:nowrap}
+td{padding:14px 16px;border-bottom:1px solid var(--border);font-size:13px;color:rgba(245,245,240,0.8)}
+tr:hover td{background:var(--card)}
+.badge{display:inline-block;padding:3px 8px;border-radius:2px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.badge-unpaid{background:rgba(255,80,80,0.12);color:#ff6b6b}
+.badge-inactive{background:rgba(255,80,80,0.12);color:#ff6b6b}
+.badge-active{background:rgba(232,255,0,0.12);color:var(--accent)}
+.btn-activate{background:var(--accent);color:var(--black);border:none;padding:5px 10px;border-radius:2px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;white-space:nowrap;display:block}
+.btn-stripe{background:rgba(232,255,0,0.15);color:var(--accent);border:1px solid rgba(232,255,0,0.3);padding:5px 10px;border-radius:2px;font-size:10px;font-weight:700;cursor:pointer;white-space:nowrap;display:block}
+@media(min-width:768px){
+  .stats-grid{grid-template-columns:repeat(4,1fr)}
+  .content{padding:32px 40px}
+}
+</style>
+</head>
+<body>
+
+<div class="login-wrap" id="loginWrap">
+  <div class="login-box">
+    <a href="#" class="logo">VEX<span>FIT</span></a>
+    <div class="login-title">ADMIN LOGIN</div>
+    <p class="login-sub">Nur für Administratoren</p>
+    <div class="login-field"><label>Passwort</label><input type="password" id="adminPw" placeholder="Passwort eingeben" onkeydown="if(event.key==='Enter')checkLogin()"></div>
+    <button class="login-btn" onclick="checkLogin()">Einloggen →</button>
+    <div class="login-error" id="loginError">Falsches Passwort!</div>
+  </div>
+</div>
+
+<div class="dashboard" id="dashboardWrap">
+  <nav>
+    <a href="#" class="logo">VEX<span>FIT</span> <span style="color:var(--text-muted);font-size:14px;letter-spacing:1px">ADMIN</span></a>
+    <div style="display:flex;align-items:center;gap:12px">
+      <span style="font-size:12px;color:var(--text-muted)">Stand: 21.05.2026</span>
+      <button class="logout-btn" onclick="logout()">Ausloggen</button>
+    </div>
+  </nav>
+
+  <div class="content">
+    <div class="header-row">
+      <div class="header-left">
+        <div>ÜBERSICHT</div>
+        <div>270 Trainer registriert · alle noch inaktiv</div>
+      </div>
+      <div class="header-right">
+        <button class="report-btn">📊 Tagesbericht senden</button>
+        <div class="congrats-msg">Vexfit.app konnte heute 270 neue Trainer aufnehmen, herzlichen Glückwunsch Jakob!</div>
+      </div>
+    </div>
+
+    <div class="stats-grid">
+      <div class="stat-card"><div class="stat-label">Trainer gesamt</div><div class="stat-value">270</div><div class="stat-sub">Registriert</div></div>
+      <div class="stat-card"><div class="stat-label">Zahlende Trainer</div><div class="stat-value">0</div><div class="stat-sub">Noch keine Zahlung</div></div>
+      <div class="stat-card"><div class="stat-label">Realisierter Umsatz</div><div class="stat-value">€0</div><div class="stat-sub">Aktuell</div></div>
+      <div class="stat-card unrealized"><div class="stat-label">Unrealisierter Umsatz</div><div class="stat-value">€13.497</div><div class="stat-sub">Potenzial bei Aktivierung</div></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab active">Trainer (270)</button>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Email</th>
+            <th>Stadt</th>
+            <th>Trainingsart</th>
+            <th>Preis/Std</th>
+            <th>Zahlung</th>
+            <th>Status</th>
+            <th>Aktion</th>
+            <th>Datum</th>
+          </tr>
+        </thead>
+        <tbody id="trainers-tbody"></tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<script>
+const ADMIN_PASSWORD = 'steini';
+
+const trainers = [
+  {vorname:'Florian',nachname:'D',email:'florian.distefano@gmail.com',stadt:'Salzburg',art:'Im Fitnessstudio',preis:'€70',datum:'29.05.2026'},
+  {vorname:'Lukas',nachname:'W',email:'lukas.wallner78@gmail.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€68',datum:'29.05.2026'},
+  {vorname:'Lisa',nachname:'B',email:'lisa.brunner@gmail.com',stadt:'Salzburg',art:'Vor Ort + Online',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Eva',nachname:'S',email:'eva.steiner49@gmx.at',stadt:'Innsbruck',art:'Im Fitnessstudio',preis:'€72',datum:'29.05.2026'},
+  {vorname:'Sophie',nachname:'J',email:'sophie.jovanovic@gmail.com',stadt:'Wien',art:'Vor Ort + Online',preis:'€80',datum:'29.05.2026'},
+  {vorname:'Clemens',nachname:'H',email:'clemens.hoffmann30@gmail.com',stadt:'Leonding',art:'Im Fitnessstudio',preis:'€92',datum:'29.05.2026'},
+  {vorname:'Lukas',nachname:'S',email:'lukas.sharma@yahoo.com',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Sophie',nachname:'B',email:'sophie.belkacemi@gmail.com',stadt:'Innsbruck',art:'Yoga & Mobility',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Katharina',nachname:'H',email:'katharina.hodzic@yahoo.com',stadt:'Dornbirn',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Philipp',nachname:'N',email:'philipp.nagl@gmx.at',stadt:'Salzburg',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Vanessa',nachname:'M',email:'vanessa.maier@hotmail.com',stadt:'Salzburg',art:'Yoga & Mobility',preis:'€82',datum:'29.05.2026'},
+  {vorname:'David',nachname:'J',email:'david.jovanovic@outlook.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€92',datum:'29.05.2026'},
+  {vorname:'Sanel',nachname:'P',email:'sanel.pichler@outlook.com',stadt:'St. Pölten',art:'Im Fitnessstudio',preis:'€70',datum:'29.05.2026'},
+  {vorname:'Fabian',nachname:'D',email:'fabian.dreher49@web.de',stadt:'Graz',art:'Yoga & Mobility',preis:'€80',datum:'29.05.2026'},
+  {vorname:'Besart',nachname:'K',email:'besart.kovac@gmail.com',stadt:'Traun',art:'Im Fitnessstudio',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Dominik',nachname:'S',email:'dominik.steiner93@icloud.com',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Marco',nachname:'G',email:'marco.glaser@gmx.at',stadt:'Graz',art:'Vor Ort + Online',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Kevin',nachname:'D',email:'kevin.dreher@outlook.com',stadt:'St. Pölten',art:'Im Fitnessstudio',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Dawit',nachname:'L',email:'dawit.lang31@gmx.at',stadt:'Wien',art:'Online',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Lukas',nachname:'T',email:'lukas.tanzer@outlook.com',stadt:'Leoben',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Sandra',nachname:'K',email:'sandra.kasumovic@gmail.com',stadt:'Innsbruck',art:'Vor Ort + Online',preis:'€80',datum:'29.05.2026'},
+  {vorname:'Jan',nachname:'A',email:'jan.abebe@gmx.at',stadt:'Linz',art:'Online',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Fabian',nachname:'P',email:'fabian.petrovic@gmail.com',stadt:'Salzburg',art:'Im Fitnessstudio',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Andreas',nachname:'K',email:'andreas.kern5@gmail.com',stadt:'Wien',art:'Yoga & Mobility',preis:'€65',datum:'29.05.2026'},
+  {vorname:'Patrick',nachname:'H',email:'patrick.hofer74@outlook.com',stadt:'Salzburg',art:'Online',preis:'€72',datum:'29.05.2026'},
+  {vorname:'René',nachname:'A',email:'rené.auer@gmail.com',stadt:'Steyr',art:'Im Fitnessstudio',preis:'€68',datum:'29.05.2026'},
+  {vorname:'Edin',nachname:'W',email:'edin.wimmer52@yahoo.com',stadt:'Wien',art:'Yoga & Mobility',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Tobias',nachname:'P',email:'tobias.petrovic24@icloud.com',stadt:'Graz',art:'Im Fitnessstudio',preis:'€85',datum:'29.05.2026'},
+  {vorname:'René',nachname:'D',email:'rené.dax@yahoo.com',stadt:'Wiener Neustadt',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Lukas',nachname:'N',email:'lukas.novak@gmail.com',stadt:'Graz',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Niklas',nachname:'R',email:'niklas.richter90@icloud.com',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Mihail',nachname:'E',email:'mihail.egger@gmail.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€75',datum:'29.05.2026'},
+  {vorname:'Erdin',nachname:'N',email:'erdin.nagl@web.de',stadt:'Klagenfurt',art:'Im Fitnessstudio',preis:'€65',datum:'29.05.2026'},
+  {vorname:'Luca',nachname:'H',email:'luca.hodzic9@gmail.com',stadt:'Wien',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'René',nachname:'P',email:'rené.pichler@web.de',stadt:'Wien',art:'Vor Ort beim Kunden',preis:'€72',datum:'29.05.2026'},
+  {vorname:'Edin',nachname:'M',email:'edin.maier51@gmx.at',stadt:'Innsbruck',art:'Im Fitnessstudio',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Christina',nachname:'M',email:'christina.marinovic@gmail.com',stadt:'Dornbirn',art:'Online',preis:'€68',datum:'29.05.2026'},
+  {vorname:'Tobias',nachname:'D',email:'tobias.dax45@gmx.at',stadt:'Kapfenberg',art:'Im Fitnessstudio',preis:'€85',datum:'29.05.2026'},
+  {vorname:'René',nachname:'K',email:'rené.koch@outlook.com',stadt:'Linz',art:'Im Fitnessstudio',preis:'€82',datum:'29.05.2026'},
+  {vorname:'Sebastian',nachname:'H',email:'sebastian.haas14@gmail.com',stadt:'Traun',art:'Online',preis:'€68',datum:'29.05.2026'},
+  {vorname:'David',nachname:'M',email:'david.marjanovic82@gmx.at',stadt:'Linz',art:'Vor Ort beim Kunden',preis:'€72',datum:'29.05.2026'},
+  {vorname:'Adrian',nachname:'E',email:'adrian.egger@yahoo.com',stadt:'Innsbruck',art:'Im Fitnessstudio',preis:'€68',datum:'29.05.2026'},
+  {vorname:'Stefan',nachname:'G',email:'stefan.gruber@gmail.com',stadt:'Wien',art:'Yoga & Mobility',preis:'€75',datum:'29.05.2026'},
+  {vorname:'Sanel',nachname:'H',email:'sanel.haas@gmail.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€92',datum:'29.05.2026'},
+  {vorname:'Arjun',nachname:'V',email:'arjun.veit@gmx.at',stadt:'Baden',art:'Im Fitnessstudio',preis:'€65',datum:'29.05.2026'},
+  {vorname:'Michael',nachname:'B',email:'michael.braun72@yahoo.com',stadt:'Salzburg',art:'Yoga & Mobility',preis:'€72',datum:'29.05.2026'},
+  {vorname:'Edin',nachname:'D',email:'edin.dreher@gmail.com',stadt:'Salzburg',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Leonie',nachname:'H',email:'leonie.holzer@gmail.com',stadt:'Salzburg',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Sandra',nachname:'P',email:'sandra.popescu85@gmail.com',stadt:'Graz',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Leonie',nachname:'D',email:'leonie.distefano@outlook.com',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Erdin',nachname:'G',email:'erdin.gruber@gmail.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€75',datum:'29.05.2026'},
+  {vorname:'Michael',nachname:'Z',email:'michael.zach@gmx.at',stadt:'Graz',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Fabian',nachname:'K',email:'fabian.klein@gmail.com',stadt:'Leonding',art:'Im Fitnessstudio',preis:'€75',datum:'29.05.2026'},
+  {vorname:'Bianca',nachname:'A',email:'bianca.abebe@yahoo.com',stadt:'St. Pölten',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Maximilian',nachname:'B',email:'maximilian.bauer@hotmail.com',stadt:'Linz',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Mihail',nachname:'S',email:'mihail.sax@yahoo.com',stadt:'Graz',art:'Online',preis:'€80',datum:'29.05.2026'},
+  {vorname:'Vanessa',nachname:'M',email:'vanessa.marinovic75@gmx.at',stadt:'Villach',art:'Vor Ort + Online',preis:'€75',datum:'29.05.2026'},
+  {vorname:'Philipp',nachname:'W',email:'philipp.wimmer@icloud.com',stadt:'Wiener Neustadt',art:'Vor Ort + Online',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Paul',nachname:'K',email:'paul.kasumovic@web.de',stadt:'Wien',art:'Online',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Erik',nachname:'N',email:'erik.novak6@gmail.com',stadt:'Linz',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Rafik',nachname:'D',email:'rafik.dax@gmail.com',stadt:'Dornbirn',art:'Online',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Dino',nachname:'P',email:'dino.petrovic@gmail.com',stadt:'Wien',art:'Yoga & Mobility',preis:'€92',datum:'29.05.2026'},
+  {vorname:'Tobias',nachname:'W',email:'tobias.wallner@outlook.com',stadt:'Salzburg',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Fabian',nachname:'B',email:'fabian.berger@web.de',stadt:'Wien',art:'Vor Ort + Online',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Adnan',nachname:'G',email:'adnan.glaser@gmail.com',stadt:'Baden',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Marco',nachname:'P',email:'marco.petrovic10@gmail.com',stadt:'Innsbruck',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'René',nachname:'M',email:'rené.marjanovic50@gmail.com',stadt:'Klagenfurt',art:'Online',preis:'€68',datum:'29.05.2026'},
+  {vorname:'Leon',nachname:'I',email:'leon.ionescu@outlook.com',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Eva',nachname:'K',email:'eva.klein@web.de',stadt:'Salzburg',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Sophie',nachname:'M',email:'sophie.marinovic@outlook.com',stadt:'Bregenz',art:'Online',preis:'€92',datum:'29.05.2026'},
+  {vorname:'Dawit',nachname:'P',email:'dawit.popescu@hotmail.com',stadt:'Innsbruck',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Dino',nachname:'K',email:'dino.kasumovic51@outlook.com',stadt:'Dornbirn',art:'Im Fitnessstudio',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Maximilian',nachname:'R',email:'maximilian.reiter@gmail.com',stadt:'Wien',art:'Yoga & Mobility',preis:'€80',datum:'29.05.2026'},
+  {vorname:'Natalia',nachname:'R',email:'natalia.richter@gmx.at',stadt:'Klagenfurt',art:'Im Fitnessstudio',preis:'€82',datum:'29.05.2026'},
+  {vorname:'Dominik',nachname:'B',email:'dominik.brunner@gmail.com',stadt:'Innsbruck',art:'Im Fitnessstudio',preis:'€82',datum:'29.05.2026'},
+  {vorname:'Sophie',nachname:'P',email:'sophie.popescu@gmail.com',stadt:'Wien',art:'Yoga & Mobility',preis:'€65',datum:'29.05.2026'},
+  {vorname:'Julia',nachname:'D',email:'julia.dreher28@yahoo.com',stadt:'Salzburg',art:'Im Fitnessstudio',preis:'€82',datum:'29.05.2026'},
+  {vorname:'Marco',nachname:'K',email:'marco.koch@gmail.com',stadt:'Graz',art:'Vor Ort beim Kunden',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Miriam',nachname:'Z',email:'miriam.zach@web.de',stadt:'Salzburg',art:'Im Fitnessstudio',preis:'€75',datum:'29.05.2026'},
+  {vorname:'Dino',nachname:'A',email:'dino.abebe90@yahoo.com',stadt:'Wien',art:'Vor Ort beim Kunden',preis:'€92',datum:'29.05.2026'},
+  {vorname:'Tim',nachname:'B',email:'tim.bauer@outlook.com',stadt:'Leonding',art:'Im Fitnessstudio',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Adrian',nachname:'S',email:'adrian.steiner@hotmail.com',stadt:'Wien',art:'Online',preis:'€68',datum:'29.05.2026'},
+  {vorname:'Besart',nachname:'D',email:'besart.dreher@outlook.com',stadt:'Baden',art:'Im Fitnessstudio',preis:'€92',datum:'29.05.2026'},
+  {vorname:'Erdin',nachname:'B',email:'erdin.brandl@gmx.at',stadt:'Dornbirn',art:'Online',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Lukas',nachname:'D',email:'lukas.distefano@icloud.com',stadt:'Wiener Neustadt',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Christian',nachname:'R',email:'christian.reiter@gmail.com',stadt:'Leoben',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Dominik',nachname:'D',email:'dominik.distefano93@gmail.com',stadt:'Traun',art:'Im Fitnessstudio',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Mihail',nachname:'N',email:'mihail.novak@icloud.com',stadt:'Feldkirch',art:'Yoga & Mobility',preis:'€92',datum:'29.05.2026'},
+  {vorname:'Miriam',nachname:'P',email:'miriam.popescu@yahoo.com',stadt:'Villach',art:'Im Fitnessstudio',preis:'€75',datum:'29.05.2026'},
+  {vorname:'Luca',nachname:'S',email:'luca.schwarz33@icloud.com',stadt:'Baden',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Moritz',nachname:'M',email:'moritz.muric@outlook.com',stadt:'Klagenfurt',art:'Im Fitnessstudio',preis:'€92',datum:'29.05.2026'},
+  {vorname:'Kevin',nachname:'I',email:'kevin.ionescu@outlook.com',stadt:'Feldkirch',art:'Online',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Kevin',nachname:'B',email:'kevin.bergonzoli@gmail.com',stadt:'Salzburg',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Victoria',nachname:'W',email:'victoria.wolf@yahoo.com',stadt:'Traun',art:'Online',preis:'€70',datum:'29.05.2026'},
+  {vorname:'Stefan',nachname:'P',email:'stefan.pellegrini@gmail.com',stadt:'Feldkirch',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Rafik',nachname:'E',email:'rafik.eder@web.de',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Laura',nachname:'M',email:'laura.marinovic@outlook.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€68',datum:'29.05.2026'},
+  {vorname:'Clemens',nachname:'P',email:'clemens.popescu76@icloud.com',stadt:'Amstetten',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Jonas',nachname:'N',email:'jonas.nagl@gmail.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Lukas',nachname:'H',email:'lukas.hodzic53@gmail.com',stadt:'Salzburg',art:'Im Fitnessstudio',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Nico',nachname:'A',email:'nico.auer@gmx.at',stadt:'Linz',art:'Im Fitnessstudio',preis:'€72',datum:'29.05.2026'},
+  {vorname:'Besart',nachname:'D',email:'besart.dax@web.de',stadt:'Salzburg',art:'Online',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Sanel',nachname:'E',email:'sanel.eder@gmail.com',stadt:'Kapfenberg',art:'Im Fitnessstudio',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Patrick',nachname:'N',email:'patrick.nagl@gmx.at',stadt:'Graz',art:'Online',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Jonas',nachname:'P',email:'jonas.pichler@gmail.com',stadt:'Innsbruck',art:'Vor Ort + Online',preis:'€82',datum:'29.05.2026'},
+  {vorname:'Paul',nachname:'H',email:'paul.huber@gmail.com',stadt:'Graz',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Bogdan',nachname:'L',email:'bogdan.lang@gmail.com',stadt:'Innsbruck',art:'Vor Ort beim Kunden',preis:'€65',datum:'29.05.2026'},
+  {vorname:'Dominik',nachname:'H',email:'dominik.hoxha@gmail.com',stadt:'Salzburg',art:'Online',preis:'€82',datum:'29.05.2026'},
+  {vorname:'Philipp',nachname:'Z',email:'philipp.zach52@icloud.com',stadt:'Graz',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Mihail',nachname:'W',email:'mihail.wagner@gmx.at',stadt:'Dornbirn',art:'Im Fitnessstudio',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Dino',nachname:'H',email:'dino.hofer@icloud.com',stadt:'Wien',art:'Yoga & Mobility',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Sophie',nachname:'F',email:'sophie.fink@gmx.at',stadt:'Wiener Neustadt',art:'Im Fitnessstudio',preis:'€72',datum:'29.05.2026'},
+  {vorname:'Adnan',nachname:'E',email:'adnan.egger@web.de',stadt:'Wien',art:'Im Fitnessstudio',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Jonas',nachname:'H',email:'jonas.haas@gmail.com',stadt:'Traun',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Laura',nachname:'F',email:'laura.fink@icloud.com',stadt:'Linz',art:'Vor Ort + Online',preis:'€80',datum:'29.05.2026'},
+  {vorname:'Mihail',nachname:'V',email:'mihail.veit@outlook.com',stadt:'Bregenz',art:'Im Fitnessstudio',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Nina',nachname:'D',email:'nina.distefano@gmx.at',stadt:'Steyr',art:'Online',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Jonas',nachname:'E',email:'jonas.egger@gmx.at',stadt:'Wien',art:'Vor Ort + Online',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Besart',nachname:'H',email:'besart.huber53@hotmail.com',stadt:'Graz',art:'Im Fitnessstudio',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Sandra',nachname:'R',email:'sandra.richter@yahoo.com',stadt:'Bregenz',art:'Yoga & Mobility',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Michael',nachname:'S',email:'michael.sax@gmail.com',stadt:'Krems',art:'Vor Ort beim Kunden',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Luca',nachname:'B',email:'luca.berger@yahoo.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€80',datum:'29.05.2026'},
+  {vorname:'Natalia',nachname:'S',email:'natalia.steiner@yahoo.com',stadt:'Wien',art:'Online',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Philipp',nachname:'E',email:'philipp.egger88@gmail.com',stadt:'Kapfenberg',art:'Im Fitnessstudio',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Andreas',nachname:'F',email:'andreas.frank@yahoo.com',stadt:'Baden',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Anna',nachname:'M',email:'anna.marinovic48@gmail.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€78',datum:'29.05.2026'},
+  {vorname:'René',nachname:'H',email:'rené.holzer11@gmail.com',stadt:'Leonding',art:'Yoga & Mobility',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Alexander',nachname:'N',email:'alexander.novak@gmail.com',stadt:'Leoben',art:'Vor Ort beim Kunden',preis:'€70',datum:'29.05.2026'},
+  {vorname:'Marco',nachname:'H',email:'marco.haas@gmail.com',stadt:'Dornbirn',art:'Online',preis:'€70',datum:'29.05.2026'},
+  {vorname:'Arjun',nachname:'M',email:'arjun.marinovic50@gmx.at',stadt:'Baden',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Tobias',nachname:'N',email:'tobias.novak90@web.de',stadt:'Bregenz',art:'Vor Ort beim Kunden',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Maximilian',nachname:'L',email:'maximilian.lehner@yahoo.com',stadt:'Innsbruck',art:'Im Fitnessstudio',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Nico',nachname:'F',email:'nico.fink25@gmx.at',stadt:'Linz',art:'Im Fitnessstudio',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Tim',nachname:'W',email:'tim.wirth@gmail.com',stadt:'Wien',art:'Yoga & Mobility',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Arjun',nachname:'H',email:'arjun.hoffmann@gmx.at',stadt:'Wien',art:'Im Fitnessstudio',preis:'€75',datum:'29.05.2026'},
+  {vorname:'Laura',nachname:'H',email:'laura.hoffmann@gmx.at',stadt:'Amstetten',art:'Vor Ort + Online',preis:'€70',datum:'29.05.2026'},
+  {vorname:'Felix',nachname:'S',email:'felix.steiner@gmail.com',stadt:'Wien',art:'Vor Ort + Online',preis:'€70',datum:'29.05.2026'},
+  {vorname:'Dino',nachname:'H',email:'dino.hoffmann48@outlook.com',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Tim',nachname:'J',email:'tim.jovanovic@gmail.com',stadt:'Salzburg',art:'Online',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Clemens',nachname:'H',email:'clemens.huber@gmail.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Jan',nachname:'M',email:'jan.marinovic@gmail.com',stadt:'Steyr',art:'Im Fitnessstudio',preis:'€70',datum:'29.05.2026'},
+  {vorname:'Dawit',nachname:'E',email:'dawit.eder@gmail.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Paul',nachname:'B',email:'paul.brunner63@yahoo.com',stadt:'Salzburg',art:'Im Fitnessstudio',preis:'€80',datum:'29.05.2026'},
+  {vorname:'Dominik',nachname:'W',email:'dominik.wagner@icloud.com',stadt:'St. Pölten',art:'Im Fitnessstudio',preis:'€82',datum:'29.05.2026'},
+  {vorname:'Tobias',nachname:'K',email:'tobias.koch@gmail.com',stadt:'Kapfenberg',art:'Yoga & Mobility',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Sarah',nachname:'B',email:'sarah.berger@yahoo.com',stadt:'Wien',art:'Yoga & Mobility',preis:'€72',datum:'29.05.2026'},
+  {vorname:'Manuel',nachname:'G',email:'manuel.gruber98@web.de',stadt:'Salzburg',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Arjun',nachname:'I',email:'arjun.ionescu19@web.de',stadt:'Salzburg',art:'Online',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Erdin',nachname:'K',email:'erdin.kovac46@gmail.com',stadt:'Graz',art:'Im Fitnessstudio',preis:'€90',datum:'29.05.2026'},
+  {vorname:'René',nachname:'H',email:'rené.huber54@gmail.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€75',datum:'29.05.2026'},
+  {vorname:'Paul',nachname:'R',email:'paul.riedl65@web.de',stadt:'Feldkirch',art:'Vor Ort + Online',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Clemens',nachname:'G',email:'clemens.graf62@gmail.com',stadt:'Amstetten',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Sanel',nachname:'Z',email:'sanel.zach@gmail.com',stadt:'Leoben',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Laura',nachname:'D',email:'laura.distefano@outlook.com',stadt:'Wien',art:'Yoga & Mobility',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Nico',nachname:'B',email:'nico.bergonzoli@gmail.com',stadt:'Dornbirn',art:'Vor Ort + Online',preis:'€68',datum:'29.05.2026'},
+  {vorname:'Dennis',nachname:'I',email:'dennis.ionescu@gmx.at',stadt:'Baden',art:'Vor Ort + Online',preis:'€80',datum:'29.05.2026'},
+  {vorname:'Moritz',nachname:'G',email:'moritz.gut@gmx.at',stadt:'Klagenfurt',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Sandra',nachname:'R',email:'sandra.riedl95@hotmail.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€68',datum:'29.05.2026'},
+  {vorname:'Simon',nachname:'N',email:'simon.nagl@gmail.com',stadt:'Salzburg',art:'Vor Ort + Online',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Erik',nachname:'W',email:'erik.wallner@gmail.com',stadt:'Wien',art:'Online',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Maximilian',nachname:'B',email:'maximilian.brandl@outlook.com',stadt:'Salzburg',art:'Im Fitnessstudio',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Bogdan',nachname:'P',email:'bogdan.popescu@web.de',stadt:'Baden',art:'Vor Ort + Online',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Nico',nachname:'M',email:'nico.marjanovic@gmx.at',stadt:'Wien',art:'Im Fitnessstudio',preis:'€75',datum:'29.05.2026'},
+  {vorname:'Julian',nachname:'V',email:'julian.veit82@gmail.com',stadt:'Leonding',art:'Yoga & Mobility',preis:'€80',datum:'29.05.2026'},
+  {vorname:'Lukas',nachname:'I',email:'lukas.ionescu@gmail.com',stadt:'Bregenz',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Dennis',nachname:'T',email:'dennis.tanzer11@web.de',stadt:'Wien',art:'Im Fitnessstudio',preis:'€70',datum:'29.05.2026'},
+  {vorname:'Maximilian',nachname:'W',email:'maximilian.wallner97@hotmail.com',stadt:'Leoben',art:'Vor Ort beim Kunden',preis:'€82',datum:'29.05.2026'},
+  {vorname:'Thomas',nachname:'M',email:'thomas.moser@icloud.com',stadt:'Wien',art:'Online',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Andreas',nachname:'L',email:'andreas.lehner@gmail.com',stadt:'Graz',art:'Im Fitnessstudio',preis:'€65',datum:'29.05.2026'},
+  {vorname:'Simon',nachname:'K',email:'simon.kovac@icloud.com',stadt:'Linz',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Maria',nachname:'S',email:'maria.sharma95@gmx.at',stadt:'Krems',art:'Vor Ort + Online',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Julia',nachname:'B',email:'julia.berger@hotmail.com',stadt:'Wien',art:'Online',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Fabian',nachname:'P',email:'fabian.pichler@web.de',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Markus',nachname:'F',email:'markus.frank@hotmail.com',stadt:'Baden',art:'Im Fitnessstudio',preis:'€72',datum:'29.05.2026'},
+  {vorname:'Dino',nachname:'F',email:'dino.fischer82@gmail.com',stadt:'Klagenfurt',art:'Im Fitnessstudio',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Petra',nachname:'M',email:'petra.muric19@gmail.com',stadt:'Wels',art:'Online',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Julian',nachname:'D',email:'julian.dreher@yahoo.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Erik',nachname:'F',email:'erik.fuchs@web.de',stadt:'Leonding',art:'Yoga & Mobility',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Philipp',nachname:'D',email:'philipp.dreher@icloud.com',stadt:'Wiener Neustadt',art:'Im Fitnessstudio',preis:'€82',datum:'29.05.2026'},
+  {vorname:'Arjun',nachname:'N',email:'arjun.nagl@icloud.com',stadt:'Wels',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Miriam',nachname:'D',email:'miriam.dax@outlook.com',stadt:'Wien',art:'Vor Ort beim Kunden',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Paul',nachname:'G',email:'paul.graf@gmail.com',stadt:'Wiener Neustadt',art:'Vor Ort beim Kunden',preis:'€90',datum:'29.05.2026'},
+  {vorname:'David',nachname:'N',email:'david.nagl@gmx.at',stadt:'Wiener Neustadt',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Christina',nachname:'M',email:'christina.mujic@icloud.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€92',datum:'29.05.2026'},
+  {vorname:'Clemens',nachname:'H',email:'clemens.hodzic@hotmail.com',stadt:'St. Pölten',art:'Online',preis:'€80',datum:'29.05.2026'},
+  {vorname:'Manuel',nachname:'G',email:'manuel.gruber@yahoo.com',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Maximilian',nachname:'D',email:'maximilian.dreher45@yahoo.com',stadt:'Klagenfurt',art:'Im Fitnessstudio',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Sebastian',nachname:'L',email:'sebastian.lehner@gmail.com',stadt:'Wien',art:'Vor Ort beim Kunden',preis:'€92',datum:'29.05.2026'},
+  {vorname:'Christian',nachname:'S',email:'christian.sax@yahoo.com',stadt:'Amstetten',art:'Im Fitnessstudio',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Markus',nachname:'F',email:'markus.fischer18@icloud.com',stadt:'Graz',art:'Im Fitnessstudio',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Miriam',nachname:'G',email:'miriam.gut@gmail.com',stadt:'Krems',art:'Vor Ort + Online',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Clemens',nachname:'S',email:'clemens.sax@gmail.com',stadt:'Graz',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Niklas',nachname:'K',email:'niklas.kainz@gmail.com',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Erik',nachname:'F',email:'erik.fuchs@icloud.com',stadt:'Salzburg',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Stefanie',nachname:'K',email:'stefanie.kainz@outlook.com',stadt:'Dornbirn',art:'Online',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Lisa',nachname:'W',email:'lisa.wirth@icloud.com',stadt:'Innsbruck',art:'Im Fitnessstudio',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Tobias',nachname:'B',email:'tobias.bauer66@gmail.com',stadt:'Linz',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Eva',nachname:'F',email:'eva.frank65@hotmail.com',stadt:'Salzburg',art:'Vor Ort + Online',preis:'€65',datum:'29.05.2026'},
+  {vorname:'Alexander',nachname:'T',email:'alexander.tanzer@gmx.at',stadt:'St. Pölten',art:'Im Fitnessstudio',preis:'€65',datum:'29.05.2026'},
+  {vorname:'Sebastian',nachname:'G',email:'sebastian.gruber@gmx.at',stadt:'Wien',art:'Im Fitnessstudio',preis:'€65',datum:'29.05.2026'},
+  {vorname:'Simon',nachname:'A',email:'simon.auer28@gmail.com',stadt:'Wiener Neustadt',art:'Vor Ort beim Kunden',preis:'€65',datum:'29.05.2026'},
+  {vorname:'Mihail',nachname:'W',email:'mihail.wallner54@gmail.com',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Clemens',nachname:'B',email:'clemens.berger@web.de',stadt:'Wien',art:'Im Fitnessstudio',preis:'€82',datum:'29.05.2026'},
+  {vorname:'Bogdan',nachname:'N',email:'bogdan.novak@web.de',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Julian',nachname:'T',email:'julian.tanzer@outlook.com',stadt:'Amstetten',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Adrian',nachname:'L',email:'adrian.lang@hotmail.com',stadt:'Bregenz',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Florian',nachname:'B',email:'florian.braun@yahoo.com',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Paul',nachname:'G',email:'paul.gruber@outlook.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Dennis',nachname:'W',email:'dennis.wimmer59@gmail.com',stadt:'Feldkirch',art:'Yoga & Mobility',preis:'€70',datum:'29.05.2026'},
+  {vorname:'Lisa',nachname:'G',email:'lisa.graf@gmx.at',stadt:'Graz',art:'Im Fitnessstudio',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Erdin',nachname:'A',email:'erdin.auer46@yahoo.com',stadt:'Innsbruck',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Manuel',nachname:'G',email:'manuel.gruber@gmx.at',stadt:'Innsbruck',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Adnan',nachname:'K',email:'adnan.klein@icloud.com',stadt:'Klagenfurt',art:'Im Fitnessstudio',preis:'€82',datum:'29.05.2026'},
+  {vorname:'Dominik',nachname:'T',email:'dominik.tanzer@web.de',stadt:'Baden',art:'Im Fitnessstudio',preis:'€80',datum:'29.05.2026'},
+  {vorname:'Miriam',nachname:'H',email:'miriam.huber58@yahoo.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Sanel',nachname:'K',email:'sanel.kasumovic@gmx.at',stadt:'Wiener Neustadt',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Benjamin',nachname:'N',email:'benjamin.nagl@hotmail.com',stadt:'Wien',art:'Yoga & Mobility',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Tim',nachname:'H',email:'tim.hodzic@yahoo.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Nina',nachname:'N',email:'nina.novak20@web.de',stadt:'St. Pölten',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Markus',nachname:'K',email:'markus.koch@gmail.com',stadt:'Wiener Neustadt',art:'Im Fitnessstudio',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Sebastian',nachname:'D',email:'sebastian.distefano@gmail.com',stadt:'Salzburg',art:'Im Fitnessstudio',preis:'€65',datum:'29.05.2026'},
+  {vorname:'Mihail',nachname:'B',email:'mihail.bauer63@web.de',stadt:'Innsbruck',art:'Online',preis:'€72',datum:'29.05.2026'},
+  {vorname:'Simon',nachname:'D',email:'simon.dax@icloud.com',stadt:'Wiener Neustadt',art:'Im Fitnessstudio',preis:'€92',datum:'29.05.2026'},
+  {vorname:'Philipp',nachname:'S',email:'philipp.schwarz@gmail.com',stadt:'Wien',art:'Vor Ort + Online',preis:'€75',datum:'29.05.2026'},
+  {vorname:'Benjamin',nachname:'M',email:'benjamin.mujic@gmail.com',stadt:'St. Pölten',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Dawit',nachname:'R',email:'dawit.reiter12@outlook.com',stadt:'St. Pölten',art:'Vor Ort + Online',preis:'€82',datum:'29.05.2026'},
+  {vorname:'Maria',nachname:'B',email:'maria.brandl41@gmail.com',stadt:'Amstetten',art:'Online',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Adnan',nachname:'W',email:'adnan.wimmer@outlook.com',stadt:'Amstetten',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Laura',nachname:'M',email:'laura.moser22@outlook.com',stadt:'Krems',art:'Im Fitnessstudio',preis:'€68',datum:'29.05.2026'},
+  {vorname:'Nicole',nachname:'P',email:'nicole.popescu71@gmx.at',stadt:'Wels',art:'Vor Ort + Online',preis:'€68',datum:'29.05.2026'},
+  {vorname:'Benjamin',nachname:'M',email:'benjamin.marinovic75@yahoo.com',stadt:'Wien',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Stefanie',nachname:'S',email:'stefanie.steiner83@gmail.com',stadt:'Leonding',art:'Im Fitnessstudio',preis:'€65',datum:'29.05.2026'},
+  {vorname:'Marco',nachname:'B',email:'marco.belkacemi@icloud.com',stadt:'Leonding',art:'Online',preis:'€65',datum:'29.05.2026'},
+  {vorname:'Sebastian',nachname:'M',email:'sebastian.marinovic@yahoo.com',stadt:'Feldkirch',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Jan',nachname:'N',email:'jan.nagl78@icloud.com',stadt:'Graz',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Nicole',nachname:'M',email:'nicole.maier@gmx.at',stadt:'Wels',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Katharina',nachname:'W',email:'katharina.wimmer38@gmail.com',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Clemens',nachname:'B',email:'clemens.brunner@web.de',stadt:'Salzburg',art:'Im Fitnessstudio',preis:'€78',datum:'29.05.2026'},
+  {vorname:'Anna',nachname:'F',email:'anna.fink@gmx.at',stadt:'Krems',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Maria',nachname:'G',email:'maria.glaser@web.de',stadt:'Dornbirn',art:'Im Fitnessstudio',preis:'€72',datum:'29.05.2026'},
+  {vorname:'Sandra',nachname:'A',email:'sandra.auer@gmail.com',stadt:'Linz',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Moritz',nachname:'H',email:'moritz.hoffmann@gmail.com',stadt:'Villach',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Bianca',nachname:'P',email:'bianca.pellegrini80@outlook.com',stadt:'Wien',art:'Online',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Fabian',nachname:'S',email:'fabian.sax@gmx.at',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'David',nachname:'A',email:'david.abebe18@gmail.com',stadt:'Graz',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Rafik',nachname:'B',email:'rafik.berger@gmail.com',stadt:'Wien',art:'Vor Ort beim Kunden',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Niklas',nachname:'L',email:'niklas.lehner@outlook.com',stadt:'Wien',art:'Online',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Jonas',nachname:'A',email:'jonas.auer@gmail.com',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Moritz',nachname:'R',email:'moritz.reiter@yahoo.com',stadt:'Graz',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Bogdan',nachname:'S',email:'bogdan.sharma@gmail.com',stadt:'Wien',art:'Vor Ort beim Kunden',preis:'€82',datum:'29.05.2026'},
+  {vorname:'Dennis',nachname:'R',email:'dennis.richter@gmail.com',stadt:'Wien',art:'Yoga & Mobility',preis:'€72',datum:'29.05.2026'},
+  {vorname:'Kevin',nachname:'L',email:'kevin.lang@hotmail.com',stadt:'Wiener Neustadt',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Dennis',nachname:'A',email:'dennis.auer@gmail.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Rafik',nachname:'R',email:'rafik.richter@outlook.com',stadt:'Klagenfurt',art:'Im Fitnessstudio',preis:'€82',datum:'29.05.2026'},
+  {vorname:'Dennis',nachname:'J',email:'dennis.jovanovic39@gmail.com',stadt:'Wien',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Jonas',nachname:'P',email:'jonas.pellegrini@gmx.at',stadt:'Salzburg',art:'Vor Ort + Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Moritz',nachname:'D',email:'moritz.distefano@yahoo.com',stadt:'Linz',art:'Im Fitnessstudio',preis:'€88',datum:'29.05.2026'},
+  {vorname:'Dino',nachname:'S',email:'dino.schwarz@gmail.com',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Marco',nachname:'B',email:'marco.brandl@gmx.at',stadt:'Salzburg',art:'Im Fitnessstudio',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Simon',nachname:'Z',email:'simon.zach68@gmail.com',stadt:'Wien',art:'Vor Ort beim Kunden',preis:'€72',datum:'29.05.2026'},
+  {vorname:'Andreas',nachname:'W',email:'andreas.wolf99@icloud.com',stadt:'Wien',art:'Online',preis:'–',datum:'29.05.2026'},
+  {vorname:'Bianca',nachname:'H',email:'bianca.hodzic@icloud.com',stadt:'Steyr',art:'Yoga & Mobility',preis:'€82',datum:'29.05.2026'},
+  {vorname:'Felix',nachname:'H',email:'felix.huber@gmail.com',stadt:'Linz',art:'Yoga & Mobility',preis:'€65',datum:'29.05.2026'},
+  {vorname:'Paul',nachname:'W',email:'paul.wagner@gmail.com',stadt:'Graz',art:'Online',preis:'€70',datum:'29.05.2026'},
+  {vorname:'Dawit',nachname:'H',email:'dawit.hoxha@gmx.at',stadt:'Linz',art:'Im Fitnessstudio',preis:'€65',datum:'29.05.2026'},
+  {vorname:'Leonie',nachname:'P',email:'leonie.pellegrini@outlook.com',stadt:'Dornbirn',art:'Yoga & Mobility',preis:'€85',datum:'29.05.2026'},
+  {vorname:'Adrian',nachname:'W',email:'adrian.wimmer@gmail.com',stadt:'Innsbruck',art:'Im Fitnessstudio',preis:'€95',datum:'29.05.2026'},
+  {vorname:'Sebastian',nachname:'K',email:'sebastian.kovac@gmx.at',stadt:'Graz',art:'Im Fitnessstudio',preis:'€92',datum:'29.05.2026'},
+  {vorname:'Erik',nachname:'M',email:'erik.muric@hotmail.com',stadt:'Graz',art:'Vor Ort beim Kunden',preis:'€90',datum:'29.05.2026'},
+  {vorname:'Lukas',nachname:'P',email:'lukas.pichler@icloud.com',stadt:'Wien',art:'Im Fitnessstudio',preis:'€70',datum:'29.05.2026'}
+];
+
+function checkLogin() {
+  const pw = document.getElementById('adminPw').value;
+  if(pw === ADMIN_PASSWORD) {
+    document.getElementById('loginWrap').style.display = 'none';
+    document.getElementById('dashboardWrap').style.display = 'block';
+    renderTrainers();
+  } else {
+    document.getElementById('loginError').style.display = 'block';
+  }
+}
+
+function logout() {
+  document.getElementById('loginWrap').style.display = 'flex';
+  document.getElementById('dashboardWrap').style.display = 'none';
+  document.getElementById('adminPw').value = '';
+}
+
+function renderTrainers() {
+  const tbody = document.getElementById('trainers-tbody');
+  tbody.innerHTML = trainers.map((t, i) => `
+    <tr id="row-${i}">
+      <td><strong>${t.vorname} ${t.nachname}.</strong></td>
+      <td style="color:var(--text-muted)">${t.email}</td>
+      <td>${t.stadt}</td>
+      <td>${t.art}</td>
+      <td>${t.preis}</td>
+      <td><span class="badge badge-unpaid">✕ Ausstehend</span></td>
+      <td><span class="badge badge-inactive" id="status-${i}">Inaktiv</span></td>
+      <td><button class="btn-activate" id="btn-${i}" onclick="activate(${i})">✓ Aktivieren</button></td>
+      <td style="color:var(--text-muted)">${t.datum}</td>
+    </tr>`).join('');
+}
+
+function activate(i) {
+  const t = trainers[i];
+  document.getElementById('status-' + i).className = 'badge badge-active';
+  document.getElementById('status-' + i).textContent = 'Aktiv';
+  document.getElementById('btn-' + i).outerHTML = `<button class="btn-stripe" onclick="stripeLink('${t.email}','${t.vorname}')">💳 Stripe Link</button>`;
+  alert('✅ ' + t.vorname + ' ' + t.nachname + '. wurde aktiviert!\nProfil ist jetzt in der Suche sichtbar.');
+}
+
+function stripeLink(email, name) {
+  const subject = encodeURIComponent('🎉 Dein erster Vexfit Kunde – Zeit fürs Abo!');
+  const body = encodeURIComponent(`Hi ${name},\n\ndu hast deinen ersten Kunden über Vexfit gewonnen! 🚀\n\nAktiviere jetzt dein Abo:\n👉 https://buy.stripe.com/eVqdR9gopdNhczNbhw2oE00\n\n€49,99/Monat · Monatlich kündbar\n\nViel Erfolg! 💪\nJakob von Vexfit`);
+  window.open(`mailto:${email}?subject=${subject}&body=${body}`);
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,462 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" type="image/png" href="vexfit-logo.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Vexfit – Mein Bereich</title>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+:root{--black:#0a0a0a;--white:#f5f5f0;--accent:#e8ff00;--gray:#141414;--mid:#1e1e1e;--card:#161616;--text-muted:#666;--border:rgba(255,255,255,0.07);--border-input:rgba(255,255,255,0.12)}
+*{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--white);text-decoration:none}
+.logo span{color:var(--accent)}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:rgba(10,10,10,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+.nav-right{display:flex;align-items:center;gap:12px}
+.nav-name{font-size:13px;color:var(--text-muted)}
+.btn-logout{background:transparent;border:1px solid var(--border);color:var(--text-muted);padding:8px 14px;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all 0.2s}
+.btn-logout:hover{color:var(--white);border-color:rgba(255,255,255,0.3)}
+
+/* TABS */
+.tab-bar{position:fixed;top:57px;left:0;right:0;z-index:99;background:var(--gray);border-bottom:1px solid var(--border);display:flex;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.tab-bar::-webkit-scrollbar{display:none}
+.tab-item{padding:14px 20px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all 0.2s;flex-shrink:0}
+.tab-item.active{color:var(--accent);border-bottom-color:var(--accent)}
+
+/* CONTENT */
+.content{padding:120px 20px 60px}
+.tab-content{display:none}
+.tab-content.active{display:block;animation:fadeUp 0.4s ease both}
+
+/* STATUS BANNER */
+.status-banner{padding:16px 20px;border-radius:3px;margin-bottom:24px;display:flex;align-items:flex-start;gap:14px}
+.status-banner.aktiv{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2)}
+.status-banner.inaktiv{background:rgba(255,165,0,0.08);border:1px solid rgba(255,165,0,0.2)}
+.status-banner.pending{background:rgba(232,255,0,0.08);border:1px solid rgba(232,255,0,0.2)}
+.status-icon{font-size:24px;flex-shrink:0}
+.status-text h3{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1.5px;margin-bottom:4px}
+.status-banner.aktiv .status-text h3{color:#4ade80}
+.status-banner.inaktiv .status-text h3{color:orange}
+.status-banner.pending .status-text h3{color:var(--accent)}
+.status-text p{font-size:13px;color:var(--text-muted);line-height:1.6;font-weight:300}
+
+/* PROFILE FORM */
+.section-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:18px;color:var(--white)}
+.field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)}
+input,select,textarea{background:var(--card);border:1px solid var(--border-input);color:var(--white);padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;border-radius:3px;outline:none;transition:border-color 0.2s;width:100%;appearance:none;-webkit-appearance:none}
+input::placeholder,textarea::placeholder{color:rgba(102,102,102,0.6)}
+input:focus,select:focus,textarea:focus{border-color:rgba(232,255,0,0.4);background:var(--mid)}
+select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%23666' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px}
+select option{background:var(--gray)}
+textarea{resize:vertical;min-height:100px;line-height:1.6}
+.tags-wrap{display:flex;flex-wrap:wrap;gap:8px}
+.tag{padding:7px 14px;border:1px solid var(--border-input);border-radius:100px;font-size:12px;color:var(--text-muted);cursor:pointer;transition:all 0.2s;user-select:none}
+.tag.selected{border-color:var(--accent);color:var(--accent);background:rgba(232,255,0,0.08)}
+.btn-save{background:var(--accent);color:var(--black);padding:15px 32px;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:transform 0.2s;width:100%;margin-top:8px}
+.btn-save:hover{transform:translateY(-2px)}
+.btn-save:disabled{opacity:0.5;cursor:not-allowed;transform:none}
+.alert{padding:12px 16px;border-radius:3px;font-size:13px;margin-bottom:14px;display:none}
+.alert.show{display:block}
+.alert-error{background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.3);color:#ff6b6b}
+.alert-success{background:rgba(232,255,0,0.1);border:1px solid rgba(232,255,0,0.3);color:var(--accent)}
+
+/* ABO */
+.abo-box{background:var(--card);border:1px solid var(--border);padding:24px;border-radius:3px;margin-bottom:16px}
+.abo-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1.5px;margin-bottom:6px}
+.abo-sub{font-size:13px;color:var(--text-muted);margin-bottom:20px;font-weight:300;line-height:1.6}
+.abo-price{font-family:'Bebas Neue',sans-serif;font-size:48px;color:var(--accent);letter-spacing:2px;line-height:1;margin-bottom:4px}
+.abo-note{font-size:12px;color:var(--text-muted);margin-bottom:20px}
+.btn-stripe{background:var(--accent);color:var(--black);padding:14px 28px;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;text-decoration:none;display:inline-block;transition:opacity 0.2s}
+.btn-stripe:hover{opacity:0.85}
+
+/* PROFIL PREVIEW */
+.preview-card{background:var(--card);border:1px solid var(--border);padding:20px;border-radius:3px;margin-bottom:16px}
+.preview-av{width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#1a1a1a,#2a2a2a);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:20px;color:rgba(232,255,0,0.4);margin-bottom:14px;border:2px solid rgba(232,255,0,0.2)}
+.preview-name{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:1.5px;margin-bottom:4px}
+.preview-meta{font-size:13px;color:var(--text-muted);margin-bottom:10px}
+.preview-tags{display:flex;gap:6px;flex-wrap:wrap}
+.preview-tag{padding:4px 10px;background:rgba(255,255,255,0.06);border-radius:100px;font-size:11px;color:var(--text-muted)}
+
+.divider{height:1px;background:var(--border);margin:20px 0}
+
+@media(min-width:768px){
+  nav{padding:18px 52px}
+  .content{padding:130px 52px 60px}
+  .field-row{grid-template-columns:1fr 1fr}
+}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="index.html" class="logo">VEX<span>FIT</span></a>
+  <div class="nav-right">
+    <span class="nav-name" id="navName">–</span>
+    <button class="btn-logout" onclick="logout()">Ausloggen</button>
+  </div>
+</nav>
+
+<div class="tab-bar">
+  <div class="tab-item active" onclick="showTab('overview', this)">Übersicht</div>
+  <div class="tab-item" onclick="showTab('anfragen', this)">Anfragen</div>
+  <div class="tab-item" onclick="showTab('profile', this)">Profil bearbeiten</div>
+  <div class="tab-item" onclick="showTab('abo', this)">Mein Abo</div>
+</div>
+
+<div class="content">
+
+  <!-- OVERVIEW TAB -->
+  <div class="tab-content active" id="tab-overview">
+    <div id="statusBanner"></div>
+
+    <div class="section-title">MEIN PROFIL</div>
+    <div class="preview-card">
+      <div class="preview-av" id="ov-avatar">–</div>
+      <div class="preview-name" id="ov-name">–</div>
+      <div class="preview-meta" id="ov-meta">–</div>
+      <div class="preview-tags" id="ov-tags"></div>
+    </div>
+
+    <div class="section-title" style="margin-top:24px">MEIN STATUS</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:24px">
+      <div style="background:var(--card);padding:20px;text-align:center">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--accent);letter-spacing:2px;display:block;line-height:1" id="ov-status-aktiv">–</div>
+        <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px">Profil Status</div>
+      </div>
+      <div style="background:var(--card);padding:20px;text-align:center">
+        <div style="font-family:'Bebas Neue',sans-serif;font-size:32px;color:var(--accent);letter-spacing:2px;display:block;line-height:1" id="ov-status-zahlung">–</div>
+        <div style="font-size:10px;color:var(--text-muted);letter-spacing:1px;text-transform:uppercase;margin-top:6px">Zahlung</div>
+      </div>
+    </div>
+
+    <a href="suche.html" style="display:block;text-align:center;background:var(--card);border:1px solid var(--border);padding:14px;border-radius:3px;color:var(--accent);text-decoration:none;font-size:13px;font-weight:600;letter-spacing:1px;text-transform:uppercase">Mein Profil in der Suche ansehen →</a>
+  </div>
+
+  <!-- ANFRAGEN TAB -->
+  <div class="tab-content" id="tab-anfragen">
+    <div class="section-title">MEINE ANFRAGEN</div>
+    <div id="anfragenList"><div style="text-align:center;padding:40px;color:var(--text-muted)">Wird geladen...</div></div>
+  </div>
+
+  <!-- PROFILE EDIT TAB -->
+  <div class="tab-content" id="tab-profile">
+    <div class="section-title">PROFIL BEARBEITEN</div>
+    <div class="alert alert-error" id="p-error"></div>
+    <div class="alert alert-success" id="p-success"></div>
+
+    <div class="field-row">
+      <div class="field"><label>Vorname</label><input type="text" id="p-fn" placeholder="Max"></div>
+      <div class="field"><label>Nachname</label><input type="text" id="p-ln" placeholder="Mustermann"></div>
+    </div>
+    <div class="field"><label>Telefon</label><input type="tel" id="p-tel" placeholder="+43 660 123 4567"></div>
+    <div class="field"><label>Stadt</label>
+      <select id="p-city">
+        <option value="">Stadt auswählen...</option>
+        <option>Wien</option><option>Graz</option><option>Salzburg</option><option>Linz</option><option>Innsbruck</option>
+        <option>München</option><option>Berlin</option><option>Hamburg</option><option>Frankfurt</option><option>Köln</option>
+        <option>Zürich</option><option>Basel</option><option>Online (kein fixer Standort)</option>
+      </select>
+    </div>
+    <div class="field"><label>Trainingsart</label>
+      <select id="p-type">
+        <option value="">Auswählen...</option>
+        <option>Vor Ort beim Kunden</option><option>Im Fitnessstudio</option><option>Online</option><option>Vor Ort + Online</option>
+      </select>
+    </div>
+    <div class="field"><label>Erfahrung</label>
+      <select id="p-exp">
+        <option value="">Auswählen...</option>
+        <option>Unter 1 Jahr</option><option>1–3 Jahre</option><option>3–5 Jahre</option><option>5–10 Jahre</option><option>Mehr als 10 Jahre</option>
+      </select>
+    </div>
+    <div class="field"><label>Spezialisierungen</label>
+      <div class="tags-wrap" id="p-tags">
+        <div class="tag" onclick="toggleTag(this)">Muskelaufbau</div>
+        <div class="tag" onclick="toggleTag(this)">Abnehmen</div>
+        <div class="tag" onclick="toggleTag(this)">Krafttraining</div>
+        <div class="tag" onclick="toggleTag(this)">Bodybuilding</div>
+        <div class="tag" onclick="toggleTag(this)">Ausdauer</div>
+        <div class="tag" onclick="toggleTag(this)">Ernährung</div>
+        <div class="tag" onclick="toggleTag(this)">Reha</div>
+        <div class="tag" onclick="toggleTag(this)">HIIT</div>
+        <div class="tag" onclick="toggleTag(this)">Yoga & Mobility</div>
+        <div class="tag" onclick="toggleTag(this)">Functional</div>
+      </div>
+    </div>
+    <div class="field"><label>Über mich</label><textarea id="p-bio" placeholder="Erzähl potenziellen Kunden kurz wer du bist..."></textarea></div>
+    <div class="divider"></div>
+    <div class="field-row">
+      <div class="field"><label>Preis/Stunde (€)</label><input type="number" id="p-price" placeholder="z.B. 80" min="0"></div>
+      <div class="field"><label>Online Coaching (€/Mo)</label><input type="number" id="p-oprice" placeholder="z.B. 199" min="0"></div>
+    </div>
+    <div class="field"><label>Zertifizierungen</label><input type="text" id="p-cert" placeholder="z.B. BSA, NSCA..."></div>
+    <button class="btn-save" id="saveBtn" onclick="saveProfile()">Änderungen speichern ✓</button>
+  </div>
+
+  <!-- ABO TAB -->
+  <div class="tab-content" id="tab-abo">
+    <div class="section-title">MEIN ABO</div>
+    <div id="aboContent"></div>
+  </div>
+
+</div>
+
+<script>
+const SUPABASE_URL = 'https://hbapzwxdehfgnputrfjf.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYXB6d3hkZWhmZ25wdXRyZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDc0NzQsImV4cCI6MjA5NDQyMzQ3NH0.vIQLcTObF5tmBEuxKL2EEUd4U88k0mdTmsAafG8djN4';
+const STRIPE_LINK = 'https://buy.stripe.com/eVqdR9gopdNhczNbhw2oE00';
+
+let trainer = null;
+
+// Check login
+const session = localStorage.getItem('vexfit_session');
+if(!session) { window.location.href = 'login.html'; }
+else {
+  const sess = JSON.parse(session);
+  loadTrainerByEmail(sess.email);
+}
+
+async function loadTrainerByEmail(email) {
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/trainers?email=eq.${encodeURIComponent(email)}&select=*`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const data = await res.json();
+    if(!data || data.length === 0) { window.location.href = 'login.html'; return; }
+    trainer = data[0];
+    initDashboard();
+    loadAnfragen();
+  } catch(e) { window.location.href = 'login.html'; }
+}
+
+function initDashboard() {
+  document.getElementById('navName').textContent = trainer.vorname;
+
+  // Overview
+  const initials = (trainer.vorname[0] + trainer.nachname[0]).toUpperCase();
+  document.getElementById('ov-avatar').textContent = initials;
+  document.getElementById('ov-name').textContent = trainer.vorname + ' ' + trainer.nachname;
+  document.getElementById('ov-meta').textContent =
+    (trainer.trainingsart === 'Online' ? '🌐 Online' : '📍 ' + trainer.stadt) +
+    ' · ' + (trainer.erfahrung || '–');
+
+  const tags = (trainer.spezialisierungen || []);
+  document.getElementById('ov-tags').innerHTML = tags.map(t => `<span class="preview-tag">${t}</span>`).join('');
+  document.getElementById('ov-status-aktiv').textContent = trainer.aktiv ? 'AKTIV' : 'AUSSTEHEND';
+  document.getElementById('ov-status-zahlung').textContent = trainer.stripe_bezahlt ? 'BEZAHLT' : 'GRATIS';
+
+  // Status banner
+  let bannerHTML = '';
+  if(!trainer.aktiv) {
+    bannerHTML = `<div class="status-banner inaktiv"><div class="status-icon">⏳</div><div class="status-text"><h3>PROFIL WIRD GEPRÜFT</h3><p>Dein Profil wird in den nächsten 24 Stunden von uns freigeschaltet. Du bekommst eine E-Mail sobald es sichtbar ist.</p></div></div>`;
+  } else if(!trainer.stripe_bezahlt) {
+    bannerHTML = `<div class="status-banner pending"><div class="status-icon">🎉</div><div class="status-text"><h3>KOSTENLOSE PHASE AKTIV</h3><p>Dein Profil ist sichtbar und du kannst Kunden gewinnen! Sobald du deinen ersten Kunden hast schicken wir dir den Zahlungslink.</p></div></div>`;
+  } else {
+    bannerHTML = `<div class="status-banner aktiv"><div class="status-icon">✅</div><div class="status-text"><h3>ALLES AKTIV</h3><p>Dein Profil ist sichtbar und dein Abo ist aktiv. Neue Kunden können dich jederzeit kontaktieren!</p></div></div>`;
+  }
+  document.getElementById('statusBanner').innerHTML = bannerHTML;
+
+  // Fill profile form
+  document.getElementById('p-fn').value = trainer.vorname || '';
+  document.getElementById('p-ln').value = trainer.nachname || '';
+  document.getElementById('p-tel').value = trainer.telefon || '';
+  document.getElementById('p-bio').value = trainer.bio || '';
+  document.getElementById('p-price').value = trainer.preis_stunde || '';
+  document.getElementById('p-oprice').value = trainer.preis_online || '';
+  document.getElementById('p-cert').value = trainer.zertifikate || '';
+
+  // Set selects
+  setTimeout(() => {
+    setSelectValue('p-city', trainer.stadt);
+    setSelectValue('p-type', trainer.trainingsart);
+    setSelectValue('p-exp', trainer.erfahrung);
+    // Set tags
+    const tagEls = document.querySelectorAll('#p-tags .tag');
+    tagEls.forEach(el => {
+      if((trainer.spezialisierungen || []).includes(el.textContent)) {
+        el.classList.add('selected');
+      }
+    });
+  }, 100);
+
+  // Abo tab
+  let aboHTML = '';
+  if(!trainer.stripe_bezahlt) {
+    aboHTML = `
+      <div class="abo-box">
+        <div class="abo-title">🎉 KOSTENLOSE PHASE</div>
+        <p class="abo-sub">Dein Profil ist kostenlos aktiv bis du deinen ersten Kunden über Vexfit gewinnst. Sobald das passiert schicken wir dir per E-Mail den Zahlungslink.</p>
+        <div style="display:flex;align-items:flex-end;gap:14px;margin-bottom:6px">
+          <div class="abo-price">0€</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:rgba(255,255,255,0.2);text-decoration:line-through;margin-bottom:8px">€49,99/Mo</div>
+        </div>
+        <div class="abo-note">Nach erstem Kunden: €49,99/Monat · Monatlich kündbar</div>
+      </div>
+      <div class="abo-box" style="background:rgba(232,255,0,0.04)">
+        <div class="abo-title" style="color:var(--text-muted)">FRÜHER AKTIVIEREN?</div>
+        <p class="abo-sub">Du kannst dein Abo auch jetzt schon aktivieren und sofort top-platziert werden.</p>
+        <a href="${STRIPE_LINK}" class="btn-stripe" target="_blank">Jetzt für €49,99/Mo aktivieren →</a>
+      </div>`;
+  } else {
+    aboHTML = `
+      <div class="abo-box">
+        <div class="abo-title">✅ ABO AKTIV</div>
+        <p class="abo-sub">Dein Abo ist aktiv. Stripe kümmert sich automatisch um die monatliche Abbuchung.</p>
+        <div class="abo-price">€49,99</div>
+        <div class="abo-note">pro Monat · Automatisch verlängernd</div>
+      </div>
+      <div class="abo-box">
+        <div class="abo-title" style="color:var(--text-muted)">ABO KÜNDIGEN</div>
+        <p class="abo-sub">Zum Kündigen schreibe uns einfach eine E-Mail – wir kümmern uns sofort darum.</p>
+        <a href="mailto:vexfit.info@gmail.com?subject=Vexfit Abo kündigen&body=Hi, ich möchte mein Vexfit Abo kündigen. Meine E-Mail: ${trainer.email}" class="btn-stripe" style="background:transparent;border:1px solid var(--border);color:var(--text-muted)">Kündigung anfragen →</a>
+      </div>`;
+  }
+  document.getElementById('aboContent').innerHTML = aboHTML;
+}
+
+function setSelectValue(id, value) {
+  const sel = document.getElementById(id);
+  if(!sel || !value) return;
+  for(let i = 0; i < sel.options.length; i++) {
+    if(sel.options[i].text === value || sel.options[i].value === value) {
+      sel.selectedIndex = i;
+      break;
+    }
+  }
+}
+
+function showTab(tab, el) {
+  document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
+  document.getElementById('tab-' + tab).classList.add('active');
+  el.classList.add('active');
+}
+
+function toggleTag(el) { el.classList.toggle('selected'); }
+
+async function saveProfile() {
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true;
+  btn.textContent = 'Wird gespeichert...';
+
+  const tags = [...document.querySelectorAll('#p-tags .tag.selected')].map(t => t.textContent);
+
+  const updates = {
+    vorname: document.getElementById('p-fn').value.trim(),
+    nachname: document.getElementById('p-ln').value.trim(),
+    telefon: document.getElementById('p-tel').value.trim(),
+    stadt: document.getElementById('p-city').value,
+    trainingsart: document.getElementById('p-type').value,
+    erfahrung: document.getElementById('p-exp').value,
+    spezialisierungen: tags,
+    bio: document.getElementById('p-bio').value.trim(),
+    preis_stunde: parseFloat(document.getElementById('p-price').value) || null,
+    preis_online: parseFloat(document.getElementById('p-oprice').value) || null,
+    zertifikate: document.getElementById('p-cert').value.trim()
+  };
+
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/trainers?id=eq.${trainer.id}`, {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+        'apikey': SUPABASE_KEY,
+        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Prefer': 'return=representation'
+      },
+      body: JSON.stringify(updates)
+    });
+
+    if(res.ok) {
+      const updated = await res.json();
+      if(updated && updated[0]) {
+        trainer = updated[0];
+        sessionStorage.setItem('vexfit_trainer', JSON.stringify(trainer));
+        initDashboard();
+      }
+      const s = document.getElementById('p-success');
+      s.textContent = '✅ Profil erfolgreich gespeichert!';
+      s.classList.add('show');
+      document.getElementById('p-error').classList.remove('show');
+      setTimeout(() => s.classList.remove('show'), 3000);
+    } else {
+      throw new Error('Save failed');
+    }
+  } catch(e) {
+    const err = document.getElementById('p-error');
+    err.textContent = '⚠️ Fehler beim Speichern. Bitte versuche es erneut.';
+    err.classList.add('show');
+  }
+
+  btn.disabled = false;
+  btn.textContent = 'Änderungen speichern ✓';
+}
+
+async function loadAnfragen() {
+  if(!trainer) return;
+  const container = document.getElementById('anfragenList');
+  try {
+    const res = await fetch(`${SUPABASE_URL}/rest/v1/anfragen?trainer_email=eq.${encodeURIComponent(trainer.email)}&order=created_at.desc`, {
+      headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+    });
+    const anfragen = await res.json();
+    
+    if(!anfragen || anfragen.length === 0) {
+      container.innerHTML = '<div style="background:var(--card);border:1px solid var(--border);padding:32px;border-radius:3px;text-align:center"><div style="font-size:32px;margin-bottom:12px">📬</div><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:8px">NOCH KEINE ANFRAGEN</div><p style="font-size:14px;color:var(--text-muted);font-weight:300">Sobald ein Kunde dein Profil kontaktiert erscheint die Anfrage hier.</p></div>';
+      return;
+    }
+
+    container.innerHTML = anfragen.map(a => {
+      const bezahlt = trainer.stripe_bezahlt;
+      return `
+        <div style="background:var(--card);border:1px solid var(--border);padding:20px;border-radius:3px;margin-bottom:3px">
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:12px">
+            <div style="font-size:10px;letter-spacing:2px;text-transform:uppercase;color:var(--text-muted)">${new Date(a.created_at).toLocaleDateString('de-AT')}</div>
+            <span style="background:${a.weitergeleitet ? 'rgba(74,222,128,0.12)' : 'rgba(232,255,0,0.1)'};color:${a.weitergeleitet ? '#4ade80' : 'var(--accent)'};padding:3px 8px;border-radius:2px;font-size:10px;font-weight:700;text-transform:uppercase">${a.weitergeleitet ? '✓ Freigeschaltet' : '⏳ Ausstehend'}</span>
+          </div>
+          <div style="font-size:14px;color:var(--text-muted);margin-bottom:4px">🎯 Ziel: <strong style="color:var(--white)">${a.kunde_ziel || '–'}</strong></div>
+          ${bezahlt && a.weitergeleitet ? `
+            <div style="background:rgba(232,255,0,0.06);border:1px solid rgba(232,255,0,0.15);padding:14px;border-radius:3px;margin-top:12px">
+              <div style="font-size:11px;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:8px;font-weight:600">✅ KONTAKTDATEN</div>
+              <div style="font-size:14px;color:rgba(245,245,240,0.8);line-height:1.8">
+                👤 ${a.kunde_name || '–'}<br>
+                📧 <a href="mailto:${a.kunde_email}" style="color:var(--accent)">${a.kunde_email || '–'}</a><br>
+                💬 "${a.kunde_nachricht || '–'}"
+              </div>
+            </div>
+          ` : !bezahlt ? `
+            <div style="background:rgba(255,255,255,0.03);border:1px solid var(--border);padding:14px;border-radius:3px;margin-top:12px">
+              <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;font-weight:300">Abo aktivieren um Kontaktdaten zu sehen</div>
+              <a href="https://buy.stripe.com/eVqdR9gopdNhczNbhw2oE00" target="_blank" style="display:inline-block;background:var(--accent);color:var(--black);padding:10px 20px;border-radius:3px;font-weight:700;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none">💳 Jetzt für €49,99/Mo freischalten</a>
+            </div>
+          ` : `<div style="font-size:13px;color:var(--text-muted);margin-top:8px;font-weight:300">Warte auf Freischaltung durch Vexfit...</div>`}
+        </div>`;
+    }).join('');
+  } catch(e) {
+    container.innerHTML = '<div style="color:var(--text-muted);text-align:center;padding:20px">Fehler beim Laden.</div>';
+  }
+}
+
+function logout() {
+  localStorage.removeItem('vexfit_session');
+  window.location.href = 'login.html';
+}
+</script>
+<!-- WhatsApp Button -->
+<style>
+@keyframes waBounce{0%{opacity:0;transform:scale(0.5) translateY(20px)}60%{transform:scale(1.08) translateY(-4px)}80%{transform:scale(0.96) translateY(2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
+.wa-btn{position:fixed;bottom:22px;right:20px;z-index:9999;width:46px;height:46px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 16px rgba(37,211,102,0.45);text-decoration:none;opacity:0;animation:waBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) 2.5s forwards;transition:transform 0.2s,box-shadow 0.2s}
+.wa-btn:hover{transform:scale(1.1);box-shadow:0 5px 24px rgba(37,211,102,0.6)}
+</style>
+<a href="https://wa.me/436649275737?text=Name%3A%20%0ANachricht%3A%20Hi%20ich%20habe%20eine%20Frage%20zu%20Vexfit%2C" 
+   target="_blank" class="wa-btn" aria-label="WhatsApp Kontakt">
+  <svg width="22" height="22" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
+    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
+  </svg>
+</a>
+</body>
+</html>
