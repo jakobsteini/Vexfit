@@ -256,6 +256,7 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
           <div class="field"><label>Nachname</label><input type="text" placeholder="Muster" id="c-ln"></div>
         </div>
         <div class="field"><label>E-Mail</label><input type="email" placeholder="anna@example.com" id="c-email"></div>
+        <div class="field"><label>Passwort</label><input type="password" placeholder="Mind. 8 Zeichen" id="c-pw"></div>
         <div class="field"><label>Stadt</label>
           <select id="c-city"><option value="">Stadt auswählen...</option><option>Wien</option><option>Graz</option><option>Salzburg</option><option>Linz</option><option>Innsbruck</option><option>München</option><option>Berlin</option><option>Hamburg</option><option>Frankfurt</option><option>Köln</option><option>Zürich</option><option>Basel</option><option>Ich möchte Online-Coaching</option></select>
         </div>
@@ -298,16 +299,16 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
   <!-- SUCCESS TRAINER -->
   <div class="success-screen" id="successTrainer">
     <div class="success-icon">✅</div>
-    <h2>DU BIST<br><span>SICHTBAR!</span></h2>
-    <p>Unser Team meldet sich bei dir sobald du eine neue Kundenanfrage hast.</p>
-    <a href="index.html" class="btn-home">Zurück zur Startseite</a>
+    <h2>DU WIRST BALD<br><span>AKTIVIERT!</span></h2>
+    <p>Unser Team meldet sich bei dir.<br>Sobald du eine Kundenanfrage bekommst, schicken wir dir eine automatische E-Mail zur Aktivierung.</p>
+    <a href="trainer-bereich.html" class="btn-home">Zum Trainer-Bereich →</a>
   </div>
 
   <!-- SUCCESS CLIENT -->
   <div class="success-screen" id="successClient">
     <div class="success-icon">🎯</div>
     <h2>WILLKOMMEN<br><span>BEI VEXFIT!</span></h2>
-    <p>Deine Registrierung war erfolgreich!<br>Wir benachrichtigen dich sobald Trainer in deiner Stadt verfügbar sind.</p>
+    <p>Deine Registrierung war erfolgreich!<br>Wir finden jetzt den passenden Trainer für dich.</p>
     <a href="suche.html" class="btn-home">Trainer durchsuchen →</a>
   </div>
 
@@ -381,12 +382,14 @@ async function submitTrainer() {
   btn.disabled = true;
   btn.textContent = 'Wird gespeichert...';
 
+  const email = document.getElementById('t-email').value.trim();
+  const pw = document.getElementById('t-pw').value;
   const tags = [...document.querySelectorAll('#formTrainer .tag.selected')].map(t => t.textContent);
 
   const trainerData = {
     vorname: document.getElementById('t-fn').value.trim(),
     nachname: document.getElementById('t-ln').value.trim(),
-    email: document.getElementById('t-email').value.trim(),
+    email: email,
     telefon: document.getElementById('t-tel').value.trim(),
     stadt: document.getElementById('t-city').value,
     trainingsart: document.getElementById('t-type').value,
@@ -401,44 +404,63 @@ async function submitTrainer() {
   };
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/trainers`, {
+    // 1. Supabase Auth signUp
+    const authRes = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+      body: JSON.stringify({ email, password: pw })
+    });
+    const authData = await authRes.json();
+
+    if(!authRes.ok || authData.error) {
+      const msg = authData.msg || authData.error_description || '';
+      if(msg.toLowerCase().includes('already registered') || msg.toLowerCase().includes('already been registered')) {
+        showError('t-error', 'Diese E-Mail ist bereits registriert!');
+      } else {
+        showError('t-error', 'Registrierung fehlgeschlagen. Bitte versuche es erneut.');
+      }
+      btn.disabled = false;
+      btn.textContent = 'Profil gratis erstellen 🚀';
+      return;
+    }
+
+    // 2. Insert trainer profile
+    await fetch(`${SUPABASE_URL}/rest/v1/trainers`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Authorization': `Bearer ${authData.access_token || SUPABASE_KEY}`,
         'Prefer': 'return=minimal'
       },
-      body: JSON.stringify(trainerData)
+      body: JSON.stringify({...trainerData, user_id: authData.user?.id})
     });
 
-    if(res.ok || res.status === 201) {
-      // Notify n8n webhook
-      try {
-        await fetch('https://n8n.srv1551518.hstgr.cloud/webhook/neuer-trainer', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(trainerData)
-        });
-      } catch(e) { console.log('Webhook failed silently'); }
-      document.getElementById('formTrainer').classList.remove('active');
-      document.getElementById('successTrainer').classList.add('active');
-      window.scrollTo({top:0, behavior:'smooth'});
-      // Profile saved - no payment needed yet
-    } else {
-      const err = await res.json();
-      if(err.code === '23505') {
-        showError('t-error', 'Diese E-Mail ist bereits registriert!');
-      } else {
-        showError('t-error', 'Fehler beim Speichern. Bitte versuche es erneut.');
-      }
-      btn.disabled = false;
-      btn.textContent = 'Profil erstellen & zahlen 🚀';
+    // 3. n8n webhook
+    try {
+      await fetch('https://n8n.srv1551518.hstgr.cloud/webhook/neuer-trainer', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(trainerData)
+      });
+    } catch(e) {}
+
+    // Save session so user is logged in
+    if(authData.access_token) {
+      localStorage.setItem('vexfit_session', JSON.stringify({
+        access_token: authData.access_token,
+        user_id: authData.user?.id,
+        email: email,
+        role: 'trainer'
+      }));
     }
+    document.getElementById('formTrainer').classList.remove('active');
+    document.getElementById('successTrainer').classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+
   } catch(e) {
     showError('t-error', 'Verbindungsfehler. Bitte prüfe deine Internetverbindung.');
     btn.disabled = false;
-    btn.textContent = 'Profil erstellen & zahlen 🚀';
+    btn.textContent = 'Profil gratis erstellen 🚀';
   }
 }
 
@@ -447,8 +469,10 @@ function cNext(s) {
   const fn = document.getElementById('c-fn').value.trim();
   const ln = document.getElementById('c-ln').value.trim();
   const email = document.getElementById('c-email').value.trim();
+  const pw = document.getElementById('c-pw').value;
   const city = document.getElementById('c-city').value;
-  if(!fn || !ln || !email || !city) { showError('c-error', 'Bitte alle Felder ausfüllen!'); return; }
+  if(!fn || !ln || !email || !pw || !city) { showError('c-error', 'Bitte alle Felder ausfüllen!'); return; }
+  if(pw.length < 8) { showError('c-error', 'Passwort muss mind. 8 Zeichen haben!'); return; }
   hideError('c-error');
   document.getElementById('cStep1').classList.remove('active');
   document.getElementById('cStep2').classList.add('active');
@@ -479,52 +503,75 @@ async function submitClient() {
   btn.disabled = true;
   btn.textContent = 'Wird gespeichert...';
 
+  const email = document.getElementById('c-email').value.trim();
+  const pw = document.getElementById('c-pw').value;
+
   const clientData = {
     vorname: document.getElementById('c-fn').value.trim(),
     nachname: document.getElementById('c-ln').value.trim(),
-    email: document.getElementById('c-email').value.trim(),
+    email: email,
     stadt: document.getElementById('c-city').value,
     ziel: goals.join(', ')
   };
 
   try {
-    const res = await fetch(`${SUPABASE_URL}/rest/v1/kunden`, {
+    // 1. Supabase Auth signUp
+    const authRes = await fetch(`${SUPABASE_URL}/auth/v1/signup`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', 'apikey': SUPABASE_KEY },
+      body: JSON.stringify({ email, password: pw })
+    });
+    const authData = await authRes.json();
+
+    if(!authRes.ok || authData.error) {
+      const msg = authData.msg || authData.error_description || '';
+      if(msg.toLowerCase().includes('already registered') || msg.toLowerCase().includes('already been registered')) {
+        showError('c-error', 'Diese E-Mail ist bereits registriert!');
+      } else {
+        showError('c-error', 'Registrierung fehlgeschlagen. Bitte versuche es erneut.');
+      }
+      btn.disabled = false;
+      btn.textContent = 'Trainer finden →';
+      return;
+    }
+
+    // 2. Insert client profile
+    await fetch(`${SUPABASE_URL}/rest/v1/kunden`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
         'apikey': SUPABASE_KEY,
-        'Authorization': `Bearer ${SUPABASE_KEY}`,
+        'Authorization': `Bearer ${authData.access_token || SUPABASE_KEY}`,
         'Prefer': 'return=minimal'
       },
-      body: JSON.stringify(clientData)
+      body: JSON.stringify({...clientData, user_id: authData.user?.id})
     });
 
-    if(res.ok || res.status === 201) {
-      // Notify n8n webhook
-      try {
-        await fetch('https://n8n.srv1551518.hstgr.cloud/webhook/neuer-kunde', {
-          method: 'POST',
-          headers: {'Content-Type': 'application/json'},
-          body: JSON.stringify(clientData)
-        });
-      } catch(e) { console.log('Webhook failed silently'); }
-      document.getElementById('formClient').classList.remove('active');
-      document.getElementById('successClient').classList.add('active');
-      window.scrollTo({top:0, behavior:'smooth'});
-    } else {
-      const err = await res.json();
-      if(err.code === '23505') {
-        showError('c-error', 'Diese E-Mail ist bereits registriert!');
-      } else {
-        showError('c-error', 'Fehler beim Speichern. Bitte versuche es erneut.');
-      }
-      btn.disabled = false;
-      btn.textContent = 'Trainer finden 🚀';
+    // 3. n8n webhook
+    try {
+      await fetch('https://n8n.srv1551518.hstgr.cloud/webhook/neuer-kunde', {
+        method: 'POST', headers: {'Content-Type': 'application/json'},
+        body: JSON.stringify(clientData)
+      });
+    } catch(e) {}
+
+    // Save session so user is logged in
+    if(authData.access_token) {
+      localStorage.setItem('vexfit_session', JSON.stringify({
+        access_token: authData.access_token,
+        user_id: authData.user?.id,
+        email: email,
+        role: 'kunde'
+      }));
     }
+    document.getElementById('formClient').classList.remove('active');
+    document.getElementById('successClient').classList.add('active');
+    window.scrollTo({top:0, behavior:'smooth'});
+
   } catch(e) {
     showError('c-error', 'Verbindungsfehler. Bitte prüfe deine Internetverbindung.');
     btn.disabled = false;
-    btn.textContent = 'Trainer finden 🚀';
+    btn.textContent = 'Trainer finden →';
   }
 }
 
