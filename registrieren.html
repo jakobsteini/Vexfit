@@ -283,10 +283,11 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
           </div>
         </div>
 
-        <div class="checkbox-field" style="margin-top:16px">
+        <label class="checkbox-field" style="margin-top:16px">
           <input type="checkbox" id="c-agb">
-          <label for="c-agb">Ich akzeptiere die <a href="rechtliches.html" target="_blank" style="color:var(--accent)">AGB & Datenschutz</a></label>
-        </div>
+          <div class="custom-cb"></div>
+          <span class="cb-label">Ich akzeptiere die <a href="rechtliches.html#agb" target="_blank" style="color:var(--accent)">AGB & Datenschutz</a></span>
+        </label>
         <div id="c-error" class="error-msg" style="display:none"></div>
         <button class="btn-submit" id="c-submit-btn" onclick="submitClient()">
           Trainer finden →
