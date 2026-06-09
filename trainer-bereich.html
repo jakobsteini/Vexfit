@@ -233,7 +233,12 @@ async function loadTrainerByEmail(email) {
 }
 
 function initDashboard() {
-  document.getElementById('navName').textContent = trainer.vorname;
+  const fn = trainer.vorname || '';
+  const ln = trainer.nachname || '';
+  const fullName = fn || ln ? `${fn} ${ln}`.trim() : trainer.email;
+  const initials = fn && ln ? (fn[0] + ln[0]).toUpperCase() : (trainer.email || '?')[0].toUpperCase();
+
+  document.getElementById('navName').textContent = fn || trainer.email;
 
   // Lock tabs visually if not activated
   if(!trainer.aktiv) {
@@ -243,16 +248,15 @@ function initDashboard() {
   }
 
   // Overview
-  const initials = (trainer.vorname[0] + trainer.nachname[0]).toUpperCase();
   document.getElementById('ov-avatar').textContent = initials;
-  document.getElementById('ov-name').textContent = trainer.vorname + ' ' + trainer.nachname;
-  document.getElementById('ov-meta').textContent =
-    (trainer.trainingsart === 'Online' ? '🌐 Online' : '📍 ' + trainer.stadt) +
-    ' · ' + (trainer.erfahrung || '–');
+  document.getElementById('ov-name').textContent = fullName;
+  document.getElementById('ov-meta').textContent = trainer.email || '–';
 
   const tags = (trainer.spezialisierungen || []);
-  document.getElementById('ov-tags').innerHTML = tags.map(t => `<span class="preview-tag">${t}</span>`).join('');
-  document.getElementById('ov-city').textContent = (trainer.trainingsart === 'Online' ? '🌐 Online · DACH-weit' : '📍 ' + trainer.stadt);
+  document.getElementById('ov-tags').innerHTML = tags.length
+    ? tags.map(t => `<span class="preview-tag">${t}</span>`).join('')
+    : '<span style="font-size:13px;color:var(--text-muted)">Noch keine Spezialisierungen — bitte Profil ausfüllen</span>';
+  document.getElementById('ov-city').textContent = trainer.trainingsart === 'Online' ? '🌐 Online · DACH-weit' : trainer.stadt ? '📍 ' + trainer.stadt : '📍 Noch keine Stadt eingetragen';
 
   // Status banner
   let bannerHTML = '';
@@ -460,7 +464,7 @@ async function loadAnfragen() {
     const anfragen = await res.json();
     
     if(!anfragen || anfragen.length === 0) {
-      container.innerHTML = '<div style="background:var(--card);border:1px solid var(--border);padding:32px;border-radius:3px;text-align:center"><div style="font-size:32px;margin-bottom:12px">📬</div><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:8px">NOCH KEINE ANFRAGEN</div><p style="font-size:14px;color:var(--text-muted);font-weight:300">Sobald ein Kunde dein Profil kontaktiert erscheint die Anfrage hier.</p></div>';
+      container.innerHTML = `<div style="background:var(--card);border:1px solid var(--border);padding:32px;border-radius:3px;text-align:center"><div style="font-size:32px;margin-bottom:12px">📬</div><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:8px">NOCH KEINE ANFRAGEN</div><p style="font-size:14px;color:var(--text-muted);font-weight:300">Sobald ein Kunde dein Profil kontaktiert erscheint die Anfrage hier.</p></div>`;
       return;
     }
 
