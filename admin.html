@@ -334,6 +334,7 @@ async function loadData() {
         <td><span class="badge ${t.aktiv ? 'badge-active' : 'badge-unpaid'}">${t.aktiv ? 'Aktiv' : 'Inaktiv'}</span></td>
         <td style="display:flex;flex-direction:column;gap:5px;padding:8px 16px">
           ${!t.aktiv ? `<button class="btn-activate" onclick="activateTrainer('${t.id}')">👁️ Profil freigeben</button>` : `<span style="color:#4ade80;font-size:11px;font-weight:600">✅ Aktiv</span>`}
+          <button onclick="deleteTrainer('${t.id}', '${t.vorname} ${t.nachname}')" style="background:rgba(255,80,80,0.12);border:1px solid rgba(255,80,80,0.3);color:#ff6b6b;padding:5px 12px;border-radius:2px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;">🗑 Kicken</button>
         </td>
         <td>${new Date(t.created_at).toLocaleDateString('de-AT')}</td>
       </tr>`).join('');
@@ -350,10 +351,30 @@ async function loadData() {
         <td>${k.email}</td>
         <td>${k.stadt || '–'}</td>
         <td>${k.ziel || '–'}</td>
-        
+        <td>
+          <button onclick="deleteKunde('${k.id}', '${k.vorname} ${k.nachname}')" style="background:rgba(255,80,80,0.12);border:1px solid rgba(255,80,80,0.3);color:#ff6b6b;padding:5px 12px;border-radius:2px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;">🗑 Kicken</button>
+        </td>
         <td>${new Date(k.created_at).toLocaleDateString('de-AT')}</td>
       </tr>`).join('');
   }
+}
+
+async function deleteTrainer(id, name) {
+  if(!confirm(`Trainer "${name}" wirklich aus dem kompletten System entfernen?`)) return;
+  await fetch(`${SUPABASE_URL}/rest/v1/trainers?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+  });
+  loadData();
+}
+
+async function deleteKunde(id, name) {
+  if(!confirm(`Kunde "${name}" wirklich aus dem kompletten System entfernen?`)) return;
+  await fetch(`${SUPABASE_URL}/rest/v1/kunden?id=eq.${id}`, {
+    method: 'DELETE',
+    headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${SUPABASE_KEY}` }
+  });
+  loadData();
 }
 
 async function activateTrainer(id) {
