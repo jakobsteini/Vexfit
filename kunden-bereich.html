@@ -23,6 +23,7 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content
 .tab-bar::-webkit-scrollbar{display:none}
 .tab-item{padding:14px 20px;font-size:12px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;transition:all 0.2s;flex-shrink:0}
 .tab-item.active{color:var(--accent);border-bottom-color:var(--accent)}
+.tab-item.locked{opacity:0.35;cursor:not-allowed}
 
 /* CONTENT */
 .content{padding:120px 20px 80px}
@@ -164,30 +165,21 @@ textarea.modal-msg::placeholder{color:var(--text-muted)}
 
   <!-- OVERVIEW TAB -->
   <div class="tab-content active" id="tab-overview">
-    <div class="welcome-card">
-      <div class="welcome-label">Willkommen zurück</div>
-      <div class="welcome-name" id="ov-name">–</div>
-      <div class="welcome-meta" id="ov-meta">–</div>
+
+    <!-- WELCOME -->
+    <div style="margin-bottom:24px;animation:fadeUp 0.5s ease both">
+      <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px">Willkommen zurück</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,8vw,56px);letter-spacing:2px;line-height:1;margin-bottom:4px" id="ov-name">–</div>
+      <div style="font-size:13px;color:var(--text-muted);font-weight:300" id="ov-meta">–</div>
     </div>
 
-    <div class="stats-grid">
-      <div class="stat-card">
-        <div class="stat-num" id="stat-anfragen">–</div>
-        <div class="stat-label">Anfragen</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-num" id="stat-aktiv">–</div>
-        <div class="stat-label">Aktive Trainer</div>
-      </div>
-    </div>
+    <!-- ZIELE -->
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:16px;letter-spacing:1.5px;margin-bottom:10px;color:var(--text-muted)">MEINE ZIELE</div>
+    <div id="ov-goals" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:24px"></div>
 
-    <div class="section-title">DEINE ZIELE</div>
-    <div id="ov-goals" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:28px"></div>
+    <!-- STATUS BANNER -->
+    <div id="statusBannerKunde" style="margin-bottom:20px"></div>
 
-    <div class="section-title">AKTIVE TRAINER</div>
-    <div id="ov-trainer-list">
-      <div class="loading">Lade Daten...</div>
-    </div>
   </div>
 
   <!-- TRAINER SUCHE TAB -->
@@ -316,7 +308,7 @@ async function loadKunde() {
 
 function renderOverview() {
   document.getElementById('ov-name').textContent = `${kunde.vorname} ${kunde.nachname}`;
-  document.getElementById('ov-meta').textContent = `${kunde.stadt || '–'} · Mitglied seit ${new Date(kunde.created_at).toLocaleDateString('de-AT', {month:'long', year:'numeric'})}`;
+  document.getElementById('ov-meta').textContent = `📍 ${kunde.stadt || '–'} · Mitglied seit ${new Date(kunde.created_at).toLocaleDateString('de-AT', {month:'long', year:'numeric'})}`;
 
   // Goals
   const goalsEl = document.getElementById('ov-goals');
@@ -329,6 +321,31 @@ function renderOverview() {
       goalsEl.appendChild(chip);
     });
   }
+
+  // Status banner
+  const banner = document.getElementById('statusBannerKunde');
+  if(banner) {
+    banner.innerHTML = `
+      <div style="background:rgba(232,255,0,0.06);border:1px solid rgba(232,255,0,0.15);padding:20px;border-radius:3px;display:flex;flex-direction:column;gap:14px">
+        <div style="display:flex;align-items:center;gap:12px">
+          <div style="font-size:22px">🔍</div>
+          <div style="font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1.5px;color:var(--accent)">WIR SUCHEN FÜR DICH</div>
+        </div>
+        <p style="font-size:14px;color:var(--text-muted);line-height:1.8;font-weight:300">
+          Wir benachrichtigen dich sobald ein passender Trainer für deine Ziele verfügbar ist.
+        </p>
+        <span style="padding:5px 12px;border:1px solid rgba(232,255,0,0.25);border-radius:100px;font-size:11px;color:var(--accent);font-weight:600;letter-spacing:1px;align-self:flex-start">✓ REGISTRIERT · KOSTENLOS</span>
+      </div>`;
+  }
+
+  // Lock tabs if no anfragen yet
+  setTimeout(() => {
+    if(window._anfrageCount === 0) {
+      document.querySelectorAll('.tab-item').forEach((t, i) => {
+        if(i > 0) t.classList.add('locked');
+      });
+    }
+  }, 500);
 }
 
 async function loadAnfragen() {
@@ -341,9 +358,10 @@ async function loadAnfragen() {
     const data = await res.json();
 
     // Stats
-    document.getElementById('stat-anfragen').textContent = data.length || 0;
-    const aktiv = data.filter(a => a.status === 'aktiv' || a.status === 'kontaktiert').length;
-    document.getElementById('stat-aktiv').textContent = aktiv;
+    window._anfrageCount = data.length || 0;
+    if(data.length > 0) {
+      document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('locked'));
+    }
 
     // Anfragen Tab
     if(!data || data.length === 0) {
@@ -589,6 +607,11 @@ async function saveProfil() {
 }
 
 function showTab(id, btn) {
+  if(btn && btn.classList.contains('locked')) {
+    const banner = document.getElementById('statusBannerKunde');
+    if(banner) { banner.style.boxShadow = '0 0 0 2px rgba(232,255,0,0.4)'; setTimeout(() => banner.style.boxShadow = '', 600); }
+    return;
+  }
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + id).classList.add('active');
