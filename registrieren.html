@@ -187,6 +187,7 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
         <div class="field"><label>Stadt</label>
           <select id="t-city"><option value="">Stadt auswählen...</option><option>Wien</option><option>Graz</option><option>Salzburg</option><option>Linz</option><option>Innsbruck</option><option>München</option><option>Berlin</option><option>Hamburg</option><option>Frankfurt</option><option>Köln</option><option>Zürich</option><option>Basel</option><option>Online (kein fixer Standort)</option></select>
         </div>
+        <div class="field"><label>Postleitzahl</label><input type="text" placeholder="z.B. 5020" id="t-plz" maxlength="5"><div class="field-hint">Für die Umkreissuche deiner Kunden</div></div>
         <div class="field"><label>Trainingsart</label>
           <select id="t-type"><option value="">Auswählen...</option><option>Vor Ort beim Kunden</option><option>Im Fitnessstudio</option><option>Online</option><option>Vor Ort + Online</option></select>
         </div>
@@ -260,6 +261,7 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
         <div class="field"><label>Stadt</label>
           <select id="c-city"><option value="">Stadt auswählen...</option><option>Wien</option><option>Graz</option><option>Salzburg</option><option>Linz</option><option>Innsbruck</option><option>München</option><option>Berlin</option><option>Hamburg</option><option>Frankfurt</option><option>Köln</option><option>Zürich</option><option>Basel</option><option>Ich möchte Online-Coaching</option></select>
         </div>
+        <div class="field"><label>Postleitzahl</label><input type="text" placeholder="z.B. 5026" id="c-plz" maxlength="5"><div class="field-hint">Für Trainer in deiner Nähe</div></div>
       </div>
       <div class="form-actions">
         <button class="btn-back-s" onclick="backToSelector()">← Zurück</button>
@@ -392,6 +394,7 @@ async function submitTrainer() {
     email: email,
     telefon: document.getElementById('t-tel').value.trim(),
     stadt: document.getElementById('t-city').value,
+    plz: document.getElementById('t-plz').value.trim(),
     trainingsart: document.getElementById('t-type').value,
     erfahrung: document.getElementById('t-exp').value,
     spezialisierungen: tags,
@@ -514,6 +517,7 @@ async function submitClient() {
     nachname: document.getElementById('c-ln').value.trim(),
     email: email,
     stadt: document.getElementById('c-city').value,
+    plz: document.getElementById('c-plz').value.trim(),
     ziel: goals.join(', ')
   };
 
