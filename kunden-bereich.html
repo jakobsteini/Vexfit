@@ -305,7 +305,10 @@ function renderTrainer(list) {
       ${t.bio ? `<div class="tc-bio">${t.bio}</div>` : ''}
       <div style="margin-bottom:10px">${tags}</div>
       ${t.preis_stunde ? `<div style="font-size:13px;color:var(--muted);margin-bottom:10px">€${t.preis_stunde}/Monat</div>` : ''}
-      <button class="btn-anfrage" onclick="openModal(event,${JSON.stringify(t).replace(/"/g,'&quot;')})">Anfrage senden →</button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <a href="profil.html?id=${t.id}" style="display:flex;align-items:center;justify-content:center;padding:11px;border:1px solid var(--border-i);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--white);text-decoration:none">Profil →</a>
+        <button class="btn-anfrage" style="margin:0" onclick="openModal(event,${JSON.stringify(t).replace(/"/g,'&quot;')})">Anfragen →</button>
+      </div>
     </div>`;
   }).join('');
 }
