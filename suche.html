@@ -115,9 +115,17 @@ footer p{font-size:12px;color:var(--text-muted)}
   <div class="sh-label">Trainer finden</div>
   <div class="sh-title">FINDE DEINEN<br>PERFEKTEN TRAINER</div>
   <div class="search-bar">
-    <input class="s-input" type="text" placeholder="Ziel oder Stadt eingeben..." id="searchInput">
-    <button class="s-btn" onclick="filterTrainers()">Suchen →</button>
+    <input class="s-input" type="text" placeholder="Deine PLZ (z.B. 5026)" id="plzInput" maxlength="5">
+    <select class="s-input" id="radiusInput" style="max-width:130px;cursor:pointer">
+      <option value="10">10 km</option>
+      <option value="25" selected>25 km</option>
+      <option value="50">50 km</option>
+      <option value="100">100 km</option>
+      <option value="0">Alle</option>
+    </select>
+    <button class="s-btn" onclick="searchByPLZ()">Suchen →</button>
   </div>
+  <div id="plzStatus" style="font-size:12px;color:#666;margin-bottom:8px"></div>
   <div class="filter-tags">
     <div class="ftag active" onclick="setFilter('alle', this)">Alle</div>
     <div class="ftag" onclick="setFilter('Muskelaufbau', this)">Muskelaufbau</div>
@@ -190,6 +198,107 @@ const bgColors = [
   'linear-gradient(135deg,#0a0a1a,#00002a)',
   'linear-gradient(135deg,#1a1500,#2a2200)',
 ];
+
+async function getCoords(plz) {
+  for(const country of ['at','de','ch']) {
+    try {
+      const r = await fetch(`https://api.zippopotam.us/${country}/${plz}`);
+      if(r.ok) {
+        const d = await r.json();
+        if(d.places && d.places.length > 0) {
+          return { lat: parseFloat(d.places[0].latitude), lng: parseFloat(d.places[0].longitude), city: d.places[0]['place name'] };
+        }
+      }
+    } catch(e) {}
+  }
+  return null;
+}
+
+function calcDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLng = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+async function searchByPLZ() {
+  const plz = document.getElementById('plzInput').value.trim();
+  const radius = parseInt(document.getElementById('radiusInput').value);
+  const status = document.getElementById('plzStatus');
+
+  if(radius === 0) {
+    renderTrainers(allTrainers);
+    status.textContent = `Alle ${allTrainers.length} Trainer werden angezeigt`;
+    return;
+  }
+
+  if(!plz || plz.length < 4) {
+    status.textContent = '⚠️ Bitte gültige PLZ eingeben';
+    return;
+  }
+
+  status.textContent = '📍 Standort wird ermittelt...';
+  const coords = await getCoords(plz);
+  if(!coords) {
+    status.textContent = '⚠️ PLZ nicht gefunden. Bitte prüfen.';
+    return;
+  }
+
+  status.textContent = `📍 ${coords.city} · Suche in ${radius} km Umkreis...`;
+
+  // Filter trainers with known PLZ by distance, also include online trainers
+  const filtered = [];
+  for(const t of allTrainers) {
+    if((t.trainingsart||'').toLowerCase().includes('online')) {
+      filtered.push({...t, _distance: 0, _online: true});
+      continue;
+    }
+    if(!t.plz) continue;
+    const tc = await getCoords(t.plz);
+    if(!tc) continue;
+    const dist = calcDistance(coords.lat, coords.lng, tc.lat, tc.lng);
+    if(dist <= radius) filtered.push({...t, _distance: Math.round(dist)});
+  }
+
+  filtered.sort((a,b) => a._distance - b._distance);
+  status.textContent = `📍 ${coords.city} · ${filtered.length} Trainer in ${radius} km gefunden`;
+  renderTrainersWithDistance(filtered);
+}
+
+function renderTrainersWithDistance(trainers) {
+  const grid = document.getElementById('trainerGrid');
+  const empty = document.getElementById('emptyState');
+  const count = document.getElementById('trainerCount');
+
+  if(!trainers.length) {
+    grid.innerHTML = '';
+    empty.classList.add('show');
+    count.textContent = '0 Trainer';
+    return;
+  }
+  empty.classList.remove('show');
+  count.textContent = trainers.length + ' Trainer';
+  const bgColors = ['linear-gradient(135deg,#1a1a1a,#2a2a2a)','linear-gradient(135deg,#1e1a0a,#2a2800)','linear-gradient(135deg,#0a1a1a,#002a2a)'];
+  grid.innerHTML = trainers.map((t,i) => {
+    const initials = ((t.vorname||'?')[0]+(t.nachname||'?')[0]).toUpperCase();
+    const tags = (t.spezialisierungen||[]).slice(0,3).map(s=>`<span class="ctag">${s}</span>`).join('');
+    const preis = t.preis_stunde ? `€${t.preis_stunde}<span>/Mo</span>` : '<span>Auf Anfrage</span>';
+    const distLabel = t._online ? '<span style="color:#e8ff00;font-size:11px">🌐 Online</span>' : t._distance !== undefined ? `<span style="color:#888;font-size:11px">📍 ${t._distance} km</span>` : '';
+    return `<div class="tc" onclick="window.location='profil.html?id=${t.id}'">
+      <div class="ci" style="background:${bgColors[i%bgColors.length]}">
+        <div class="cav">${initials}</div>
+        <div class="cbadge ${t._online?'online':''}">Verifiziert ✓</div>
+      </div>
+      <div class="cb">
+        <div class="cn">${t.vorname||''} ${t.nachname||''}</div>
+        <div class="cl">${t.trainingsart||''} · ${t.stadt||''}</div>
+        <div class="ctags">${tags}</div>
+        <div class="cf"><div class="cp">${preis}</div>${distLabel}</div>
+      </div>
+    </div>`;
+  }).join('');
+}
 
 async function loadTrainers() {
   document.getElementById('loading').classList.add('show');

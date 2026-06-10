@@ -204,6 +204,7 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
         <div class="field"><label>Stadt</label>
           <select id="t-city"><option value="">Stadt auswählen...</option><option>Wien</option><option>Graz</option><option>Salzburg</option><option>Linz</option><option>Innsbruck</option><option>München</option><option>Berlin</option><option>Hamburg</option><option>Frankfurt</option><option>Köln</option><option>Zürich</option><option>Basel</option><option>Online (kein fixer Standort)</option></select>
         </div>
+        <div class="field"><label>Postleitzahl</label><input type="text" placeholder="z.B. 5020" id="t-plz" maxlength="5"><div class="field-hint">Für die Umkreissuche deiner Kunden</div></div>
         <div class="field"><label>Trainingsart</label>
           <select id="t-type"><option value="">Auswählen...</option><option>Vor Ort beim Kunden</option><option>Im Fitnessstudio</option><option>Online</option><option>Vor Ort + Online</option></select>
         </div>
@@ -231,6 +232,7 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
           <div class="field"><label>Online Coaching (€/Mo)</label><input type="number" placeholder="z.B. 199" id="t-oprice" min="0"></div>
         </div>
         <div class="field"><label>Zertifizierungen</label><input type="text" placeholder="z.B. BSA, NSCA..." id="t-cert"><div class="field-hint">Optional – erhöht das Vertrauen</div></div>
+        <div class="field"><label>Calendly Link</label><input type="url" placeholder="https://calendly.com/dein-name" id="t-calendly"><div class="field-hint">Optional – Kunden können direkt einen Termin buchen</div></div>
         <div class="divider"></div>
         <label class="checkbox-field"><input type="checkbox" id="t-agb"><div class="custom-cb"></div><span class="cb-label">Ich akzeptiere die <a href="rechtliches.html" target="_blank">AGB</a> und <a href="rechtliches.html#datenschutz" target="_blank">Datenschutzbestimmungen</a></span></label>
       </div>
@@ -276,6 +278,7 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
         <div class="field"><label>Stadt</label>
           <select id="c-city"><option value="">Stadt auswählen...</option><option>Wien</option><option>Graz</option><option>Salzburg</option><option>Linz</option><option>Innsbruck</option><option>München</option><option>Berlin</option><option>Hamburg</option><option>Frankfurt</option><option>Köln</option><option>Zürich</option><option>Basel</option><option>Ich möchte Online-Coaching</option></select>
         </div>
+        <div class="field"><label>Postleitzahl</label><input type="text" placeholder="z.B. 5026" id="c-plz" maxlength="5"><div class="field-hint">Für Trainer in deiner Nähe</div></div>
       </div>
       <div class="form-actions">
         <button class="btn-back-s" onclick="backToSelector()">← Zurück</button>
@@ -298,6 +301,11 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
             <div class="goal-card" onclick="toggleGoal(this)"><span class="goal-icon">🧘</span><span>Mobility</span></div>
             <div class="goal-card" onclick="toggleGoal(this)"><span class="goal-icon">🏥</span><span>Reha</span></div>
           </div>
+        </div>
+        <div class="field" style="margin-top:8px">
+          <label>Meine Erwartungen</label>
+          <textarea placeholder="Was erwartest du von deinem Trainer? z.B. Motivation, Ernährungsplan, flexible Zeiten..." id="c-erwartungen" style="min-height:80px"></textarea>
+          <div class="field-hint">Optional – hilft Trainern dich besser einzuschätzen</div>
         </div>
         <label class="checkbox-field" style="margin-top:8px">
           <input type="checkbox" id="c-agb">
@@ -458,6 +466,7 @@ async function submitTrainer() {
     email: email,
     telefon: document.getElementById('t-tel').value.trim(),
     stadt: document.getElementById('t-city').value,
+    plz: document.getElementById('t-plz').value.trim(),
     trainingsart: document.getElementById('t-type').value,
     erfahrung: document.getElementById('t-exp').value,
     spezialisierungen: tags,
@@ -465,6 +474,7 @@ async function submitTrainer() {
     preis_stunde: parseFloat(document.getElementById('t-price').value) || null,
     preis_online: parseFloat(document.getElementById('t-oprice').value) || null,
     zertifikate: document.getElementById('t-cert').value.trim(),
+    calendly: document.getElementById('t-calendly').value.trim(),
     stripe_bezahlt: false,
     aktiv: false
   };
@@ -576,7 +586,9 @@ async function submitClient() {
     nachname: document.getElementById('c-ln').value.trim(),
     email: email,
     stadt: document.getElementById('c-city').value,
-    ziel: goals.join(', ')
+    plz: document.getElementById('c-plz').value.trim(),
+    ziel: goals.join(', '),
+    erwartungen: document.getElementById('c-erwartungen').value.trim()
   };
 
   try {

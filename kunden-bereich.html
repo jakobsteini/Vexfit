@@ -133,7 +133,19 @@ textarea.modal-msg:focus{border-color:rgba(232,255,0,0.4)}
   <!-- TRAINER FINDEN -->
   <div class="section" id="sec-su">
     <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:14px">TRAINER FINDEN</div>
-    <input type="text" id="searchQ" placeholder="Name oder Stadt..." oninput="filterT()" style="margin-bottom:12px">
+    <div style="display:grid;grid-template-columns:1fr auto auto;gap:8px;margin-bottom:8px">
+      <input type="text" id="plzInput" placeholder="Deine PLZ (z.B. 5026)" maxlength="5">
+      <select id="radiusInput" style="background:var(--mid);border:1px solid var(--border-i);color:var(--white);padding:12px 10px;border-radius:3px;font-size:13px;cursor:pointer;appearance:none;-webkit-appearance:none">
+        <option value="10">10 km</option>
+        <option value="25" selected>25 km</option>
+        <option value="50">50 km</option>
+        <option value="100">100 km</option>
+        <option value="0">Alle</option>
+      </select>
+      <button onclick="searchByPLZ()" style="background:var(--accent);color:var(--black);border:none;padding:12px 16px;border-radius:3px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap">Suchen →</button>
+    </div>
+    <div id="plzStatus" style="font-size:12px;color:var(--muted);margin-bottom:10px"></div>
+    <input type="text" id="searchQ" placeholder="Name suchen..." oninput="filterT()" style="margin-bottom:12px">
     <div class="filter-bar" id="filterBar">
       <div class="fc on" onclick="setFilter('alle',this)">Alle</div>
       <div class="fc" onclick="setFilter('Muskelaufbau',this)">💪 Muskelaufbau</div>
@@ -200,6 +212,90 @@ textarea.modal-msg:focus{border-color:rgba(232,255,0,0.4)}
 
 <script>
 const SB = 'https://hbapzwxdehfgnputrfjf.supabase.co';
+
+async function getCoords(plz) {
+  for(const country of ['at','de','ch']) {
+    try {
+      const r = await fetch(`https://api.zippopotam.us/${country}/${plz}`);
+      if(r.ok) {
+        const d = await r.json();
+        if(d.places && d.places.length > 0) {
+          return { lat: parseFloat(d.places[0].latitude), lng: parseFloat(d.places[0].longitude), city: d.places[0]['place name'] };
+        }
+      }
+    } catch(e) {}
+  }
+  return null;
+}
+
+function calcDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLng = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
+
+async function searchByPLZ() {
+  const plz = document.getElementById('plzInput').value.trim();
+  const radius = parseInt(document.getElementById('radiusInput').value);
+  const status = document.getElementById('plzStatus');
+
+  if(radius === 0) {
+    renderTrainer(allT);
+    status.textContent = `Alle ${allT.length} Trainer`;
+    return;
+  }
+  if(!plz || plz.length < 4) { status.textContent = '⚠️ Bitte gültige PLZ eingeben'; return; }
+
+  status.textContent = '📍 Standort wird ermittelt...';
+  const coords = await getCoords(plz);
+  if(!coords) { status.textContent = '⚠️ PLZ nicht gefunden'; return; }
+  status.textContent = `📍 ${coords.city} · Suche läuft...`;
+
+  const filtered = [];
+  for(const t of allT) {
+    if((t.trainingsart||'').toLowerCase().includes('online')) {
+      filtered.push({...t, _distance: 0, _online: true});
+      continue;
+    }
+    if(!t.plz) continue;
+    const tc = await getCoords(t.plz);
+    if(!tc) continue;
+    const dist = calcDistance(coords.lat, coords.lng, tc.lat, tc.lng);
+    if(dist <= radius) filtered.push({...t, _distance: Math.round(dist)});
+  }
+  filtered.sort((a,b) => a._distance - b._distance);
+  status.textContent = `📍 ${coords.city} · ${filtered.length} Trainer in ${radius} km`;
+  renderTrainerDist(filtered);
+}
+
+function renderTrainerDist(list) {
+  const el = document.getElementById('trainerList');
+  if(!list.length) {
+    el.innerHTML = `<div class="empty"><div class="ei">🔍</div><p>Keine Trainer in diesem Umkreis.<br>Versuche einen größeren Radius.</p></div>`;
+    return;
+  }
+  el.innerHTML = list.map(t => {
+    const ini = ((t.vorname||'?')[0]+(t.nachname||'?')[0]).toUpperCase();
+    const tags = (t.spezialisierungen||[]).slice(0,3).map(s=>`<span class="tag-chip">${s}</span>`).join('');
+    const distLabel = t._online ? '🌐 Online' : t._distance !== undefined ? `📍 ${t._distance} km entfernt` : '';
+    return `<div class="trainer-card">
+      <div class="tc-top">
+        <div class="tc-av">${ini}</div>
+        <div><div class="tc-name">${t.vorname||''} ${t.nachname||''}</div>
+        <div class="tc-meta">${distLabel || t.stadt||''} · ${t.trainingsart||''}</div></div>
+      </div>
+      ${t.bio?`<div class="tc-bio">${t.bio}</div>`:''}
+      <div style="margin-bottom:10px">${tags}</div>
+      ${t.preis_stunde?`<div style="font-size:13px;color:var(--muted);margin-bottom:10px">€${t.preis_stunde}/Monat</div>`:''}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <a href="profil.html?id=${t.id}" style="display:flex;align-items:center;justify-content:center;padding:11px;border:1px solid var(--border-i);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--white);text-decoration:none">Profil →</a>
+        <button class="btn-anfrage" style="margin:0" onclick="openModal(event,${JSON.stringify(t).replace(/"/g,'&quot;')})">Anfragen →</button>
+      </div>
+    </div>`;
+  }).join('');
+}
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYXB6d3hkZWhmZ25wdXRyZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDc0NzQsImV4cCI6MjA5NDQyMzQ3NH0.vIQLcTObF5tmBEuxKL2EEUd4U88k0mdTmsAafG8djN4';
 let K = null, allT = [], activeFilter = 'alle', selT = null;
 
