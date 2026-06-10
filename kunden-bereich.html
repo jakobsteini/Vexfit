@@ -2,9 +2,9 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" href="vexfit-logo.png">
+<link rel="icon" type="image/png" href="flexfit-logo.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Vexfit – Mein Bereich</title>
+<title>Flexfit – Mein Bereich</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--black:#0a0a0a;--white:#f5f5f0;--accent:#e8ff00;--gray:#141414;--mid:#1e1e1e;--card:#161616;--muted:#666;--border:rgba(255,255,255,0.07);--border-i:rgba(255,255,255,0.12)}
@@ -299,7 +299,7 @@ function renderTrainerDist(list) {
 const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYXB6d3hkZWhmZ25wdXRyZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDc0NzQsImV4cCI6MjA5NDQyMzQ3NH0.vIQLcTObF5tmBEuxKL2EEUd4U88k0mdTmsAafG8djN4';
 let K = null, allT = [], activeFilter = 'alle', selT = null;
 
-const raw = localStorage.getItem('vexfit_session');
+const raw = localStorage.getItem('flexfit_session');
 if(!raw) { location.href = 'login.html'; }
 const sess = JSON.parse(raw);
 document.getElementById('navEmail').textContent = sess.email;
@@ -537,7 +537,7 @@ function go(id, el) {
 }
 
 function logout() {
-  localStorage.removeItem('vexfit_session');
+  localStorage.removeItem('flexfit_session');
   location.href = 'login.html';
 }
 </script>

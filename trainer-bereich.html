@@ -2,9 +2,9 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" href="vexfit-logo.png">
+<link rel="icon" type="image/png" href="flexfit-logo.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
-<title>Vexfit – Mein Bereich</title>
+<title>Flexfit – Mein Bereich</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--black:#0a0a0a;--white:#f5f5f0;--accent:#e8ff00;--gray:#141414;--mid:#1e1e1e;--card:#161616;--text-muted:#666;--border:rgba(255,255,255,0.07);--border-input:rgba(255,255,255,0.12)}
@@ -212,7 +212,7 @@ const STRIPE_LINK = 'https://buy.stripe.com/eVqdR9gopdNhczNbhw2oE00';
 let trainer = null;
 
 // Check login
-const session = localStorage.getItem('vexfit_session');
+const session = localStorage.getItem('flexfit_session');
 if(!session) { window.location.href = 'login.html'; }
 else {
   const sess = JSON.parse(session);
@@ -233,12 +233,7 @@ async function loadTrainerByEmail(email) {
 }
 
 function initDashboard() {
-  const fn = trainer.vorname || '';
-  const ln = trainer.nachname || '';
-  const fullName = fn || ln ? `${fn} ${ln}`.trim() : trainer.email;
-  const initials = fn && ln ? (fn[0] + ln[0]).toUpperCase() : (trainer.email || '?')[0].toUpperCase();
-
-  document.getElementById('navName').textContent = fn || trainer.email;
+  document.getElementById('navName').textContent = trainer.vorname;
 
   // Lock tabs visually if not activated
   if(!trainer.aktiv) {
@@ -248,15 +243,16 @@ function initDashboard() {
   }
 
   // Overview
+  const initials = (trainer.vorname[0] + trainer.nachname[0]).toUpperCase();
   document.getElementById('ov-avatar').textContent = initials;
-  document.getElementById('ov-name').textContent = fullName;
-  document.getElementById('ov-meta').textContent = trainer.email || '–';
+  document.getElementById('ov-name').textContent = trainer.vorname + ' ' + trainer.nachname;
+  document.getElementById('ov-meta').textContent =
+    (trainer.trainingsart === 'Online' ? '🌐 Online' : '📍 ' + trainer.stadt) +
+    ' · ' + (trainer.erfahrung || '–');
 
   const tags = (trainer.spezialisierungen || []);
-  document.getElementById('ov-tags').innerHTML = tags.length
-    ? tags.map(t => `<span class="preview-tag">${t}</span>`).join('')
-    : '<span style="font-size:13px;color:var(--text-muted)">Noch keine Spezialisierungen — bitte Profil ausfüllen</span>';
-  document.getElementById('ov-city').textContent = trainer.trainingsart === 'Online' ? '🌐 Online · DACH-weit' : trainer.stadt ? '📍 ' + trainer.stadt : '📍 Noch keine Stadt eingetragen';
+  document.getElementById('ov-tags').innerHTML = tags.map(t => `<span class="preview-tag">${t}</span>`).join('');
+  document.getElementById('ov-city').textContent = (trainer.trainingsart === 'Online' ? '🌐 Online · DACH-weit' : '📍 ' + trainer.stadt);
 
   // Status banner
   let bannerHTML = '';
@@ -331,7 +327,7 @@ function initDashboard() {
     aboHTML = `
       <div class="abo-box">
         <div class="abo-title">🎉 KOSTENLOSE PHASE</div>
-        <p class="abo-sub">Dein Profil ist kostenlos aktiv bis du deinen ersten Kunden über Vexfit gewinnst. Sobald das passiert schicken wir dir per E-Mail den Zahlungslink.</p>
+        <p class="abo-sub">Dein Profil ist kostenlos aktiv bis du deinen ersten Kunden über Flexfit gewinnst. Sobald das passiert schicken wir dir per E-Mail den Zahlungslink.</p>
         <div style="display:flex;align-items:flex-end;gap:14px;margin-bottom:6px">
           <div class="abo-price">0€</div>
           <div style="font-family:'Bebas Neue',sans-serif;font-size:28px;color:rgba(255,255,255,0.2);text-decoration:line-through;margin-bottom:8px">€49,99/Mo</div>
@@ -354,7 +350,7 @@ function initDashboard() {
       <div class="abo-box">
         <div class="abo-title" style="color:var(--text-muted)">ABO KÜNDIGEN</div>
         <p class="abo-sub">Zum Kündigen schreibe uns einfach eine E-Mail – wir kümmern uns sofort darum.</p>
-        <a href="mailto:vexfit.info@gmail.com?subject=Vexfit Abo kündigen&body=Hi, ich möchte mein Vexfit Abo kündigen. Meine E-Mail: ${trainer.email}" class="btn-stripe" style="background:transparent;border:1px solid var(--border);color:var(--text-muted)">Kündigung anfragen →</a>
+        <a href="mailto:flexfit.info@gmail.com?subject=Flexfit Abo kündigen&body=Hi, ich möchte mein Flexfit Abo kündigen. Meine E-Mail: ${trainer.email}" class="btn-stripe" style="background:transparent;border:1px solid var(--border);color:var(--text-muted)">Kündigung anfragen →</a>
       </div>`;
   }
   document.getElementById('aboContent').innerHTML = aboHTML;
@@ -433,7 +429,7 @@ async function saveProfile() {
       const updated = await res.json();
       if(updated && updated[0]) {
         trainer = updated[0];
-        sessionStorage.setItem('vexfit_trainer', JSON.stringify(trainer));
+        sessionStorage.setItem('flexfit_trainer', JSON.stringify(trainer));
         initDashboard();
       }
       const s = document.getElementById('p-success');
@@ -464,7 +460,7 @@ async function loadAnfragen() {
     const anfragen = await res.json();
     
     if(!anfragen || anfragen.length === 0) {
-      container.innerHTML = `<div style="background:var(--card);border:1px solid var(--border);padding:32px;border-radius:3px;text-align:center"><div style="font-size:32px;margin-bottom:12px">📬</div><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:8px">NOCH KEINE ANFRAGEN</div><p style="font-size:14px;color:var(--text-muted);font-weight:300">Sobald ein Kunde dein Profil kontaktiert erscheint die Anfrage hier.</p></div>`;
+      container.innerHTML = '<div style="background:var(--card);border:1px solid var(--border);padding:32px;border-radius:3px;text-align:center"><div style="font-size:32px;margin-bottom:12px">📬</div><div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:8px">NOCH KEINE ANFRAGEN</div><p style="font-size:14px;color:var(--text-muted);font-weight:300">Sobald ein Kunde dein Profil kontaktiert erscheint die Anfrage hier.</p></div>';
       return;
     }
 
@@ -491,7 +487,7 @@ async function loadAnfragen() {
               <div style="font-size:13px;color:var(--text-muted);margin-bottom:12px;font-weight:300">Abo aktivieren um Kontaktdaten zu sehen</div>
               <a href="https://buy.stripe.com/eVqdR9gopdNhczNbhw2oE00" target="_blank" style="display:inline-block;background:var(--accent);color:var(--black);padding:10px 20px;border-radius:3px;font-weight:700;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;text-decoration:none">💳 Jetzt für €49,99/Mo freischalten</a>
             </div>
-          ` : `<div style="font-size:13px;color:var(--text-muted);margin-top:8px;font-weight:300">Warte auf Freischaltung durch Vexfit...</div>`}
+          ` : `<div style="font-size:13px;color:var(--text-muted);margin-top:8px;font-weight:300">Warte auf Freischaltung durch Flexfit...</div>`}
         </div>`;
     }).join('');
   } catch(e) {
@@ -500,7 +496,7 @@ async function loadAnfragen() {
 }
 
 function logout() {
-  localStorage.removeItem('vexfit_session');
+  localStorage.removeItem('flexfit_session');
   window.location.href = 'login.html';
 }
 </script>
@@ -510,7 +506,7 @@ function logout() {
 .wa-btn{position:fixed;bottom:22px;right:20px;z-index:9999;width:46px;height:46px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 16px rgba(37,211,102,0.45);text-decoration:none;opacity:0;animation:waBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) 2.5s forwards;transition:transform 0.2s,box-shadow 0.2s}
 .wa-btn:hover{transform:scale(1.1);box-shadow:0 5px 24px rgba(37,211,102,0.6)}
 </style>
-<a href="https://wa.me/436649275737?text=Name%3A%20%0ANachricht%3A%20Hi%20ich%20habe%20eine%20Frage%20zu%20Vexfit%2C" 
+<a href="https://wa.me/436649275737?text=Name%3A%20%0ANachricht%3A%20Hi%20ich%20habe%20eine%20Frage%20zu%20Flexfit%2C" 
    target="_blank" class="wa-btn" aria-label="WhatsApp Kontakt">
   <svg width="22" height="22" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
     <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
