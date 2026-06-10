@@ -280,7 +280,17 @@ async function loadTrainer() {
 
 function renderTrainer(list) {
   const el = document.getElementById('trainerList');
-  if(!list.length) { el.innerHTML = '<div class="empty"><div class="ei">🔍</div><p>Keine Trainer gefunden</p></div>'; return; }
+  // Filter by kunde's city or online trainers
+  if(K && K.stadt && activeFilter === 'alle' && !document.getElementById('searchQ').value) {
+    const stadtLower = K.stadt.toLowerCase();
+    const filtered = list.filter(t =>
+      !t.stadt ||
+      t.stadt.toLowerCase() === stadtLower ||
+      (t.trainingsart || '').toLowerCase().includes('online')
+    );
+    if(filtered.length > 0) list = filtered;
+  }
+  if(!list.length) { el.innerHTML = `<div class="empty"><div class="ei">🔍</div><p>Noch keine Trainer in ${K && K.stadt ? K.stadt : 'deiner Stadt'} verfügbar.<br><span style="font-size:12px">Wir benachrichtigen dich sobald ein Trainer verfügbar ist.</span></p></div>`; return; }
   el.innerHTML = list.map(t => {
     const ini = ((t.vorname||'?')[0] + (t.nachname||'?')[0]).toUpperCase();
     const tags = (t.spezialisierungen || []).slice(0,3).map(s => `<span class="tag-chip">${s}</span>`).join('');
