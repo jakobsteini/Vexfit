@@ -273,13 +273,14 @@ const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZi
 const H   = {'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json'};
 
 let K=null, allT=[], activeFilter='alle', selT=null;
+const trainerMap = {};
 
 // Auth guard
 const raw=localStorage.getItem('vexfit_session');
-if(!raw){location.href='login.html';}
+if(!raw){location.href='login.html'; throw '';}
 let sess;
-try{sess=JSON.parse(raw);}catch(e){localStorage.removeItem('vexfit_session');location.href='login.html';}
-if(!sess||!sess.email||sess.role!=='kunde'){location.href='login.html';}
+try{sess=JSON.parse(raw);}catch(e){localStorage.removeItem('vexfit_session');location.href='login.html'; throw '';}
+if(!sess||!sess.email||sess.role!=='kunde'){location.href='login.html'; throw '';}
 
 document.getElementById('navEmail').textContent=sess.email;
 init();
@@ -334,12 +335,12 @@ async function loadTrainer(){
 function renderTrainer(list){
   const el=document.getElementById('trainerList');
   if(!list.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">Keine Trainer gefunden</div><p class="empty-sub">Versuche einen anderen Suchradius oder Filter.</p></div>';return;}
+  list.forEach(t=>{ trainerMap[t.id]=t; });
   el.innerHTML=list.map(t=>{
     const ini=((t.vorname||'?')[0]+(t.nachname||'?')[0]).toUpperCase();
     const tags=(t.spezialisierungen||[]).slice(0,3).map(s=>'<span class="tc-tag">'+s+'</span>').join('');
     const dist=t._online?'🌐 Online':t._distance!==undefined?'📍 '+t._distance+' km':t.stadt||'';
-    const tJson=JSON.stringify(t).replace(/"/g,'&quot;');
-    return '<div class="trainer-card"><div class="tc-top"><div class="tc-av">'+ini+'</div><div><div class="tc-name">'+(t.vorname||'')+' '+(t.nachname||'')+'</div><div class="tc-meta">'+dist+(dist&&t.trainingsart?' · ':'')+( t.trainingsart||'')+'</div></div></div>'+(t.bio?'<div class="tc-bio">'+t.bio+'</div>':'')+'<div class="tc-tags">'+tags+'</div>'+(t.preis_stunde?'<div style="font-size:13px;color:var(--muted-l);margin-bottom:10px">€'+t.preis_stunde+'/Monat</div>':'')+'<div class="tc-btns"><a href="profil.html?id='+t.id+'" class="btn-profil">Profil →</a><button class="btn-anfragen" onclick="openModal(event,\''+tJson+'\')">Anfragen →</button></div></div>';
+    return '<div class="trainer-card"><div class="tc-top"><div class="tc-av">'+ini+'</div><div><div class="tc-name">'+(t.vorname||'')+' '+(t.nachname||'')+'</div><div class="tc-meta">'+dist+(dist&&t.trainingsart?' · ':'')+( t.trainingsart||'')+'</div></div></div>'+(t.bio?'<div class="tc-bio">'+t.bio+'</div>':'')+'<div class="tc-tags">'+tags+'</div>'+(t.preis_stunde?'<div style="font-size:13px;color:var(--muted-l);margin-bottom:10px">€'+t.preis_stunde+'/Monat</div>':'')+'<div class="tc-btns"><a href="profil.html?id='+t.id+'" class="btn-profil">Profil →</a><button class="btn-anfragen" onclick="openModal(event,\''+t.id+'\')">Anfragen →</button></div></div>';
   }).join('');
 }
 
@@ -403,9 +404,10 @@ async function loadAnfragen(){
   }catch(e){el.innerHTML='<div class="empty-state"><p>Fehler beim Laden.</p></div>';}
 }
 
-function openModal(e,tJson){
+function openModal(e,trainerId){
   e.stopPropagation();
-  selT=typeof tJson==='string'?JSON.parse(tJson.replace(/&quot;/g,'"')):tJson;
+  selT=trainerMap[trainerId];
+  if(!selT)return;
   document.getElementById('modalInfo').innerHTML='<strong>'+selT.vorname+' '+selT.nachname+'</strong>'+(selT.stadt||'')+' · '+(selT.trainingsart||'');
   document.getElementById('modalMsg').value='';
   document.getElementById('overlay').classList.add('open');

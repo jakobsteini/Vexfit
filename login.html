@@ -161,8 +161,11 @@ const existingSession = localStorage.getItem('vexfit_session');
 if (existingSession) {
   try {
     const s = JSON.parse(existingSession);
-    if (s && s.email && s.role) {
+    if (s && s.email && s.role && (s.role === 'trainer' || s.role === 'kunde')) {
       window.location.href = s.role === 'trainer' ? 'trainer-bereich.html' : 'kunden-bereich.html';
+    } else {
+      // Old session without role field - clear it
+      localStorage.removeItem('vexfit_session');
     }
   } catch(e) { localStorage.removeItem('vexfit_session'); }
 }

@@ -214,10 +214,10 @@ let T = null;
 
 // Auth guard
 const raw = localStorage.getItem('vexfit_session');
-if (!raw) { location.href='login.html'; }
+if (!raw) { location.href='login.html'; throw ''; }
 let sess;
-try { sess=JSON.parse(raw); } catch(e) { localStorage.removeItem('vexfit_session'); location.href='login.html'; }
-if (!sess || !sess.email || sess.role !== 'trainer') { location.href='login.html'; }
+try { sess=JSON.parse(raw); } catch(e) { localStorage.removeItem('vexfit_session'); location.href='login.html'; throw ''; }
+if (!sess || !sess.email || sess.role !== 'trainer') { location.href='login.html'; throw ''; }
 
 loadTrainer();
 
