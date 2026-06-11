@@ -2,9 +2,9 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<link rel="icon" type="image/png" href="flexfit-logo.png">
+<link rel="icon" type="image/png" href="vexfit-logo.png">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Flexfit – Admin Dashboard</title>
+<title>Vexfit – Admin Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
 :root{--black:#0a0a0a;--white:#f5f5f0;--accent:#e8ff00;--gray:#141414;--mid:#1e1e1e;--card:#161616;--text-muted:#666;--border:rgba(255,255,255,0.07)}
@@ -69,9 +69,9 @@ tr:hover td{background:var(--card)}
 <!-- LOGIN -->
 <div class="login-wrap" id="loginWrap">
   <div class="login-box">
-    <a href="index.html" class="logo">FLEX<span>FIT</span></a>
+    <a href="index.html" class="logo">VEX<span>FIT</span></a>
     <div class="login-title">ADMIN LOGIN</div>
-    <p class="login-sub">Nur für Flexfit Administratoren</p>
+    <p class="login-sub">Nur für Vexfit Administratoren</p>
     <div class="login-field"><label>Passwort</label><input type="password" id="adminPw" placeholder="Admin Passwort" onkeydown="if(event.key==='Enter')checkLogin()"></div>
     <button class="login-btn" onclick="checkLogin()">Einloggen →</button>
     <div class="login-error" id="loginError">Falsches Passwort!</div>
@@ -81,7 +81,7 @@ tr:hover td{background:var(--card)}
 <!-- DASHBOARD -->
 <div class="dashboard" id="dashboardWrap">
   <nav>
-    <a href="index.html" class="logo">FLEX<span>FIT</span> <span style="color:var(--text-muted);font-size:14px;letter-spacing:1px">ADMIN</span></a>
+    <a href="index.html" class="logo">VEX<span>FIT</span> <span style="color:var(--text-muted);font-size:14px;letter-spacing:1px">ADMIN</span></a>
     <button class="logout-btn" onclick="logout()">Ausloggen</button>
   </nav>
 
@@ -190,7 +190,7 @@ function sendDailyReport() {
   const neueHeute = window.allTrainers.filter(t => t.created_at && t.created_at.startsWith(heute));
   const kundenHeute = window.allKunden.filter(k => k.created_at && k.created_at.startsWith(heute));
 
-  let body = `📊 FLEXFIT TAGESBERICHT – ${today}
+  let body = `📊 VEXFIT TAGESBERICHT – ${today}
 
 `;
   body += `━━━━━━━━━━━━━━━━━━━━━━
@@ -227,7 +227,7 @@ function sendDailyReport() {
 `;
     });
     body += `
-Admin: https://flexfit.at/admin.html
+Admin: https://vexfit.app/admin.html
 
 `;
   }
@@ -267,14 +267,14 @@ Stripe Link: https://buy.stripe.com/eVqdR9gopdNhczNbhw2oE00
   body += `
 ━━━━━━━━━━━━━━━━━━━━━━
 `;
-  body += `🔗 Admin: https://flexfit.at/admin.html
+  body += `🔗 Admin: https://vexfit.app/admin.html
 `;
   body += `💰 Stripe: https://dashboard.stripe.com
 `;
   body += `🗄️ Supabase: https://supabase.com/dashboard/project/hbapzwxdehfgnputrfjf
 `;
 
-  const subject = encodeURIComponent(`📊 Flexfit Tagesbericht ${today} – ${window.allTrainers.length} Trainer, €${umsatz}/Mo`);
+  const subject = encodeURIComponent(`📊 Vexfit Tagesbericht ${today} – ${window.allTrainers.length} Trainer, €${umsatz}/Mo`);
   const encodedBody = encodeURIComponent(body);
   window.open(`mailto:flexfit.info@gmail.com?subject=${subject}&body=${encodedBody}`);
 }
@@ -452,7 +452,7 @@ Trainer Details:
 Sobald der Trainer seinen ersten Kunden hat:
 → Stripe Link schicken: https://buy.stripe.com/eVqdR9gopdNhczNbhw2oE00
 
-Admin: https://flexfit.at/admin.html`);
+Admin: https://vexfit.app/admin.html`);
 
     window.open(`mailto:flexfit.info@gmail.com?subject=${subject}&body=${body}`);
     loadData();
@@ -480,10 +480,10 @@ async function markAsPaid(id, email, name) {
 }
 
 function sendStripeLink(email, name) {
-  const subject = encodeURIComponent('🎉 Dein erster Flexfit Kunde – Zeit fürs Abo!');
+  const subject = encodeURIComponent('🎉 Dein erster Vexfit Kunde – Zeit fürs Abo!');
   const body = encodeURIComponent(`Hi ${name},
 
-Herzlichen Glückwunsch! Du hast deinen ersten Kunden über Flexfit gewonnen! 🚀
+Herzlichen Glückwunsch! Du hast deinen ersten Kunden über Vexfit gewonnen! 🚀
 
 Aktiviere jetzt dein Abo für €49,99/Monat:
 https://buy.stripe.com/eVqdR9gopdNhczNbhw2oE00
@@ -496,7 +496,7 @@ Was du bekommst:
 Bei Fragen: flexfit.info@gmail.com
 
 Weiter so! 💪
-Jakob von Flexfit`);
+Jakob von Vexfit`);
   window.open(`mailto:${email}?subject=${subject}&body=${body}`);
 }
 </script>
