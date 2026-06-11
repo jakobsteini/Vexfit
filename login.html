@@ -2,129 +2,325 @@
 <html lang="de">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <link rel="icon" type="image/png" href="vexfit-logo.png">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
 <title>Vexfit – Login</title>
-<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet">
 <style>
-:root{--black:#0a0a0a;--white:#f5f5f0;--accent:#e8ff00;--gray:#141414;--mid:#1e1e1e;--card:#161616;--text-muted:#666;--border:rgba(255,255,255,0.07);--border-input:rgba(255,255,255,0.12)}
+:root{
+  --black:#080808;
+  --white:#f4f4ef;
+  --accent:#e8ff00;
+  --gray:#111111;
+  --mid:#1a1a1a;
+  --card:#141414;
+  --muted:#555;
+  --muted-light:#888;
+  --border:rgba(255,255,255,0.07);
+  --border-i:rgba(255,255,255,0.13);
+  --red:#ff4d4d;
+  --green:#4ade80;
+}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
-.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--white);text-decoration:none}.logo span{color:var(--accent)}
-nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:14px 20px;background:rgba(10,10,10,0.95);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
-.nav-link{color:var(--text-muted);text-decoration:none;font-size:13px}
-.page-bg{position:fixed;inset:0;background:radial-gradient(ellipse 50% 50% at 50% 50%,rgba(232,255,0,0.04) 0%,transparent 70%);pointer-events:none}
-.wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:90px 20px 40px;position:relative;z-index:1}
-.box{width:100%;max-width:420px;animation:fadeUp 0.6s ease both}
-.header{text-align:center;margin-bottom:28px}
-.label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:10px}
-.title{font-family:'Bebas Neue',sans-serif;font-size:52px;line-height:0.95;letter-spacing:2px;margin-bottom:8px}
-.sub{font-size:14px;color:var(--text-muted);font-weight:300}
-.tabs{display:grid;grid-template-columns:1fr 1fr;gap:2px;margin-bottom:28px;background:var(--card);padding:4px;border-radius:4px}
-.tab{padding:11px 8px;text-align:center;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border-radius:3px;transition:all 0.25s;color:var(--text-muted);border:none;background:transparent;font-family:'DM Sans',sans-serif}
-.tab.active{background:var(--accent);color:var(--black)}
-.field{display:flex;flex-direction:column;gap:7px;margin-bottom:14px}
-label{font-size:11px;font-weight:600;letter-spacing:1px;text-transform:uppercase;color:var(--text-muted)}
-input{background:var(--card);border:1px solid var(--border-input);color:var(--white);padding:14px 16px;font-family:'DM Sans',sans-serif;font-size:15px;border-radius:3px;outline:none;transition:border-color 0.2s;width:100%}
-input::placeholder{color:rgba(102,102,102,0.6)}
-input:focus{border-color:rgba(232,255,0,0.4);background:var(--mid)}
-.forgot{text-align:right;margin-bottom:20px}.forgot a{font-size:13px;color:var(--text-muted);text-decoration:none}
-.btn-login{width:100%;background:var(--accent);color:var(--black);padding:15px;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:13px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;margin-bottom:16px;transition:transform 0.2s}
-.btn-login:disabled{opacity:0.5;cursor:not-allowed}
-.alert{padding:12px 16px;border-radius:3px;font-size:13px;margin-bottom:14px;display:none}
+html,body{height:100%;background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased}
+a{text-decoration:none;color:inherit}
+
+/* LAYOUT */
+.page{min-height:100vh;display:flex;flex-direction:column}
+.top-bar{padding:20px 24px;display:flex;align-items:center;justify-content:space-between}
+.logo{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:4px;color:var(--white)}
+.logo span{color:var(--accent)}
+.main{flex:1;display:flex;align-items:center;justify-content:center;padding:20px 20px 60px}
+.box{width:100%;max-width:400px}
+
+/* ROLE SWITCHER */
+.role-toggle{display:grid;grid-template-columns:1fr 1fr;gap:2px;background:var(--card);border:1px solid var(--border);border-radius:4px;padding:3px;margin-bottom:28px}
+.role-btn{padding:11px;border:none;background:none;color:var(--muted-light);font-family:'DM Sans',sans-serif;font-size:12px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;border-radius:2px;transition:all 0.2s}
+.role-btn.active{background:var(--mid);color:var(--white)}
+.role-btn .role-icon{display:block;font-size:20px;margin-bottom:4px}
+
+/* MODE SWITCHER */
+.mode-tabs{display:flex;gap:0;margin-bottom:24px;border-bottom:1px solid var(--border)}
+.mode-tab{flex:1;padding:12px;background:none;border:none;color:var(--muted);font-family:'DM Sans',sans-serif;font-size:13px;font-weight:500;cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;margin-bottom:-1px}
+.mode-tab.active{color:var(--white);border-bottom-color:var(--accent)}
+
+/* HEADLINE */
+.headline{margin-bottom:24px}
+.headline h1{font-family:'Bebas Neue',sans-serif;font-size:clamp(32px,8vw,48px);letter-spacing:2px;line-height:1;margin-bottom:6px}
+.headline p{font-size:13px;color:var(--muted-light);font-weight:300;line-height:1.6}
+
+/* FORM */
+.field{margin-bottom:14px}
+.field label{display:block;font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.field input{width:100%;background:var(--card);border:1px solid var(--border-i);color:var(--white);padding:13px 16px;font-family:'DM Sans',sans-serif;font-size:14px;border-radius:3px;outline:none;transition:border-color 0.2s;-webkit-appearance:none}
+.field input::placeholder{color:rgba(85,85,85,0.6)}
+.field input:focus{border-color:rgba(232,255,0,0.5);background:var(--mid)}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+
+/* ALERT */
+.alert{padding:11px 14px;border-radius:3px;font-size:13px;margin-bottom:16px;display:none;line-height:1.5}
 .alert.show{display:block}
-.alert-error{background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.3);color:#ff6b6b}
-.alert-success{background:rgba(232,255,0,0.1);border:1px solid rgba(232,255,0,0.3);color:var(--accent)}
-.divider{display:flex;align-items:center;gap:14px;margin-bottom:16px}.dl{flex:1;height:1px;background:var(--border)}.ds{font-size:12px;color:var(--text-muted)}
-.links{text-align:center;display:flex;flex-direction:column;gap:10px}.links p{font-size:14px;color:var(--text-muted)}.links a{color:var(--accent);text-decoration:none;font-weight:600}
-@keyframes fadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.alert-err{background:rgba(255,77,77,0.1);border:1px solid rgba(255,77,77,0.3);color:var(--red)}
+.alert-ok{background:rgba(74,222,128,0.08);border:1px solid rgba(74,222,128,0.2);color:var(--green)}
+
+/* BTN */
+.btn-primary{width:100%;background:var(--accent);color:var(--black);padding:15px;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-top:6px;transition:opacity 0.2s}
+.btn-primary:hover{opacity:0.88}
+.btn-primary:disabled{opacity:0.45;cursor:not-allowed}
+
+/* DIVIDER */
+.divider{display:flex;align-items:center;gap:12px;margin:20px 0}
+.divider::before,.divider::after{content:'';flex:1;height:1px;background:var(--border)}
+.divider span{font-size:11px;color:var(--muted);white-space:nowrap}
+
+/* FOOTER */
+.foot{padding:28px 24px;text-align:center;font-size:12px;color:var(--muted)}
+
+/* LOADER OVERLAY */
+.loader{position:fixed;inset:0;background:rgba(8,8,8,0.85);z-index:999;display:none;align-items:center;justify-content:center;backdrop-filter:blur(4px)}
+.loader.show{display:flex}
+.spinner{width:32px;height:32px;border:2px solid var(--border-i);border-top-color:var(--accent);border-radius:50%;animation:spin 0.7s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+@media(max-width:380px){.field-row{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
-<div class="page-bg"></div>
-<nav><a href="index.html" class="logo">VEX<span>FIT</span></a><a href="registrieren.html" class="nav-link">Registrieren →</a></nav>
-<div class="wrap"><div class="box">
-  <div class="header">
-    <div class="label">Willkommen zurück</div>
-    <div class="title">LOGIN</div>
-    <p class="sub">Melde dich mit deinem Trainer-Account an</p>
+<div class="loader" id="loader"><div class="spinner"></div></div>
+<div class="page">
+  <div class="top-bar">
+    <div class="logo">VEX<span>FIT</span></div>
+    <div style="font-size:12px;color:var(--muted)">DACH · AT · DE · CH</div>
   </div>
-  <div class="alert alert-error" id="errorMsg"></div>
-  <div class="alert alert-success" id="successMsg"></div>
-  <div class="field"><label>E-Mail</label><input type="email" placeholder="deine@email.com" id="email" onkeydown="if(event.key==='Enter')doLogin()"></div>
-  <div class="field"><label>Passwort</label><input type="password" placeholder="Dein Passwort" id="pw" onkeydown="if(event.key==='Enter')doLogin()"></div>
-  <div class="forgot"><a href="passwort-vergessen.html">Passwort vergessen?</a></div>
-  <button class="btn-login" id="loginBtn" onclick="doLogin()">Einloggen →</button>
-  <div class="divider"><div class="dl"></div><span class="ds">oder</span><div class="dl"></div></div>
-  <div class="links">
-    <p>Noch kein Account? <a href="registrieren.html?typ=trainer">Als Trainer registrieren →</a></p>
-  </div>
-</div></div>
-<script>
-const SUPABASE_URL = 'https://hbapzwxdehfgnputrfjf.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYXB6d3hkZWhmZ25wdXRyZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDc0NzQsImV4cCI6MjA5NDQyMzQ3NH0.vIQLcTObF5tmBEuxKL2EEUd4U88k0mdTmsAafG8djN4';
 
-const _existingSession = localStorage.getItem('vexfit_session');
-if(_existingSession) {
-  const _s = JSON.parse(_existingSession);
-  window.location.href = _s.role === 'kunde' ? 'kunden-bereich.html' : 'trainer-bereich.html';
+  <div class="main">
+    <div class="box">
+
+      <!-- ROLE TOGGLE -->
+      <div class="role-toggle">
+        <button class="role-btn active" id="roleKunde" onclick="setRole('kunde')">
+          <span class="role-icon">🏃</span>Ich suche einen Trainer
+        </button>
+        <button class="role-btn" id="roleTrainer" onclick="setRole('trainer')">
+          <span class="role-icon">💪</span>Ich bin Trainer
+        </button>
+      </div>
+
+      <!-- MODE TABS -->
+      <div class="mode-tabs">
+        <button class="mode-tab active" id="tabLogin" onclick="setMode('login')">Einloggen</button>
+        <button class="mode-tab" id="tabRegister" onclick="setMode('register')">Registrieren</button>
+      </div>
+
+      <!-- HEADLINE -->
+      <div class="headline" id="headline">
+        <h1 id="headlineTitle">Willkommen zurück</h1>
+        <p id="headlineSub">Logge dich mit deiner E-Mail ein.</p>
+      </div>
+
+      <!-- ALERTS -->
+      <div class="alert alert-err" id="alertErr"></div>
+      <div class="alert alert-ok" id="alertOk"></div>
+
+      <!-- REGISTER EXTRA FIELDS (hidden in login mode) -->
+      <div id="registerFields" style="display:none">
+        <div class="field-row">
+          <div class="field"><label>Vorname</label><input type="text" id="regFn" placeholder="Max" autocomplete="given-name"></div>
+          <div class="field"><label>Nachname</label><input type="text" id="regLn" placeholder="Mustermann" autocomplete="family-name"></div>
+        </div>
+      </div>
+
+      <!-- ALWAYS VISIBLE -->
+      <div class="field"><label>E-Mail</label><input type="email" id="email" placeholder="deine@email.com" autocomplete="email"></div>
+      <div class="field"><label>Passwort</label><input type="password" id="password" placeholder="Mindestens 8 Zeichen" autocomplete="current-password"></div>
+
+      <button class="btn-primary" id="submitBtn" onclick="submit()">Einloggen →</button>
+
+      <div class="divider"><span>oder</span></div>
+      <div style="text-align:center;font-size:13px;color:var(--muted)">
+        <span id="switchText">Noch kein Konto?</span>
+        <a href="#" id="switchLink" onclick="toggleMode(event)" style="color:var(--accent);margin-left:6px;font-weight:500">Jetzt registrieren</a>
+      </div>
+
+    </div>
+  </div>
+
+  <div class="foot">Vexfit · Dein Personal Trainer Marktplatz · <a href="mailto:vexfit.info@gmail.com" style="color:var(--muted-light)">Support</a></div>
+</div>
+
+<script>
+const SB   = 'https://hbapzwxdehfgnputrfjf.supabase.co';
+const KEY  = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYXB6d3hkZWhmZ25wdXRyZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDc0NzQsImV4cCI6MjA5NDQyMzQ3NH0.vIQLcTObF5tmBEuxKL2EEUd4U88k0mdTmsAafG8djN4';
+const HEADERS = { 'apikey': KEY, 'Authorization': `Bearer ${KEY}`, 'Content-Type': 'application/json' };
+
+let currentRole = 'kunde'; // 'kunde' | 'trainer'
+let currentMode = 'login'; // 'login' | 'register'
+
+// ── Redirect if already logged in ──
+const existingSession = localStorage.getItem('vexfit_session');
+if (existingSession) {
+  try {
+    const s = JSON.parse(existingSession);
+    if (s && s.email && s.role) {
+      window.location.href = s.role === 'trainer' ? 'trainer-bereich.html' : 'kunden-bereich.html';
+    }
+  } catch(e) { localStorage.removeItem('vexfit_session'); }
 }
 
-async function doLogin() {
-  const email = document.getElementById('email').value.trim();
-  const pw = document.getElementById('pw').value;
-  if(!email || !pw) { showError('Bitte E-Mail und Passwort eingeben!'); return; }
-  const btn = document.getElementById('loginBtn');
-  btn.disabled = true; btn.textContent = 'Wird eingeloggt...';
-  try {
-    const res = await fetch(`${SUPABASE_URL}/auth/v1/token?grant_type=password`, {
-      method: 'POST',
-      headers: {'Content-Type': 'application/json', 'apikey': SUPABASE_KEY},
-      body: JSON.stringify({email, password: pw})
-    });
-    const data = await res.json();
-    if(data.access_token) {
-      // Check if trainer or kunde
-      let role = 'trainer';
-      try {
-        const trainerCheck = await fetch(`${SUPABASE_URL}/rest/v1/trainers?email=eq.${encodeURIComponent(email)}&select=id`, {
-          headers: { 'apikey': SUPABASE_KEY, 'Authorization': `Bearer ${data.access_token}` }
-        });
-        const trainerData = await trainerCheck.json();
-        if(!trainerData || trainerData.length === 0) role = 'kunde';
-      } catch(e) {}
+function setRole(role) {
+  currentRole = role;
+  document.getElementById('roleKunde').classList.toggle('active', role === 'kunde');
+  document.getElementById('roleTrainer').classList.toggle('active', role === 'trainer');
+  updateHeadline();
+}
 
-      localStorage.setItem('vexfit_session', JSON.stringify({
-        access_token: data.access_token,
-        user_id: data.user.id,
-        email: data.user.email,
-        role: role
-      }));
-      window.location.href = role === 'kunde' ? 'kunden-bereich.html' : 'trainer-bereich.html';
-    } else {
-      showError('Falsche E-Mail oder Passwort!');
-      btn.disabled = false; btn.textContent = 'Einloggen →';
-    }
-  } catch(e) {
-    showError('Verbindungsfehler. Bitte versuche es erneut.');
-    btn.disabled = false; btn.textContent = 'Einloggen →';
+function setMode(mode) {
+  currentMode = mode;
+  document.getElementById('tabLogin').classList.toggle('active', mode === 'login');
+  document.getElementById('tabRegister').classList.toggle('active', mode === 'register');
+  document.getElementById('registerFields').style.display = mode === 'register' ? 'block' : 'none';
+  document.getElementById('submitBtn').textContent = mode === 'login' ? 'Einloggen →' : 'Konto erstellen →';
+  document.getElementById('switchText').textContent = mode === 'login' ? 'Noch kein Konto?' : 'Schon registriert?';
+  document.getElementById('switchLink').textContent = mode === 'login' ? 'Jetzt registrieren' : 'Einloggen';
+  clearAlerts();
+  updateHeadline();
+}
+
+function toggleMode(e) {
+  e.preventDefault();
+  setMode(currentMode === 'login' ? 'register' : 'login');
+}
+
+function updateHeadline() {
+  const titles = {
+    login: { kunde: 'Willkommen zurück', trainer: 'Trainer-Login' },
+    register: { kunde: 'Konto erstellen', trainer: 'Als Trainer starten' }
+  };
+  const subs = {
+    login: { kunde: 'Logge dich mit deiner E-Mail ein.', trainer: 'Logge dich mit deiner E-Mail ein.' },
+    register: { kunde: 'Finde deinen Personal Trainer im DACH-Raum.', trainer: 'Erstelle dein Trainer-Profil — kostenlos bis zum ersten Kunden.' }
+  };
+  document.getElementById('headlineTitle').textContent = titles[currentMode][currentRole];
+  document.getElementById('headlineSub').textContent   = subs[currentMode][currentRole];
+}
+
+function clearAlerts() {
+  document.getElementById('alertErr').classList.remove('show');
+  document.getElementById('alertOk').classList.remove('show');
+}
+
+function showErr(msg) {
+  const el = document.getElementById('alertErr');
+  el.textContent = msg;
+  el.classList.add('show');
+  document.getElementById('alertOk').classList.remove('show');
+}
+
+function showOk(msg) {
+  const el = document.getElementById('alertOk');
+  el.textContent = msg;
+  el.classList.add('show');
+  document.getElementById('alertErr').classList.remove('show');
+}
+
+function loading(on) {
+  document.getElementById('loader').classList.toggle('show', on);
+  document.getElementById('submitBtn').disabled = on;
+}
+
+async function submit() {
+  clearAlerts();
+  const email    = document.getElementById('email').value.trim().toLowerCase();
+  const password = document.getElementById('password').value;
+
+  if (!email || !email.includes('@')) return showErr('Bitte eine gültige E-Mail-Adresse eingeben.');
+  if (!password || password.length < 8) return showErr('Passwort muss mindestens 8 Zeichen haben.');
+
+  if (currentMode === 'register') {
+    const fn = document.getElementById('regFn').value.trim();
+    const ln = document.getElementById('regLn').value.trim();
+    if (!fn || !ln) return showErr('Bitte Vor- und Nachname eingeben.');
+    await doRegister(email, password, fn, ln);
+  } else {
+    await doLogin(email, password);
   }
 }
-function showError(msg) {
-  const el = document.getElementById('errorMsg');
-  el.textContent = '⚠️ ' + msg; el.classList.add('show');
+
+async function doRegister(email, password, fn, ln) {
+  loading(true);
+  try {
+    const table = currentRole === 'trainer' ? 'trainers' : 'kunden';
+
+    // Check if email already exists
+    const checkRes = await fetch(`${SB}/rest/v1/${table}?email=eq.${encodeURIComponent(email)}&select=id`, { headers: HEADERS });
+    const checkData = await checkRes.json();
+    if (checkData && checkData.length > 0) {
+      loading(false);
+      return showErr('Diese E-Mail ist bereits registriert. Bitte einloggen.');
+    }
+
+    // Create record
+    const body = currentRole === 'trainer'
+      ? { email, passwort: password, vorname: fn, nachname: ln, aktiv: false, stripe_bezahlt: false, spezialisierungen: [] }
+      : { email, passwort: password, vorname: fn, nachname: ln };
+
+    const res = await fetch(`${SB}/rest/v1/${table}`, {
+      method: 'POST',
+      headers: { ...HEADERS, 'Prefer': 'return=representation' },
+      body: JSON.stringify(body)
+    });
+
+    if (!res.ok) {
+      const err = await res.json().catch(() => ({}));
+      loading(false);
+      return showErr(err.message || 'Registrierung fehlgeschlagen. Bitte erneut versuchen.');
+    }
+
+    const data = await res.json();
+    const user = data[0];
+    saveSession(email, password, currentRole, user.id);
+    showOk('Konto erstellt! Weiterleitung...');
+    setTimeout(() => redirect(), 800);
+
+  } catch(e) {
+    loading(false);
+    showErr('Verbindungsfehler. Bitte erneut versuchen.');
+  }
 }
+
+async function doLogin(email, password) {
+  loading(true);
+  try {
+    const table = currentRole === 'trainer' ? 'trainers' : 'kunden';
+    const res = await fetch(`${SB}/rest/v1/${table}?email=eq.${encodeURIComponent(email)}&passwort=eq.${encodeURIComponent(password)}&select=*`, { headers: HEADERS });
+    const data = await res.json();
+
+    if (!data || data.length === 0) {
+      loading(false);
+      return showErr('E-Mail oder Passwort falsch. Bitte erneut versuchen.');
+    }
+
+    const user = data[0];
+    saveSession(email, password, currentRole, user.id);
+    showOk('Anmeldung erfolgreich! Weiterleitung...');
+    setTimeout(() => redirect(), 600);
+
+  } catch(e) {
+    loading(false);
+    showErr('Verbindungsfehler. Bitte erneut versuchen.');
+  }
+}
+
+function saveSession(email, password, role, id) {
+  localStorage.setItem('vexfit_session', JSON.stringify({ email, password, role, id, ts: Date.now() }));
+}
+
+function redirect() {
+  window.location.href = currentRole === 'trainer' ? 'trainer-bereich.html' : 'kunden-bereich.html';
+}
+
+// Enter key support
+document.addEventListener('keydown', e => { if (e.key === 'Enter') submit(); });
 </script>
-<!-- WhatsApp Button -->
-<style>
-@keyframes waBounce{0%{opacity:0;transform:scale(0.5) translateY(20px)}60%{transform:scale(1.08) translateY(-4px)}80%{transform:scale(0.96) translateY(2px)}100%{opacity:1;transform:scale(1) translateY(0)}}
-.wa-btn{position:fixed;bottom:22px;right:20px;z-index:9999;width:46px;height:46px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 16px rgba(37,211,102,0.45);text-decoration:none;opacity:0;animation:waBounce 0.6s cubic-bezier(0.34,1.56,0.64,1) 2.5s forwards;transition:transform 0.2s,box-shadow 0.2s}
-.wa-btn:hover{transform:scale(1.1);box-shadow:0 5px 24px rgba(37,211,102,0.6)}
-</style>
-<a href="https://wa.me/436649275737?text=Name%3A%20%0ANachricht%3A%20Hi%20ich%20habe%20eine%20Frage%20zu%20Vexfit%2C" 
-   target="_blank" class="wa-btn" aria-label="WhatsApp Kontakt">
-  <svg width="22" height="22" viewBox="0 0 24 24" fill="white" xmlns="http://www.w3.org/2000/svg">
-    <path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413z"/>
-  </svg>
-</a>
-</body></html>
+</body>
+</html>
