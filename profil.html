@@ -56,11 +56,17 @@ nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;ali
 .btn-send:disabled{opacity:.5;cursor:not-allowed}
 .alert-ok{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);color:var(--green);padding:11px 14px;border-radius:3px;font-size:13px;display:none;margin-bottom:10px}
 .alert-ok.show{display:block}
+/* TOAST */
+.toast{position:fixed;bottom:40px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--mid);border:1px solid var(--border-i);color:var(--white);padding:12px 20px;border-radius:4px;font-size:13px;font-weight:500;z-index:9998;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:rgba(74,222,128,.3);color:var(--green)}
+.toast.err{border-color:rgba(248,113,113,.3);color:var(--red)}
 @media(min-width:640px){nav{padding:0 48px}.content{padding:80px 48px 80px}.info-grid{grid-template-columns:1fr 1fr 1fr}}
 </style>
 </head>
 <body>
 <div class="loader" id="loader"><div class="spinner"></div></div>
+<div class="toast" id="toast"></div>
 <nav>
   <a href="kunden-bereich.html" class="logo">VEX<span>FIT</span></a>
   <button class="btn-back" onclick="history.back()">← Zurück</button>
@@ -150,7 +156,13 @@ function renderProfile() {
   document.getElementById('modalInfo').innerHTML = '<strong>'+fn+' '+ln+'</strong>'+(loc ? loc : '');
 }
 
-function openModal() {
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;t.className='toast'+(type?' '+type:'');
+  t.classList.add('show');
+  clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),3200);
+}
+
   document.getElementById('modalMsg').value = '';
   document.getElementById('sentOk').classList.remove('show');
   document.getElementById('sendBtn').disabled = false;
@@ -169,25 +181,33 @@ async function sendAnfrage() {
   const btn = document.getElementById('sendBtn');
   btn.disabled = true; btn.textContent = 'Wird gesendet...';
   const kundenName = K ? ((K.vorname||'')+' '+(K.nachname||'')).trim() : '';
-  const body = {
-    trainer_email: T.email,
-    trainer_name: (T.vorname+' '+T.nachname).trim(),
-    kunden_email: sess.email,
-    kunden_name: kundenName,
-    ziel: K ? (K.ziel||'') : '',
-    nachricht: document.getElementById('modalMsg').value.trim(),
-    status: 'ausstehend',
-    weitergeleitet: false
-  };
   try {
+    // Dupe check
+    const chk = await fetch(SB+'/rest/v1/anfragen?kunden_email=eq.'+encodeURIComponent(sess.email)+'&trainer_email=eq.'+encodeURIComponent(T.email)+'&select=id', {headers:H});
+    const existing = await chk.json();
+    if (existing && existing.length > 0) {
+      document.getElementById('overlay').classList.remove('open');
+      showToast('Du hast diesem Trainer bereits eine Anfrage geschickt.', 'err');
+      btn.disabled = false; btn.textContent = 'Senden →';
+      return;
+    }
+    const body = {
+      trainer_email: T.email,
+      trainer_name: (T.vorname+' '+T.nachname).trim(),
+      kunden_email: sess.email,
+      kunden_name: kundenName,
+      ziel: K ? (K.ziel||'') : '',
+      nachricht: document.getElementById('modalMsg').value.trim(),
+      status: 'ausstehend',
+      weitergeleitet: false
+    };
     await fetch(SB+'/rest/v1/anfragen', {method:'POST', headers:{...H,'Prefer':'return=minimal'}, body:JSON.stringify(body)});
     fetch('https://n8n.srv1551518.hstgr.cloud/webhook/neue-anfrage', {method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).catch(()=>{});
-    document.getElementById('sentOk').classList.add('show');
-    document.getElementById('modalMsg').style.display = 'none';
-    btn.textContent = '✓ Gesendet';
+    document.getElementById('overlay').classList.remove('open');
+    showToast('Anfrage gesendet! ✓', 'ok');
   } catch(e) {
+    showToast('Fehler beim Senden. Bitte erneut versuchen.', 'err');
     btn.disabled = false; btn.textContent = 'Senden →';
-    alert('Fehler beim Senden. Bitte erneut versuchen.');
   }
 }
 </script>

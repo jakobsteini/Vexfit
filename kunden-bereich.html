@@ -141,12 +141,19 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
 .spinner{width:30px;height:30px;border:2px solid var(--border-i);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 
+/* TOAST */
+.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--mid);border:1px solid var(--border-i);color:var(--white);padding:12px 20px;border-radius:4px;font-size:13px;font-weight:500;z-index:9998;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none}
+.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
+.toast.ok{border-color:rgba(74,222,128,.3);color:var(--green)}
+.toast.err{border-color:rgba(248,113,113,.3);color:var(--red)}
+
 @media(min-width:640px){nav{padding:0 48px}.content{padding:120px 48px 80px}}
 </style>
 </head>
 <body>
 
 <div class="loader" id="loader"><div class="spinner"></div></div>
+<div class="toast" id="toast"></div>
 
 <nav>
   <a href="kunden-bereich.html" class="logo">VEX<span>FIT</span></a>
@@ -317,6 +324,7 @@ function renderDashboard(){
   setSel('pCity',K.stadt);
   const saved=(K.ziel||'').split(', ').filter(Boolean);
   document.querySelectorAll('.goal-card').forEach(el=>{
+    el.classList.remove('on');
     const t=el.querySelector('span').textContent.replace(/^.\s/,'');
     if(saved.some(g=>g.includes(t)||t.includes(g.replace(/^.\s/,''))))el.classList.add('on');
   });
@@ -423,23 +431,33 @@ async function sendAnfrage(){
   if(!selT||!K)return;
   const btn=document.getElementById('sendBtn');
   btn.disabled=true;btn.textContent='Wird gesendet...';
-  const body={
-    trainer_email:selT.email,
-    trainer_name:(selT.vorname+' '+selT.nachname).trim(),
-    kunden_email:K.email,
-    kunden_name:((K.vorname||'')+' '+(K.nachname||'')).trim(),
-    ziel:K.ziel||'',
-    nachricht:document.getElementById('modalMsg').value.trim(),
-    status:'ausstehend',
-    weitergeleitet:false
-  };
   try{
+    // Dupe check: already sent to this trainer?
+    const chk=await fetch(SB+'/rest/v1/anfragen?kunden_email=eq.'+encodeURIComponent(K.email)+'&trainer_email=eq.'+encodeURIComponent(selT.email)+'&select=id',{headers:H});
+    const existing=await chk.json();
+    if(existing&&existing.length>0){
+      document.getElementById('overlay').classList.remove('open');selT=null;
+      showToast('Du hast diesem Trainer bereits eine Anfrage geschickt.','err');
+      btn.disabled=false;btn.textContent='Senden →';
+      return;
+    }
+    const body={
+      trainer_email:selT.email,
+      trainer_name:(selT.vorname+' '+selT.nachname).trim(),
+      kunden_email:K.email,
+      kunden_name:((K.vorname||'')+' '+(K.nachname||'')).trim(),
+      ziel:K.ziel||'',
+      nachricht:document.getElementById('modalMsg').value.trim(),
+      status:'ausstehend',
+      weitergeleitet:false
+    };
     await fetch(SB+'/rest/v1/anfragen',{method:'POST',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify(body)});
     fetch('https://n8n.srv1551518.hstgr.cloud/webhook/neue-anfrage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).catch(()=>{});
     document.getElementById('overlay').classList.remove('open');selT=null;
+    showToast('Anfrage gesendet! ✓','ok');
     go('an',document.getElementById('t-an'));
     loadAnfragen();
-  }catch(e){alert('Fehler beim Senden. Bitte erneut versuchen.');}
+  }catch(e){showToast('Fehler beim Senden. Bitte erneut versuchen.','err');}
   btn.disabled=false;btn.textContent='Senden →';
 }
 
@@ -479,6 +497,14 @@ function go(id,el){
   el.classList.add('active');
   if(id==='an')loadAnfragen();
   if(id==='su'&&allT.length===0)loadTrainer();
+}
+function showToast(msg,type=''){
+  const t=document.getElementById('toast');
+  t.textContent=msg;
+  t.className='toast'+(type?' '+type:'');
+  t.classList.add('show');
+  clearTimeout(t._t);
+  t._t=setTimeout(()=>t.classList.remove('show'),3200);
 }
 function setSel(id,val){if(!val)return;const s=document.getElementById(id);if(!s)return;for(let o of s.options){if(o.text===val||o.value===val){o.selected=true;break;}}}
 function logout(){localStorage.removeItem('vexfit_session');location.href='login.html';}
