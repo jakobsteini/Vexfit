@@ -212,7 +212,7 @@ const STRIPE_LINK = 'https://buy.stripe.com/eVqdR9gopdNhczNbhw2oE00';
 let trainer = null;
 
 // Check login
-const session = localStorage.getItem('flexfit_session');
+const session = localStorage.getItem('vexfit_session');
 if(!session) { window.location.href = 'login.html'; }
 else {
   const sess = JSON.parse(session);
@@ -350,7 +350,7 @@ function initDashboard() {
       <div class="abo-box">
         <div class="abo-title" style="color:var(--text-muted)">ABO KÜNDIGEN</div>
         <p class="abo-sub">Zum Kündigen schreibe uns einfach eine E-Mail – wir kümmern uns sofort darum.</p>
-        <a href="mailto:flexfit.info@gmail.com?subject=Vexfit Abo kündigen&body=Hi, ich möchte mein Vexfit Abo kündigen. Meine E-Mail: ${trainer.email}" class="btn-stripe" style="background:transparent;border:1px solid var(--border);color:var(--text-muted)">Kündigung anfragen →</a>
+        <a href="mailto:vexfit.info@gmail.com?subject=Vexfit Abo kündigen&body=Hi, ich möchte mein Vexfit Abo kündigen. Meine E-Mail: ${trainer.email}" class="btn-stripe" style="background:transparent;border:1px solid var(--border);color:var(--text-muted)">Kündigung anfragen →</a>
       </div>`;
   }
   document.getElementById('aboContent').innerHTML = aboHTML;
@@ -429,7 +429,7 @@ async function saveProfile() {
       const updated = await res.json();
       if(updated && updated[0]) {
         trainer = updated[0];
-        sessionStorage.setItem('flexfit_trainer', JSON.stringify(trainer));
+        sessionStorage.setItem('vexfit_trainer', JSON.stringify(trainer));
         initDashboard();
       }
       const s = document.getElementById('p-success');
@@ -496,7 +496,7 @@ async function loadAnfragen() {
 }
 
 function logout() {
-  localStorage.removeItem('flexfit_session');
+  localStorage.removeItem('vexfit_session');
   window.location.href = 'login.html';
 }
 </script>

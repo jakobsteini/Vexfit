@@ -449,7 +449,7 @@ async function submitTrainer() {
 
     // Save session so user is logged in
     if(authData.access_token) {
-      localStorage.setItem('flexfit_session', JSON.stringify({
+      localStorage.setItem('vexfit_session', JSON.stringify({
         access_token: authData.access_token,
         user_id: authData.user?.id,
         email: email,
@@ -561,7 +561,7 @@ async function submitClient() {
 
     // Save session so user is logged in
     if(authData.access_token) {
-      localStorage.setItem('flexfit_session', JSON.stringify({
+      localStorage.setItem('vexfit_session', JSON.stringify({
         access_token: authData.access_token,
         user_id: authData.user?.id,
         email: email,
