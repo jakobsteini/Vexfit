@@ -441,13 +441,11 @@ async function submitTrainer() {
       body: JSON.stringify({...trainerData, user_id: authData.user?.id})
     });
 
-    // 3. n8n webhook
-    try {
-      await fetch('https://n8n.srv1551518.hstgr.cloud/webhook/neuer-trainer', {
-        method: 'POST', headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(trainerData)
-      });
-    } catch(e) {}
+    // 3. n8n webhook (fire and forget - no await)
+    fetch('https://n8n.srv1551518.hstgr.cloud/webhook/neuer-trainer', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(trainerData)
+    }).catch(() => {});
 
     // Save session so user is logged in
     if(authData.access_token) {
@@ -555,13 +553,11 @@ async function submitClient() {
       body: JSON.stringify({...clientData, user_id: authData.user?.id})
     });
 
-    // 3. n8n webhook
-    try {
-      await fetch('https://n8n.srv1551518.hstgr.cloud/webhook/neuer-kunde', {
-        method: 'POST', headers: {'Content-Type': 'application/json'},
-        body: JSON.stringify(clientData)
-      });
-    } catch(e) {}
+    // 3. n8n webhook (fire and forget - no await)
+    fetch('https://n8n.srv1551518.hstgr.cloud/webhook/neuer-kunde', {
+      method: 'POST', headers: {'Content-Type': 'application/json'},
+      body: JSON.stringify(clientData)
+    }).catch(() => {});
 
     // Save session so user is logged in
     if(authData.access_token) {
