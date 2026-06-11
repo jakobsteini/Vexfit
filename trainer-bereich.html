@@ -94,7 +94,7 @@ textarea{resize:vertical;min-height:100px;line-height:1.6}
 <body>
 
 <nav>
-  <a href="index.html" class="logo">VEX<span>FIT</span></a>
+  <a href="trainer-bereich.html" class="logo">VEX<span>FIT</span></a>
   <div class="nav-right">
     <span class="nav-name" id="navName">–</span>
     <button class="btn-logout" onclick="logout()">Ausloggen</button>
@@ -103,7 +103,6 @@ textarea{resize:vertical;min-height:100px;line-height:1.6}
 
 <div class="tab-bar">
   <div class="tab-item active" onclick="showTab('overview', this)">Übersicht</div>
-  <div class="tab-item" onclick="showTab('anfragen', this)">Anfragen</div>
   <div class="tab-item" onclick="showTab('profile', this)">Profil bearbeiten</div>
   <div class="tab-item" onclick="showTab('abo', this)">Mein Abo</div>
 </div>
@@ -113,31 +112,15 @@ textarea{resize:vertical;min-height:100px;line-height:1.6}
   <!-- OVERVIEW TAB -->
   <div class="tab-content active" id="tab-overview">
 
-    <!-- WELCOME -->
-    <div style="margin-bottom:24px;animation:fadeUp 0.5s ease both">
-      <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:6px">Willkommen zurück</div>
-      <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(36px,8vw,56px);letter-spacing:2px;line-height:1;margin-bottom:4px" id="ov-name">–</div>
-      <div style="font-size:13px;color:var(--text-muted);font-weight:300" id="ov-meta">–</div>
+    <!-- HERO PROFILE CENTERED -->
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;animation:fadeUp 0.5s ease both;padding:20px 0">
+      <div class="preview-av" id="ov-avatar" style="width:80px;height:80px;font-size:28px;margin:0 auto 20px">–</div>
+      <div style="font-family:'Bebas Neue',sans-serif;font-size:clamp(42px,10vw,72px);letter-spacing:3px;line-height:1;margin-bottom:8px" id="ov-name">–</div>
+      <div style="font-size:14px;color:var(--text-muted);font-weight:300;margin-bottom:20px" id="ov-meta">–</div>
+      <div class="preview-tags" id="ov-tags" style="justify-content:center;margin-bottom:20px"></div>
+      <div id="statusBanner" style="width:100%;max-width:480px"></div>
     </div>
 
-    <!-- PROFILE CARD -->
-    <div class="preview-card" style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
-      <div class="preview-av" id="ov-avatar" style="flex-shrink:0">–</div>
-      <div style="flex:1;min-width:0">
-        <div class="preview-tags" id="ov-tags"></div>
-        <div style="font-size:12px;color:var(--text-muted);margin-top:8px" id="ov-city">–</div>
-      </div>
-    </div>
-
-    <!-- STATUS BANNER -->
-    <div id="statusBanner" style="margin-bottom:20px"></div>
-
-  </div>
-
-  <!-- ANFRAGEN TAB -->
-  <div class="tab-content" id="tab-anfragen">
-    <div class="section-title">MEINE ANFRAGEN</div>
-    <div id="anfragenList"><div style="text-align:center;padding:40px;color:var(--text-muted)">Wird geladen...</div></div>
   </div>
 
   <!-- PROFILE EDIT TAB -->
@@ -228,19 +211,14 @@ async function loadTrainerByEmail(email) {
     if(!data || data.length === 0) { window.location.href = 'login.html'; return; }
     trainer = data[0];
     initDashboard();
-    loadAnfragen();
   } catch(e) { window.location.href = 'login.html'; }
 }
 
 function initDashboard() {
   document.getElementById('navName').textContent = trainer.vorname;
 
-  // Lock tabs visually if not activated
-  if(!trainer.aktiv) {
-    document.querySelectorAll('.tab-item').forEach((t, i) => {
-      if(i > 0) t.classList.add('locked');
-    });
-  }
+  // Never lock tabs
+  document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('locked'));
 
   // Overview
   const initials = (trainer.vorname[0] + trainer.nachname[0]).toUpperCase();
@@ -252,7 +230,6 @@ function initDashboard() {
 
   const tags = (trainer.spezialisierungen || []);
   document.getElementById('ov-tags').innerHTML = tags.map(t => `<span class="preview-tag">${t}</span>`).join('');
-  document.getElementById('ov-city').textContent = (trainer.trainingsart === 'Online' ? '🌐 Online · DACH-weit' : '📍 ' + trainer.stadt);
 
   // Status banner
   let bannerHTML = '';
@@ -368,25 +345,10 @@ function setSelectValue(id, value) {
 }
 
 function showTab(tab, el) {
-  // Lock tabs if not activated yet
-  if(!trainer || !trainer.aktiv) {
-    if(tab !== 'overview') {
-      showTabLockedMsg();
-      return;
-    }
-  }
   document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
   document.querySelectorAll('.tab-item').forEach(t => t.classList.remove('active'));
   document.getElementById('tab-' + tab).classList.add('active');
   el.classList.add('active');
-}
-
-function showTabLockedMsg() {
-  // Flash the status banner
-  const banner = document.getElementById('statusBanner');
-  banner.style.transition = 'box-shadow 0.2s';
-  banner.style.boxShadow = '0 0 0 2px rgba(232,255,0,0.4)';
-  setTimeout(() => banner.style.boxShadow = '', 600);
 }
 
 function toggleTag(el) { el.classList.toggle('selected'); }

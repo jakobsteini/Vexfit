@@ -102,7 +102,7 @@ textarea.modal-msg:focus{border-color:rgba(232,255,0,0.4)}
 </head>
 <body>
 <nav>
-  <a href="index.html" class="logo">VEX<span>FIT</span></a>
+  <a href="kunden-bereich.html" class="logo">VEX<span>FIT</span></a>
   <div class="nav-r">
     <span class="nav-email" id="navEmail"></span>
     <button class="btn-out" onclick="logout()">Ausloggen</button>
@@ -111,22 +111,19 @@ textarea.modal-msg:focus{border-color:rgba(232,255,0,0.4)}
 <div class="tabs">
   <div class="tab active" id="tab-ov" onclick="go('ov',this)">Übersicht</div>
   <div class="tab locked" id="tab-su" onclick="go('su',this)">Trainer finden</div>
-  <div class="tab locked" id="tab-an" onclick="go('an',this)">Meine Anfragen</div>
   <div class="tab locked" id="tab-pr" onclick="go('pr',this)">Profil</div>
 </div>
 <div class="page">
 
   <!-- ÜBERSICHT -->
   <div class="section active" id="sec-ov">
-    <div style="animation:fadeUp 0.5s ease both">
-      <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px">Willkommen zurück</div>
+    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:60vh;text-align:center;animation:fadeUp 0.5s ease both;padding:20px 0">
+      <div style="width:80px;height:80px;border-radius:50%;background:var(--mid);border:2px solid rgba(232,255,0,0.2);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:28px;color:rgba(232,255,0,0.4);margin:0 auto 20px" id="wAvatar">–</div>
+      <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:10px">Willkommen zurück</div>
       <div class="welcome-name" id="wName">–</div>
-      <div class="welcome-sub" id="wSub">–</div>
-    </div>
-    <div id="statusCard"></div>
-    <div class="card">
-      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Meine Ziele</div>
-      <div id="goalsEl"></div>
+      <div class="welcome-sub" id="wSub" style="margin-bottom:24px">–</div>
+      <div id="goalsEl" style="display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:24px"></div>
+      <div id="statusCard" style="width:100%;max-width:480px"></div>
     </div>
   </div>
 
@@ -156,12 +153,6 @@ textarea.modal-msg:focus{border-color:rgba(232,255,0,0.4)}
       <div class="fc" onclick="setFilter('Reha',this)">🏥 Reha</div>
     </div>
     <div id="trainerList"><div class="empty"><div class="ei">🔍</div><p>Wird geladen...</p></div></div>
-  </div>
-
-  <!-- ANFRAGEN -->
-  <div class="section" id="sec-an">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:16px">MEINE ANFRAGEN</div>
-    <div id="anList"><div class="empty"><div class="ei">📭</div><p>Noch keine Anfragen</p></div></div>
   </div>
 
   <!-- PROFIL -->
@@ -326,7 +317,11 @@ async function init(email) {
 function render() {
   const name = ((K.vorname || '') + ' ' + (K.nachname || '')).trim() || K.email;
   document.getElementById('wName').textContent = name;
-  document.getElementById('wSub').textContent = (K.stadt || '') + ' · ' + K.email;
+  document.getElementById('wSub').textContent = (K.stadt || '') + (K.stadt && K.email ? ' · ' : '') + K.email;
+
+  // Avatar initials
+  const fn = K.vorname || '?', ln = K.nachname || '?';
+  document.getElementById('wAvatar').textContent = (fn[0] + ln[0]).toUpperCase();
 
   // Goals
   const goals = (K.ziel || '').split(', ').filter(Boolean);
@@ -336,13 +331,13 @@ function render() {
 
   // Status
   document.getElementById('statusCard').innerHTML = `
-    <div class="status-card waiting" style="margin-bottom:20px">
+    <div class="status-card waiting" style="margin-bottom:0">
       <div class="status-title">🔍 WIR SUCHEN FÜR DICH</div>
       <div class="status-desc">Wir benachrichtigen dich sobald ein passender Trainer für deine Ziele verfügbar ist und du aktiviert wirst.</div>
     </div>`;
 
   // Unlock all tabs
-  ['tab-su','tab-an','tab-pr'].forEach(id => document.getElementById(id).classList.remove('locked'));
+  ['tab-su','tab-pr'].forEach(id => document.getElementById(id).classList.remove('locked'));
 
   // Fill profil
   document.getElementById('pFn').value = K.vorname || '';
