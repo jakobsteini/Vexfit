@@ -7,202 +7,145 @@
 <title>Vexfit – Mein Bereich</title>
 <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
 <style>
-:root{
-  --black:#080808;--white:#f4f4ef;--accent:#e8ff00;
-  --gray:#111;--mid:#1a1a1a;--card:#141414;
-  --muted:#555;--muted-l:#888;
-  --border:rgba(255,255,255,0.07);--border-i:rgba(255,255,255,0.13);
-  --green:#4ade80;--orange:#fb923c;--red:#f87171;
-}
+:root{--black:#0a0a0a;--white:#f5f5f0;--accent:#e8ff00;--gray:#141414;--mid:#1e1e1e;--card:#161616;--muted:#666;--border:rgba(255,255,255,0.07);--border-i:rgba(255,255,255,0.12)}
 *{margin:0;padding:0;box-sizing:border-box;-webkit-tap-highlight-color:transparent}
-html,body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
-a{text-decoration:none;color:inherit}
-nav{position:fixed;top:0;left:0;right:0;z-index:100;height:56px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;background:rgba(8,8,8,0.96);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
+body{background:var(--black);color:var(--white);font-family:'DM Sans',sans-serif;-webkit-font-smoothing:antialiased;min-height:100vh}
+a{text-decoration:none}
+nav{position:fixed;top:0;left:0;right:0;z-index:100;display:flex;justify-content:space-between;align-items:center;padding:0 20px;height:56px;background:rgba(10,10,10,0.97);backdrop-filter:blur(20px);border-bottom:1px solid var(--border)}
 .logo{font-family:'Bebas Neue',sans-serif;font-size:24px;letter-spacing:4px;color:var(--white)}
 .logo span{color:var(--accent)}
 .nav-r{display:flex;align-items:center;gap:10px}
-.nav-email{font-size:12px;color:var(--muted-l)}
-.btn-out{background:none;border:1px solid var(--border);color:var(--muted-l);padding:7px 14px;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer;transition:all .2s}
-.btn-out:hover{color:var(--white);border-color:rgba(255,255,255,.25)}
-.tabs{position:fixed;top:56px;left:0;right:0;z-index:99;background:var(--gray);border-bottom:1px solid var(--border);display:flex;overflow-x:auto}
-.tabs::-webkit-scrollbar{display:none}
-.tab{padding:0 20px;height:44px;display:flex;align-items:center;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all .2s;white-space:nowrap;flex-shrink:0}
+.nav-email{font-size:12px;color:var(--muted)}
+.btn-out{background:none;border:1px solid var(--border);color:var(--muted);padding:7px 14px;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:12px;cursor:pointer}
+.btn-out:hover{color:var(--white);border-color:rgba(255,255,255,0.25)}
+.tabs{position:fixed;top:56px;left:0;right:0;z-index:99;background:var(--gray);border-bottom:1px solid var(--border);display:flex}
+.tab{padding:0 20px;height:44px;display:flex;align-items:center;font-size:11px;font-weight:600;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap}
 .tab.active{color:var(--accent);border-bottom-color:var(--accent)}
-.content{padding:120px 20px 80px;max-width:680px;margin:0 auto}
+.tab.locked{opacity:0.3;cursor:default}
+.page{padding:120px 20px 60px;max-width:640px;margin:0 auto}
 .section{display:none}
-.section.active{display:block;animation:fadeUp .35s ease both}
-@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
-
-/* ÜBERSICHT HERO */
-.ov-hero{display:flex;flex-direction:column;align-items:center;text-align:center;padding:32px 0 28px}
-.ov-avatar{width:76px;height:76px;border-radius:50%;background:var(--mid);border:2px solid rgba(232,255,0,.2);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:26px;color:rgba(232,255,0,.5);margin-bottom:16px}
-.ov-label{font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:10px}
-.ov-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(38px,10vw,64px);letter-spacing:2px;line-height:1;margin-bottom:8px}
-.ov-sub{font-size:13px;color:var(--muted-l);font-weight:300;margin-bottom:20px}
-.goals-row{display:flex;flex-wrap:wrap;gap:6px;justify-content:center;margin-bottom:24px}
-.goal-chip{padding:5px 12px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:100px;font-size:12px;color:var(--muted-l)}
-.status-box{width:100%;max-width:460px;border-radius:4px;padding:18px 20px;background:rgba(232,255,0,.05);border:1px solid rgba(232,255,0,.15)}
-.status-box h3{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1.5px;color:var(--accent);margin-bottom:6px}
-.status-box p{font-size:13px;color:var(--muted-l);font-weight:300;line-height:1.7}
-
-/* TRAINER SUCHE */
-.search-bar{display:grid;grid-template-columns:1fr auto auto;gap:8px;margin-bottom:8px}
-.search-bar input{background:var(--card);border:1px solid var(--border-i);color:var(--white);padding:12px 15px;font-family:'DM Sans',sans-serif;font-size:14px;border-radius:3px;outline:none;-webkit-appearance:none;transition:border-color .2s}
-.search-bar input:focus{border-color:rgba(232,255,0,.45);background:var(--mid)}
-.search-bar input::placeholder{color:rgba(85,85,85,.6)}
-.search-bar select{background:var(--card);border:1px solid var(--border-i);color:var(--white);padding:12px 10px;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;-webkit-appearance:none;outline:none}
-.search-bar select option{background:var(--gray)}
-.btn-search{background:var(--accent);color:var(--black);border:none;padding:12px 16px;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap;letter-spacing:1px}
-.filter-bar{display:flex;gap:6px;overflow-x:auto;padding-bottom:4px;margin-bottom:14px}
-.filter-bar::-webkit-scrollbar{display:none}
-.fc{padding:6px 13px;border:1px solid var(--border-i);border-radius:100px;font-size:11px;color:var(--muted-l);cursor:pointer;white-space:nowrap;flex-shrink:0;transition:all .2s}
-.fc.on{border-color:var(--accent);color:var(--accent);background:rgba(232,255,0,.07)}
-.search-input-full{width:100%;background:var(--card);border:1px solid var(--border-i);color:var(--white);padding:12px 15px;font-family:'DM Sans',sans-serif;font-size:14px;border-radius:3px;outline:none;-webkit-appearance:none;transition:border-color .2s;margin-bottom:12px}
-.search-input-full:focus{border-color:rgba(232,255,0,.45);background:var(--mid)}
-.search-input-full::placeholder{color:rgba(85,85,85,.6)}
-.plz-status{font-size:12px;color:var(--muted-l);margin-bottom:10px;min-height:18px}
-
-/* TRAINER CARD */
-.trainer-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:18px;margin-bottom:10px;transition:border-color .2s}
-.trainer-card:hover{border-color:rgba(232,255,0,.2)}
+.section.active{display:block}
+.card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:20px;margin-bottom:12px}
+.welcome-name{font-family:'Bebas Neue',sans-serif;font-size:clamp(40px,10vw,64px);letter-spacing:2px;line-height:0.95;margin-bottom:6px}
+.welcome-sub{font-size:13px;color:var(--muted);margin-bottom:20px}
+.status-card{border-radius:4px;padding:20px;margin-bottom:20px}
+.status-card.inaktiv{background:rgba(255,165,0,0.06);border:1px solid rgba(255,165,0,0.2)}
+.status-card.aktiv{background:rgba(74,222,128,0.06);border:1px solid rgba(74,222,128,0.2)}
+.status-card.waiting{background:rgba(232,255,0,0.06);border:1px solid rgba(232,255,0,0.15)}
+.status-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:1.5px;margin-bottom:8px}
+.status-card.inaktiv .status-title{color:orange}
+.status-card.aktiv .status-title{color:#4ade80}
+.status-card.waiting .status-title{color:var(--accent)}
+.status-desc{font-size:13px;color:var(--muted);line-height:1.8;font-weight:300}
+.tag-chip{display:inline-block;padding:4px 10px;background:rgba(255,255,255,0.05);border:1px solid var(--border);border-radius:100px;font-size:11px;color:var(--muted);margin:3px}
+/* TRAINER CARDS */
+.trainer-card{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:18px;margin-bottom:10px;cursor:pointer;transition:border-color 0.2s}
+.trainer-card:hover{border-color:rgba(232,255,0,0.2)}
 .tc-top{display:flex;align-items:center;gap:12px;margin-bottom:10px}
-.tc-av{width:46px;height:46px;border-radius:50%;background:var(--mid);border:2px solid rgba(232,255,0,.15);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:17px;color:rgba(232,255,0,.4);flex-shrink:0}
+.tc-av{width:44px;height:44px;border-radius:50%;background:var(--mid);border:2px solid rgba(232,255,0,0.15);display:flex;align-items:center;justify-content:center;font-family:'Bebas Neue',sans-serif;font-size:17px;color:rgba(232,255,0,0.4);flex-shrink:0}
 .tc-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px}
-.tc-meta{font-size:12px;color:var(--muted-l)}
-.tc-bio{font-size:13px;color:var(--muted-l);line-height:1.6;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
-.tc-tags{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:10px}
-.tc-tag{padding:3px 9px;background:rgba(255,255,255,.05);border:1px solid var(--border);border-radius:100px;font-size:11px;color:var(--muted-l)}
-.tc-btns{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.btn-profil{display:flex;align-items:center;justify-content:center;padding:11px;border:1px solid var(--border-i);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--white);cursor:pointer;transition:border-color .2s;background:none}
-.btn-profil:hover{border-color:rgba(255,255,255,.3)}
-.btn-anfragen{background:var(--accent);color:var(--black);padding:11px;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;transition:opacity .2s}
-.btn-anfragen:hover{opacity:.85}
-
-/* ANFRAGEN LIST */
+.tc-meta{font-size:12px;color:var(--muted)}
+.tc-bio{font-size:13px;color:var(--muted);line-height:1.6;margin-bottom:10px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.btn-anfrage{width:100%;background:var(--accent);color:var(--black);padding:12px;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:11px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer}
+/* ANFRAGEN */
 .anfrage-item{background:var(--card);border:1px solid var(--border);border-radius:4px;padding:18px;margin-bottom:10px}
-.an-top{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
-.an-trainer-name{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:1px}
-.chip{display:inline-flex;align-items:center;padding:4px 10px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
-.chip-accent{background:rgba(232,255,0,.1);border:1px solid rgba(232,255,0,.2);color:var(--accent)}
-.chip-green{background:rgba(74,222,128,.1);border:1px solid rgba(74,222,128,.25);color:var(--green)}
-
-/* PROFIL FORM */
-.section-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;margin-bottom:18px}
-.field{display:flex;flex-direction:column;gap:6px;margin-bottom:13px}
+.an-head{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:6px}
+.an-trainer{font-family:'Bebas Neue',sans-serif;font-size:17px;letter-spacing:1px}
+.an-badge{padding:3px 8px;border-radius:100px;font-size:10px;font-weight:700;letter-spacing:1px;text-transform:uppercase}
+.an-badge.pend{background:rgba(232,255,0,0.1);border:1px solid rgba(232,255,0,0.2);color:var(--accent)}
+.an-badge.done{background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.2);color:#4ade80}
+.an-info{font-size:13px;color:var(--muted)}
+/* PROFIL */
+.field{display:flex;flex-direction:column;gap:6px;margin-bottom:14px}
 .field label{font-size:10px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted)}
-.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-input,select,textarea{background:var(--card);border:1px solid var(--border-i);color:var(--white);padding:12px 15px;font-family:'DM Sans',sans-serif;font-size:14px;border-radius:3px;outline:none;width:100%;-webkit-appearance:none;transition:border-color .2s}
-input::placeholder,textarea::placeholder{color:rgba(85,85,85,.6)}
-input:focus,select:focus,textarea:focus{border-color:rgba(232,255,0,.45);background:var(--mid)}
+input,select,textarea{background:var(--mid);border:1px solid var(--border-i);color:var(--white);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;border-radius:3px;outline:none;width:100%;appearance:none;-webkit-appearance:none;transition:border-color 0.2s}
+input:focus,select:focus{border-color:rgba(232,255,0,0.4)}
+input::placeholder{color:rgba(102,102,102,0.5)}
 select{cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 5 5-5z' fill='%23666'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:36px}
 select option{background:var(--gray)}
-textarea{resize:vertical;min-height:90px;line-height:1.6}
 .goal-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.goal-card{background:var(--card);border:1px solid var(--border-i);padding:12px;border-radius:3px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all .2s}
-.goal-card.on{border-color:var(--accent);background:rgba(232,255,0,.05)}
+.goal-card{background:var(--card);border:1px solid var(--border-i);padding:12px;border-radius:3px;cursor:pointer;display:flex;align-items:center;gap:8px;transition:all 0.2s}
+.goal-card.on{border-color:var(--accent);background:rgba(232,255,0,0.05)}
 .goal-card span{font-size:13px;font-weight:500}
-.alert{padding:11px 14px;border-radius:3px;font-size:13px;margin-bottom:14px;display:none}
+.btn-save{width:100%;background:var(--accent);color:var(--black);padding:14px;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12px;letter-spacing:1.5px;text-transform:uppercase;cursor:pointer;margin-top:6px}
+.btn-save:disabled{opacity:0.5;cursor:not-allowed}
+.alert{padding:11px 14px;border-radius:3px;font-size:13px;margin-bottom:12px;display:none}
 .alert.show{display:block}
-.alert-err{background:rgba(248,113,113,.1);border:1px solid rgba(248,113,113,.3);color:var(--red)}
-.alert-ok{background:rgba(74,222,128,.08);border:1px solid rgba(74,222,128,.2);color:var(--green)}
-.btn-save{width:100%;background:var(--accent);color:var(--black);padding:14px;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12px;letter-spacing:2px;text-transform:uppercase;cursor:pointer;margin-top:6px;transition:opacity .2s}
-.btn-save:hover{opacity:.88}
-.btn-save:disabled{opacity:.45;cursor:not-allowed}
-
+.alert-err{background:rgba(255,80,80,0.1);border:1px solid rgba(255,80,80,0.3);color:#ff6b6b}
+.alert-ok{background:rgba(74,222,128,0.1);border:1px solid rgba(74,222,128,0.2);color:#4ade80}
 /* MODAL */
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:none;align-items:flex-end;justify-content:center;backdrop-filter:blur(4px)}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,0.8);z-index:200;display:none;align-items:flex-end;justify-content:center}
 .overlay.open{display:flex}
-.modal{background:var(--gray);border:1px solid var(--border-i);border-radius:6px 6px 0 0;padding:24px 20px 40px;width:100%;max-width:520px;animation:slideUp .3s ease}
-@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+.modal{background:var(--gray);border:1px solid var(--border);border-radius:6px 6px 0 0;padding:24px 20px 40px;width:100%;max-width:520px;animation:slideUp 0.3s ease}
 .modal-title{font-family:'Bebas Neue',sans-serif;font-size:26px;letter-spacing:1.5px;margin-bottom:4px}
-.modal-sub{font-size:13px;color:var(--muted-l);margin-bottom:16px}
-.modal-info{background:var(--card);border:1px solid var(--border);padding:12px;border-radius:3px;margin-bottom:14px;font-size:13px;color:var(--muted-l)}
+.modal-sub{font-size:13px;color:var(--muted);margin-bottom:16px}
+.modal-info{background:var(--card);border:1px solid var(--border);padding:12px;border-radius:3px;margin-bottom:16px;font-size:13px;color:var(--muted)}
 .modal-info strong{color:var(--white);display:block;font-size:16px;margin-bottom:2px}
-.modal-textarea{background:var(--card);border:1px solid var(--border-i);color:var(--white);padding:12px 15px;font-family:'DM Sans',sans-serif;font-size:14px;border-radius:3px;outline:none;width:100%;min-height:90px;line-height:1.6;resize:vertical;-webkit-appearance:none}
-.modal-textarea:focus{border-color:rgba(232,255,0,.4)}
+textarea.modal-msg{background:var(--card);border:1px solid var(--border-i);color:var(--white);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;border-radius:3px;outline:none;width:100%;min-height:90px;line-height:1.6;resize:vertical}
+textarea.modal-msg:focus{border-color:rgba(232,255,0,0.4)}
 .modal-btns{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-.btn-cancel{background:none;border:1px solid var(--border);color:var(--muted-l);padding:12px;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer}
+.btn-cancel{background:none;border:1px solid var(--border);color:var(--muted);padding:12px;border-radius:3px;font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer}
 .btn-send{background:var(--accent);color:var(--black);padding:12px;border:none;border-radius:3px;font-family:'DM Sans',sans-serif;font-weight:700;font-size:12px;letter-spacing:1px;text-transform:uppercase;cursor:pointer}
-.btn-send:disabled{opacity:.5;cursor:not-allowed}
-
-/* EMPTY */
-.empty-state{text-align:center;padding:48px 20px;color:var(--muted-l)}
-.empty-icon{font-size:40px;margin-bottom:14px}
-.empty-title{font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:8px;color:var(--white)}
-.empty-sub{font-size:13px;font-weight:300;line-height:1.7}
-
-/* WA */
-@keyframes waBounce{0%{opacity:0;transform:scale(.5)}100%{opacity:1;transform:scale(1)}}
-.wa{position:fixed;bottom:22px;right:20px;z-index:9999;width:46px;height:46px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 16px rgba(37,211,102,.4);opacity:0;animation:waBounce .5s 2.5s ease both}
-
-/* LOADER */
-.loader{position:fixed;inset:0;background:var(--black);z-index:999;display:flex;align-items:center;justify-content:center;transition:opacity .3s}
-.loader.hidden{opacity:0;pointer-events:none}
-.spinner{width:30px;height:30px;border:2px solid var(--border-i);border-top-color:var(--accent);border-radius:50%;animation:spin .7s linear infinite}
-@keyframes spin{to{transform:rotate(360deg)}}
-
-/* TOAST */
-.toast{position:fixed;bottom:80px;left:50%;transform:translateX(-50%) translateY(20px);background:var(--mid);border:1px solid var(--border-i);color:var(--white);padding:12px 20px;border-radius:4px;font-size:13px;font-weight:500;z-index:9998;opacity:0;transition:all .3s;white-space:nowrap;pointer-events:none}
-.toast.show{opacity:1;transform:translateX(-50%) translateY(0)}
-.toast.ok{border-color:rgba(74,222,128,.3);color:var(--green)}
-.toast.err{border-color:rgba(248,113,113,.3);color:var(--red)}
-
-@media(min-width:640px){nav{padding:0 48px}.content{padding:120px 48px 80px}}
+.btn-send:disabled{opacity:0.5;cursor:not-allowed}
+.empty{text-align:center;padding:40px 20px;color:var(--muted)}
+.empty .ei{font-size:36px;margin-bottom:12px}
+.filter-bar{display:flex;gap:7px;overflow-x:auto;padding-bottom:4px;margin-bottom:16px}
+.filter-bar::-webkit-scrollbar{display:none}
+.fc{padding:6px 13px;border:1px solid var(--border-i);border-radius:100px;font-size:11px;color:var(--muted);cursor:pointer;white-space:nowrap;flex-shrink:0}
+.fc.on{border-color:var(--accent);color:var(--accent);background:rgba(232,255,0,0.07)}
+@keyframes waBounce{0%{opacity:0;transform:scale(0.5)}100%{opacity:1;transform:scale(1)}}
+.wa{position:fixed;bottom:22px;right:20px;z-index:9999;width:46px;height:46px;background:#25D366;border-radius:50%;display:flex;align-items:center;justify-content:center;box-shadow:0 3px 16px rgba(37,211,102,0.4);opacity:0;animation:waBounce 0.5s 2.5s ease both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(16px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
+@media(min-width:768px){nav{padding:0 48px}.page{padding:120px 48px 60px}}
 </style>
 </head>
 <body>
-
-<div class="loader" id="loader"><div class="spinner"></div></div>
-<div class="toast" id="toast"></div>
-
 <nav>
-  <a href="kunden-bereich.html" class="logo">VEX<span>FIT</span></a>
+  <a href="index.html" class="logo">VEX<span>FIT</span></a>
   <div class="nav-r">
     <span class="nav-email" id="navEmail"></span>
     <button class="btn-out" onclick="logout()">Ausloggen</button>
   </div>
 </nav>
-
 <div class="tabs">
-  <div class="tab active" id="t-ov" onclick="go('ov',this)">Übersicht</div>
-  <div class="tab"        id="t-su" onclick="go('su',this)">Trainer finden</div>
-  <div class="tab"        id="t-an" onclick="go('an',this)">Meine Anfragen</div>
-  <div class="tab"        id="t-pr" onclick="go('pr',this)">Profil</div>
+  <div class="tab active" id="tab-ov" onclick="go('ov',this)">Übersicht</div>
+  <div class="tab locked" id="tab-su" onclick="go('su',this)">Trainer finden</div>
+  <div class="tab locked" id="tab-an" onclick="go('an',this)">Meine Anfragen</div>
+  <div class="tab locked" id="tab-pr" onclick="go('pr',this)">Profil</div>
 </div>
-
-<div class="content">
+<div class="page">
 
   <!-- ÜBERSICHT -->
-  <div class="section active" id="s-ov">
-    <div class="ov-hero">
-      <div class="ov-avatar" id="ovAvatar">?</div>
-      <div class="ov-label">Willkommen zurück</div>
-      <div class="ov-name" id="ovName">–</div>
-      <div class="ov-sub"  id="ovSub">–</div>
-      <div class="goals-row" id="ovGoals"></div>
-      <div class="status-box" id="statusBox">
-        <h3>🔍 Wir suchen für dich</h3>
-        <p>Sobald ein passender Trainer verfügbar ist wirst du benachrichtigt.</p>
-      </div>
+  <div class="section active" id="sec-ov">
+    <div style="animation:fadeUp 0.5s ease both">
+      <div style="font-size:10px;letter-spacing:3px;text-transform:uppercase;color:var(--accent);font-weight:600;margin-bottom:8px">Willkommen zurück</div>
+      <div class="welcome-name" id="wName">–</div>
+      <div class="welcome-sub" id="wSub">–</div>
+    </div>
+    <div id="statusCard"></div>
+    <div class="card">
+      <div style="font-size:11px;font-weight:700;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:10px">Meine Ziele</div>
+      <div id="goalsEl"></div>
     </div>
   </div>
 
   <!-- TRAINER FINDEN -->
-  <div class="section" id="s-su">
-    <div style="font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:2px;margin-bottom:14px">Trainer finden</div>
-    <div class="search-bar">
-      <input type="text" id="plzInput" placeholder="PLZ (z.B. 5026)" maxlength="5">
-      <select id="radiusInput">
+  <div class="section" id="sec-su">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:14px">TRAINER FINDEN</div>
+    <div style="display:grid;grid-template-columns:1fr auto auto;gap:8px;margin-bottom:8px">
+      <input type="text" id="plzInput" placeholder="Deine PLZ (z.B. 5026)" maxlength="5">
+      <select id="radiusInput" style="background:var(--mid);border:1px solid var(--border-i);color:var(--white);padding:12px 10px;border-radius:3px;font-size:13px;cursor:pointer;appearance:none;-webkit-appearance:none">
         <option value="10">10 km</option>
         <option value="25" selected>25 km</option>
         <option value="50">50 km</option>
         <option value="100">100 km</option>
         <option value="0">Alle</option>
       </select>
-      <button class="btn-search" onclick="searchByPLZ()">Suchen</button>
+      <button onclick="searchByPLZ()" style="background:var(--accent);color:var(--black);border:none;padding:12px 16px;border-radius:3px;font-weight:700;font-size:12px;cursor:pointer;white-space:nowrap">Suchen →</button>
     </div>
-    <div class="plz-status" id="plzStatus"></div>
-    <input class="search-input-full" type="text" id="searchQ" placeholder="Name suchen..." oninput="filterT()">
+    <div id="plzStatus" style="font-size:12px;color:var(--muted);margin-bottom:10px"></div>
+    <input type="text" id="searchQ" placeholder="Name suchen..." oninput="filterT()" style="margin-bottom:12px">
     <div class="filter-bar" id="filterBar">
       <div class="fc on" onclick="setFilter('alle',this)">Alle</div>
       <div class="fc" onclick="setFilter('Muskelaufbau',this)">💪 Muskelaufbau</div>
@@ -212,31 +155,26 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
       <div class="fc" onclick="setFilter('Mobility',this)">🧘 Mobility</div>
       <div class="fc" onclick="setFilter('Reha',this)">🏥 Reha</div>
     </div>
-    <div id="trainerList"><div class="empty-state"><div class="spinner" style="margin:0 auto 16px"></div><p>Lädt...</p></div></div>
+    <div id="trainerList"><div class="empty"><div class="ei">🔍</div><p>Wird geladen...</p></div></div>
   </div>
 
-  <!-- MEINE ANFRAGEN -->
-  <div class="section" id="s-an">
-    <div class="section-title">Meine Anfragen</div>
-    <div id="anList"><div class="empty-state"><div class="spinner" style="margin:0 auto 16px"></div><p>Lädt...</p></div></div>
+  <!-- ANFRAGEN -->
+  <div class="section" id="sec-an">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:16px">MEINE ANFRAGEN</div>
+    <div id="anList"><div class="empty"><div class="ei">📭</div><p>Noch keine Anfragen</p></div></div>
   </div>
 
   <!-- PROFIL -->
-  <div class="section" id="s-pr">
-    <div class="section-title">Profil bearbeiten</div>
+  <div class="section" id="sec-pr">
+    <div style="font-family:'Bebas Neue',sans-serif;font-size:22px;letter-spacing:1.5px;margin-bottom:16px">PROFIL BEARBEITEN</div>
     <div class="alert alert-err" id="pErr"></div>
-    <div class="alert alert-ok"  id="pOk"></div>
-    <div class="field-row">
+    <div class="alert alert-ok" id="pOk"></div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px">
       <div class="field"><label>Vorname</label><input type="text" id="pFn"></div>
       <div class="field"><label>Nachname</label><input type="text" id="pLn"></div>
     </div>
     <div class="field"><label>Stadt</label>
-      <select id="pCity">
-        <option value="">Auswählen...</option>
-        <option>Wien</option><option>Graz</option><option>Salzburg</option><option>Linz</option><option>Innsbruck</option>
-        <option>München</option><option>Berlin</option><option>Hamburg</option><option>Frankfurt</option><option>Köln</option>
-        <option>Zürich</option><option>Basel</option><option>Ich möchte Online-Coaching</option>
-      </select>
+      <select id="pCity"><option value="">Auswählen...</option><option>Wien</option><option>Graz</option><option>Salzburg</option><option>Linz</option><option>Innsbruck</option><option>München</option><option>Berlin</option><option>Hamburg</option><option>Frankfurt</option><option>Köln</option><option>Zürich</option><option>Basel</option><option>Ich möchte Online-Coaching</option></select>
     </div>
     <div class="field"><label>Meine Ziele</label>
       <div class="goal-grid">
@@ -248,9 +186,7 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
         <div class="goal-card" onclick="this.classList.toggle('on')"><span>🏥 Reha</span></div>
       </div>
     </div>
-    <div class="field"><label>Erwartungen</label>
-      <textarea id="pErw" placeholder="Was erwartest du von deinem Trainer?"></textarea>
-    </div>
+    <div class="field"><label>Meine Erwartungen</label><textarea id="pErw" placeholder="Was erwartest du von deinem Trainer?" style="min-height:80px;resize:vertical;line-height:1.6;background:var(--mid);border:1px solid var(--border-i);color:var(--white);padding:12px 14px;font-family:'DM Sans',sans-serif;font-size:14px;border-radius:3px;outline:none;width:100%"></textarea></div>
     <button class="btn-save" id="saveBtn" onclick="saveProfile()">Speichern</button>
   </div>
 
@@ -259,10 +195,10 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
 <!-- MODAL -->
 <div class="overlay" id="overlay" onclick="closeOverlay(event)">
   <div class="modal">
-    <div class="modal-title">Trainer anfragen</div>
+    <div class="modal-title">TRAINER ANFRAGEN</div>
     <div class="modal-sub">Deine Anfrage wird direkt übermittelt.</div>
     <div class="modal-info" id="modalInfo"></div>
-    <textarea class="modal-textarea" id="modalMsg" placeholder="Kurz vorstellen: Ziele, Verfügbarkeit..."></textarea>
+    <textarea class="modal-msg" id="modalMsg" placeholder="Kurz vorstellen: Ziele, Verfügbarkeit..."></textarea>
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeOverlay()">Abbrechen</button>
       <button class="btn-send" id="sendBtn" onclick="sendAnfrage()">Senden →</button>
@@ -275,239 +211,335 @@ textarea{resize:vertical;min-height:90px;line-height:1.6}
 </a>
 
 <script>
-const SB  = 'https://hbapzwxdehfgnputrfjf.supabase.co';
-const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYXB6d3hkZWhmZ25wdXRyZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDc0NzQsImV4cCI6MjA5NDQyMzQ3NH0.vIQLcTObF5tmBEuxKL2EEUd4U88k0mdTmsAafG8djN4';
-const H   = {'apikey':KEY,'Authorization':'Bearer '+KEY,'Content-Type':'application/json'};
+const SB = 'https://hbapzwxdehfgnputrfjf.supabase.co';
 
-let K=null, allT=[], activeFilter='alle', selT=null;
-const trainerMap = {};
-
-// Auth guard
-const raw=localStorage.getItem('vexfit_session');
-if(!raw){location.href='login.html'; throw '';}
-let sess;
-try{sess=JSON.parse(raw);}catch(e){localStorage.removeItem('vexfit_session');location.href='login.html'; throw '';}
-if(!sess||!sess.email||sess.role!=='kunde'){location.href='login.html'; throw '';}
-
-document.getElementById('navEmail').textContent=sess.email;
-init();
-
-async function init(){
-  try{
-    const r=await fetch(SB+'/rest/v1/kunden?email=eq.'+encodeURIComponent(sess.email)+'&select=*',{headers:H});
-    const d=await r.json();
-    if(!d||d.length===0){logout();return;}
-    K=d[0];
-    renderDashboard();
-    loadTrainer();
-  }catch(e){logout();}
-  finally{document.getElementById('loader').classList.add('hidden');}
+async function getCoords(plz) {
+  for(const country of ['at','de','ch']) {
+    try {
+      const r = await fetch(`https://api.zippopotam.us/${country}/${plz}`);
+      if(r.ok) {
+        const d = await r.json();
+        if(d.places && d.places.length > 0) {
+          return { lat: parseFloat(d.places[0].latitude), lng: parseFloat(d.places[0].longitude), city: d.places[0]['place name'] };
+        }
+      }
+    } catch(e) {}
+  }
+  return null;
 }
 
-function renderDashboard(){
-  const fn=K.vorname||'';
-  const ln=K.nachname||'';
-  const name=(fn+' '+ln).trim()||K.email;
-  document.getElementById('ovAvatar').textContent=((fn||'?')[0]+((ln||'?')[0])).toUpperCase();
-  document.getElementById('ovName').textContent=name;
-  document.getElementById('ovSub').textContent=(K.stadt?K.stadt+' · ':'')+K.email;
+function calcDistance(lat1, lng1, lat2, lng2) {
+  const R = 6371;
+  const dLat = (lat2-lat1)*Math.PI/180;
+  const dLng = (lng2-lng1)*Math.PI/180;
+  const a = Math.sin(dLat/2)**2 + Math.cos(lat1*Math.PI/180)*Math.cos(lat2*Math.PI/180)*Math.sin(dLng/2)**2;
+  return R*2*Math.atan2(Math.sqrt(a),Math.sqrt(1-a));
+}
 
-  const goals=(K.ziel||'').split(', ').filter(Boolean);
-  document.getElementById('ovGoals').innerHTML=goals.length
-    ?goals.map(g=>'<span class="goal-chip">'+g+'</span>').join('')
-    :'<span style="font-size:13px;color:var(--muted-l)">Noch keine Ziele — <a href="#" onclick="go(\'pr\',document.getElementById(\'t-pr\'));return false;" style="color:var(--accent)">Profil ausfüllen</a></span>';
+async function searchByPLZ() {
+  const plz = document.getElementById('plzInput').value.trim();
+  const radius = parseInt(document.getElementById('radiusInput').value);
+  const status = document.getElementById('plzStatus');
 
-  // Fill profile form
-  document.getElementById('pFn').value=K.vorname||'';
-  document.getElementById('pLn').value=K.nachname||'';
-  document.getElementById('pErw').value=K.erwartungen||'';
-  setSel('pCity',K.stadt);
-  const saved=(K.ziel||'').split(', ').filter(Boolean);
-  document.querySelectorAll('.goal-card').forEach(el=>{
-    el.classList.remove('on');
-    const t=el.querySelector('span').textContent.replace(/^.\s/,'');
-    if(saved.some(g=>g.includes(t)||t.includes(g.replace(/^.\s/,''))))el.classList.add('on');
+  if(radius === 0) {
+    renderTrainer(allT);
+    status.textContent = `Alle ${allT.length} Trainer`;
+    return;
+  }
+  if(!plz || plz.length < 4) { status.textContent = '⚠️ Bitte gültige PLZ eingeben'; return; }
+
+  status.textContent = '📍 Standort wird ermittelt...';
+  const coords = await getCoords(plz);
+  if(!coords) { status.textContent = '⚠️ PLZ nicht gefunden'; return; }
+  status.textContent = `📍 ${coords.city} · Suche läuft...`;
+
+  const filtered = [];
+  for(const t of allT) {
+    if((t.trainingsart||'').toLowerCase().includes('online')) {
+      filtered.push({...t, _distance: 0, _online: true});
+      continue;
+    }
+    if(!t.plz) continue;
+    const tc = await getCoords(t.plz);
+    if(!tc) continue;
+    const dist = calcDistance(coords.lat, coords.lng, tc.lat, tc.lng);
+    if(dist <= radius) filtered.push({...t, _distance: Math.round(dist)});
+  }
+  filtered.sort((a,b) => a._distance - b._distance);
+  status.textContent = `📍 ${coords.city} · ${filtered.length} Trainer in ${radius} km`;
+  renderTrainerDist(filtered);
+}
+
+function renderTrainerDist(list) {
+  const el = document.getElementById('trainerList');
+  if(!list.length) {
+    el.innerHTML = `<div class="empty"><div class="ei">🔍</div><p>Keine Trainer in diesem Umkreis.<br>Versuche einen größeren Radius.</p></div>`;
+    return;
+  }
+  el.innerHTML = list.map(t => {
+    const ini = ((t.vorname||'?')[0]+(t.nachname||'?')[0]).toUpperCase();
+    const tags = (t.spezialisierungen||[]).slice(0,3).map(s=>`<span class="tag-chip">${s}</span>`).join('');
+    const distLabel = t._online ? '🌐 Online' : t._distance !== undefined ? `📍 ${t._distance} km entfernt` : '';
+    return `<div class="trainer-card">
+      <div class="tc-top">
+        <div class="tc-av">${ini}</div>
+        <div><div class="tc-name">${t.vorname||''} ${t.nachname||''}</div>
+        <div class="tc-meta">${distLabel || t.stadt||''} · ${t.trainingsart||''}</div></div>
+      </div>
+      ${t.bio?`<div class="tc-bio">${t.bio}</div>`:''}
+      <div style="margin-bottom:10px">${tags}</div>
+      ${t.preis_stunde?`<div style="font-size:13px;color:var(--muted);margin-bottom:10px">€${t.preis_stunde}/Monat</div>`:''}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <a href="profil.html?id=${t.id}" style="display:flex;align-items:center;justify-content:center;padding:11px;border:1px solid var(--border-i);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--white);text-decoration:none">Profil →</a>
+        <button class="btn-anfrage" style="margin:0" onclick="openModal(event,${JSON.stringify(t).replace(/"/g,'&quot;')})">Anfragen →</button>
+      </div>
+    </div>`;
+  }).join('');
+}
+const KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImhiYXB6d3hkZWhmZ25wdXRyZmpmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Nzg4NDc0NzQsImV4cCI6MjA5NDQyMzQ3NH0.vIQLcTObF5tmBEuxKL2EEUd4U88k0mdTmsAafG8djN4';
+let K = null, allT = [], activeFilter = 'alle', selT = null;
+
+const raw = localStorage.getItem('vexfit_session');
+if(!raw) { location.href = 'login.html'; }
+const sess = JSON.parse(raw);
+document.getElementById('navEmail').textContent = sess.email;
+init(sess.email);
+
+async function init(email) {
+  try {
+    const r = await fetch(`${SB}/rest/v1/kunden?email=eq.${encodeURIComponent(email)}&select=*`, {
+      headers: { apikey: KEY, Authorization: `Bearer ${KEY}` }
+    });
+    const d = await r.json();
+    if(!d || d.length === 0) {
+      // Not a kunde — maybe a trainer logged in here by mistake
+      location.href = 'trainer-bereich.html';
+      return;
+    }
+    K = d[0];
+    render();
+    loadTrainer();
+    loadAnfragen();
+  } catch(e) { location.href = 'login.html'; }
+}
+
+function render() {
+  const name = ((K.vorname || '') + ' ' + (K.nachname || '')).trim() || K.email;
+  document.getElementById('wName').textContent = name;
+  document.getElementById('wSub').textContent = (K.stadt || '') + ' · ' + K.email;
+
+  // Goals
+  const goals = (K.ziel || '').split(', ').filter(Boolean);
+  document.getElementById('goalsEl').innerHTML = goals.length
+    ? goals.map(g => `<span class="tag-chip">${g}</span>`).join('')
+    : '<span style="font-size:13px;color:var(--muted)">Noch keine Ziele gesetzt</span>';
+
+  // Status
+  document.getElementById('statusCard').innerHTML = `
+    <div class="status-card waiting" style="margin-bottom:20px">
+      <div class="status-title">🔍 WIR SUCHEN FÜR DICH</div>
+      <div class="status-desc">Wir benachrichtigen dich sobald ein passender Trainer für deine Ziele verfügbar ist und du aktiviert wirst.</div>
+    </div>`;
+
+  // Unlock all tabs
+  ['tab-su','tab-an','tab-pr'].forEach(id => document.getElementById(id).classList.remove('locked'));
+
+  // Fill profil
+  document.getElementById('pFn').value = K.vorname || '';
+  document.getElementById('pLn').value = K.nachname || '';
+  document.getElementById('pErw').value = K.erwartungen || '';
+  setSelect('pCity', K.stadt);
+  const saved = (K.ziel || '').split(', ').filter(Boolean);
+  document.querySelectorAll('.goal-card').forEach(el => {
+    const t = el.querySelector('span').textContent.replace(/^.\s/,'');
+    if(saved.some(g => g.includes(t) || t.includes(g.replace(/^.\s/,'')))) el.classList.add('on');
   });
 }
 
-async function loadTrainer(){
-  try{
-    const r=await fetch(SB+'/rest/v1/trainers?aktiv=eq.true&select=*&order=created_at.desc',{headers:H});
-    allT=await r.json()||[];
+function setSelect(id, val) {
+  if(!val) return;
+  const s = document.getElementById(id);
+  for(let o of s.options) { if(o.text === val || o.value === val) { o.selected = true; break; } }
+}
+
+async function loadTrainer() {
+  try {
+    const r = await fetch(`${SB}/rest/v1/trainers?aktiv=eq.true&select=*&order=created_at.desc`, {
+      headers: { apikey: KEY, Authorization: `Bearer ${KEY}` }
+    });
+    allT = await r.json() || [];
     renderTrainer(allT);
-  }catch(e){
-    document.getElementById('trainerList').innerHTML='<div class="empty-state"><p>Fehler beim Laden.</p></div>';
+  } catch(e) {
+    document.getElementById('trainerList').innerHTML = '<div class="empty"><p>Fehler beim Laden</p></div>';
   }
 }
 
-function renderTrainer(list){
-  const el=document.getElementById('trainerList');
-  if(!list.length){el.innerHTML='<div class="empty-state"><div class="empty-icon">🔍</div><div class="empty-title">Keine Trainer gefunden</div><p class="empty-sub">Versuche einen anderen Suchradius oder Filter.</p></div>';return;}
-  list.forEach(t=>{ trainerMap[t.id]=t; });
-  el.innerHTML=list.map(t=>{
-    const ini=((t.vorname||'?')[0]+(t.nachname||'?')[0]).toUpperCase();
-    const tags=(t.spezialisierungen||[]).slice(0,3).map(s=>'<span class="tc-tag">'+s+'</span>').join('');
-    const dist=t._online?'🌐 Online':t._distance!==undefined?'📍 '+t._distance+' km':t.stadt||'';
-    return '<div class="trainer-card"><div class="tc-top"><div class="tc-av">'+ini+'</div><div><div class="tc-name">'+(t.vorname||'')+' '+(t.nachname||'')+'</div><div class="tc-meta">'+dist+(dist&&t.trainingsart?' · ':'')+( t.trainingsart||'')+'</div></div></div>'+(t.bio?'<div class="tc-bio">'+t.bio+'</div>':'')+'<div class="tc-tags">'+tags+'</div>'+(t.preis_stunde?'<div style="font-size:13px;color:var(--muted-l);margin-bottom:10px">€'+t.preis_stunde+'/Monat</div>':'')+'<div class="tc-btns"><a href="profil.html?id='+t.id+'" class="btn-profil">Profil →</a><button class="btn-anfragen" onclick="openModal(event,\''+t.id+'\')">Anfragen →</button></div></div>';
+function renderTrainer(list) {
+  const el = document.getElementById('trainerList');
+  // Filter by kunde's city or online trainers
+  if(K && K.stadt && activeFilter === 'alle' && !document.getElementById('searchQ').value) {
+    const stadtLower = K.stadt.toLowerCase();
+    const filtered = list.filter(t =>
+      !t.stadt ||
+      t.stadt.toLowerCase() === stadtLower ||
+      (t.trainingsart || '').toLowerCase().includes('online')
+    );
+    if(filtered.length > 0) list = filtered;
+  }
+  if(!list.length) { el.innerHTML = `<div class="empty"><div class="ei">🔍</div><p>Noch keine Trainer in ${K && K.stadt ? K.stadt : 'deiner Stadt'} verfügbar.<br><span style="font-size:12px">Wir benachrichtigen dich sobald ein Trainer verfügbar ist.</span></p></div>`; return; }
+  el.innerHTML = list.map(t => {
+    const ini = ((t.vorname||'?')[0] + (t.nachname||'?')[0]).toUpperCase();
+    const tags = (t.spezialisierungen || []).slice(0,3).map(s => `<span class="tag-chip">${s}</span>`).join('');
+    return `<div class="trainer-card">
+      <div class="tc-top">
+        <div class="tc-av">${ini}</div>
+        <div>
+          <div class="tc-name">${t.vorname || ''} ${t.nachname || ''}</div>
+          <div class="tc-meta">${t.stadt || ''} · ${t.trainingsart || ''}</div>
+        </div>
+      </div>
+      ${t.bio ? `<div class="tc-bio">${t.bio}</div>` : ''}
+      <div style="margin-bottom:10px">${tags}</div>
+      ${t.preis_stunde ? `<div style="font-size:13px;color:var(--muted);margin-bottom:10px">€${t.preis_stunde}/Monat</div>` : ''}
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+        <a href="profil.html?id=${t.id}" style="display:flex;align-items:center;justify-content:center;padding:11px;border:1px solid var(--border-i);border-radius:3px;font-size:11px;font-weight:700;letter-spacing:1px;text-transform:uppercase;color:var(--white);text-decoration:none">Profil →</a>
+        <button class="btn-anfrage" style="margin:0" onclick="openModal(event,${JSON.stringify(t).replace(/"/g,'&quot;')})">Anfragen →</button>
+      </div>
+    </div>`;
   }).join('');
 }
 
-function setFilter(f,el){
-  activeFilter=f;
-  document.querySelectorAll('.fc').forEach(c=>c.classList.remove('on'));
+function setFilter(f, el) {
+  activeFilter = f;
+  document.querySelectorAll('.fc').forEach(c => c.classList.remove('on'));
   el.classList.add('on');
   filterT();
 }
 
-function filterT(){
-  const q=document.getElementById('searchQ').value.toLowerCase();
-  let list=allT;
-  if(activeFilter!=='alle')list=list.filter(t=>(t.spezialisierungen||[]).join(' ').includes(activeFilter)||(t.trainingsart||'').includes(activeFilter));
-  if(q)list=list.filter(t=>(t.vorname+' '+t.nachname+' '+(t.stadt||'')).toLowerCase().includes(q));
+function filterT() {
+  const q = document.getElementById('searchQ').value.toLowerCase();
+  let list = allT;
+  if(activeFilter !== 'alle') list = list.filter(t => (t.spezialisierungen||[]).join(' ').includes(activeFilter) || (t.trainingsart||'').includes(activeFilter));
+  if(q) list = list.filter(t => `${t.vorname} ${t.nachname} ${t.stadt||''}`.toLowerCase().includes(q));
   renderTrainer(list);
 }
 
-async function getCoords(plz){
-  for(const c of['at','de','ch']){
-    try{const r=await fetch('https://api.zippopotam.us/'+c+'/'+plz);if(r.ok){const d=await r.json();if(d.places&&d.places.length>0)return{lat:parseFloat(d.places[0].latitude),lng:parseFloat(d.places[0].longitude),city:d.places[0]['place name']};}}catch(e){}
-  }return null;
-}
-
-function calcDist(a,b,c,d){const R=6371,dA=(c-a)*Math.PI/180,dB=(d-b)*Math.PI/180,e=Math.sin(dA/2)**2+Math.cos(a*Math.PI/180)*Math.cos(c*Math.PI/180)*Math.sin(dB/2)**2;return R*2*Math.atan2(Math.sqrt(e),Math.sqrt(1-e));}
-
-async function searchByPLZ(){
-  const plz=document.getElementById('plzInput').value.trim();
-  const radius=parseInt(document.getElementById('radiusInput').value);
-  const st=document.getElementById('plzStatus');
-  if(radius===0){renderTrainer(allT);st.textContent='Alle '+allT.length+' Trainer';return;}
-  if(!plz||plz.length<4){st.textContent='⚠️ Bitte gültige PLZ eingeben';return;}
-  st.textContent='📍 Standort wird ermittelt...';
-  const coords=await getCoords(plz);
-  if(!coords){st.textContent='⚠️ PLZ nicht gefunden';return;}
-  st.textContent='📍 '+coords.city+' · Suche läuft...';
-  const filtered=[];
-  for(const t of allT){
-    if((t.trainingsart||'').toLowerCase().includes('online')){filtered.push({...t,_distance:0,_online:true});continue;}
-    if(!t.plz)continue;
-    const tc=await getCoords(t.plz);if(!tc)continue;
-    const dist=calcDist(coords.lat,coords.lng,tc.lat,tc.lng);
-    if(dist<=radius)filtered.push({...t,_distance:Math.round(dist)});
-  }
-  filtered.sort((a,b)=>a._distance-b._distance);
-  st.textContent='📍 '+coords.city+' · '+filtered.length+' Trainer in '+radius+' km';
-  renderTrainer(filtered);
-}
-
-async function loadAnfragen(){
-  const el=document.getElementById('anList');
-  try{
-    const r=await fetch(SB+'/rest/v1/anfragen?kunden_email=eq.'+encodeURIComponent(K.email)+'&order=created_at.desc',{headers:H});
-    const data=await r.json();
-    if(!data||data.length===0){el.innerHTML='<div class="empty-state"><div class="empty-icon">📭</div><div class="empty-title">Noch keine Anfragen</div><p class="empty-sub">Finde deinen Trainer und schick eine Anfrage.</p></div>';return;}
-    el.innerHTML=data.map(a=>{
-      const done=a.weitergeleitet;
-      const date=new Date(a.created_at).toLocaleDateString('de-AT',{day:'2-digit',month:'2-digit',year:'numeric'});
-      return '<div class="anfrage-item"><div class="an-top"><div class="an-trainer-name">'+(a.trainer_name||a.trainer_email||'–')+'</div><span class="chip '+(done?'chip-green':'chip-accent')+'">'+(done?'✓ Aktiv':'⏳ Ausstehend')+'</span></div><div style="font-size:12px;color:var(--muted);margin-bottom:4px">'+date+'</div>'+(a.nachricht?'<div style="font-size:13px;color:var(--muted-l);font-style:italic">"'+a.nachricht+'"</div>':'')+' </div>';
+async function loadAnfragen() {
+  const el = document.getElementById('anList');
+  try {
+    const r = await fetch(`${SB}/rest/v1/anfragen?kunden_email=eq.${encodeURIComponent(K.email)}&order=created_at.desc`, {
+      headers: { apikey: KEY, Authorization: `Bearer ${KEY}` }
+    });
+    const data = await r.json();
+    if(!data || data.length === 0) { el.innerHTML = '<div class="empty"><div class="ei">📭</div><p>Noch keine Anfragen</p></div>'; return; }
+    el.innerHTML = data.map(a => {
+      const done = a.weitergeleitet;
+      return `<div class="anfrage-item">
+        <div class="an-head">
+          <div class="an-trainer">${a.trainer_name || a.trainer_email || '–'}</div>
+          <span class="an-badge ${done ? 'done' : 'pend'}">${done ? 'Aktiv' : 'Ausstehend'}</span>
+        </div>
+        <div class="an-info">${new Date(a.created_at).toLocaleDateString('de-AT')}</div>
+        ${a.nachricht ? `<div class="an-info" style="margin-top:4px">"${a.nachricht}"</div>` : ''}
+      </div>`;
     }).join('');
-  }catch(e){el.innerHTML='<div class="empty-state"><p>Fehler beim Laden.</p></div>';}
+  } catch(e) { el.innerHTML = '<div class="empty"><p>Fehler beim Laden</p></div>'; }
 }
 
-function openModal(e,trainerId){
+function openModal(e, trainer) {
   e.stopPropagation();
-  selT=trainerMap[trainerId];
-  if(!selT)return;
-  document.getElementById('modalInfo').innerHTML='<strong>'+selT.vorname+' '+selT.nachname+'</strong>'+(selT.stadt||'')+' · '+(selT.trainingsart||'');
-  document.getElementById('modalMsg').value='';
+  selT = trainer;
+  document.getElementById('modalInfo').innerHTML = `<strong>${trainer.vorname} ${trainer.nachname}</strong>${trainer.stadt || ''} · ${trainer.trainingsart || ''}`;
+  document.getElementById('modalMsg').value = '';
   document.getElementById('overlay').classList.add('open');
 }
 
-function closeOverlay(e){
-  if(!e||e.target===document.getElementById('overlay')){
-    document.getElementById('overlay').classList.remove('open');selT=null;
+function closeOverlay(e) {
+  if(!e || e.target === document.getElementById('overlay')) {
+    document.getElementById('overlay').classList.remove('open');
+    selT = null;
   }
 }
 
-async function sendAnfrage(){
-  if(!selT||!K)return;
-  const btn=document.getElementById('sendBtn');
-  btn.disabled=true;btn.textContent='Wird gesendet...';
-  try{
-    // Dupe check: already sent to this trainer?
-    const chk=await fetch(SB+'/rest/v1/anfragen?kunden_email=eq.'+encodeURIComponent(K.email)+'&trainer_email=eq.'+encodeURIComponent(selT.email)+'&select=id',{headers:H});
-    const existing=await chk.json();
-    if(existing&&existing.length>0){
-      document.getElementById('overlay').classList.remove('open');selT=null;
-      showToast('Du hast diesem Trainer bereits eine Anfrage geschickt.','err');
-      btn.disabled=false;btn.textContent='Senden →';
-      return;
-    }
-    const body={
-      trainer_email:selT.email,
-      trainer_name:(selT.vorname+' '+selT.nachname).trim(),
-      kunden_email:K.email,
-      kunden_name:((K.vorname||'')+' '+(K.nachname||'')).trim(),
-      ziel:K.ziel||'',
-      nachricht:document.getElementById('modalMsg').value.trim(),
-      status:'ausstehend',
-      weitergeleitet:false
-    };
-    await fetch(SB+'/rest/v1/anfragen',{method:'POST',headers:{...H,'Prefer':'return=minimal'},body:JSON.stringify(body)});
-    fetch('https://n8n.srv1551518.hstgr.cloud/webhook/neue-anfrage',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)}).catch(()=>{});
-    document.getElementById('overlay').classList.remove('open');selT=null;
-    showToast('Anfrage gesendet! ✓','ok');
-    go('an',document.getElementById('t-an'));
+async function sendAnfrage() {
+  if(!selT || !K) return;
+  const btn = document.getElementById('sendBtn');
+  btn.disabled = true; btn.textContent = 'Wird gesendet...';
+  const body = {
+    trainer_email: selT.email,
+    trainer_name: `${selT.vorname} ${selT.nachname}`,
+    kunden_email: K.email,
+    kunden_name: `${K.vorname} ${K.nachname}`,
+    ziel: K.ziel || '',
+    nachricht: document.getElementById('modalMsg').value.trim(),
+    status: 'ausstehend',
+    weitergeleitet: false
+  };
+  try {
+    await fetch(`${SB}/rest/v1/anfragen`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: KEY, Authorization: `Bearer ${KEY}`, Prefer: 'return=minimal' },
+      body: JSON.stringify(body)
+    });
+    fetch('https://n8n.srv1551518.hstgr.cloud/webhook/neue-anfrage', {
+      method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body)
+    }).catch(()=>{});
+    document.getElementById('overlay').classList.remove('open');
+    selT = null;
     loadAnfragen();
-  }catch(e){showToast('Fehler beim Senden. Bitte erneut versuchen.','err');}
-  btn.disabled=false;btn.textContent='Senden →';
+    go('an', document.getElementById('tab-an'));
+  } catch(e) { alert('Fehler beim Senden'); }
+  btn.disabled = false; btn.textContent = 'Senden →';
 }
 
-async function saveProfile(){
-  const btn=document.getElementById('saveBtn');
-  btn.disabled=true;btn.textContent='Speichert...';
+async function saveProfile() {
+  const btn = document.getElementById('saveBtn');
+  btn.disabled = true; btn.textContent = 'Speichert...';
   document.getElementById('pErr').classList.remove('show');
   document.getElementById('pOk').classList.remove('show');
-  const goals=[...document.querySelectorAll('.goal-card.on')].map(el=>el.querySelector('span').textContent.trim());
-  const body={
-    vorname:document.getElementById('pFn').value.trim(),
-    nachname:document.getElementById('pLn').value.trim(),
-    stadt:document.getElementById('pCity').value,
-    ziel:goals.join(', '),
-    erwartungen:document.getElementById('pErw').value.trim()
+  const goals = [...document.querySelectorAll('.goal-card.on')].map(el => el.querySelector('span').textContent.trim());
+  const body = {
+    vorname: document.getElementById('pFn').value.trim(),
+    nachname: document.getElementById('pLn').value.trim(),
+    stadt: document.getElementById('pCity').value,
+    ziel: goals.join(', '),
+    erwartungen: document.getElementById('pErw').value.trim()
   };
-  try{
-    const r=await fetch(SB+'/rest/v1/kunden?id=eq.'+K.id,{method:'PATCH',headers:{...H,'Prefer':'return=representation'},body:JSON.stringify(body)});
-    if(r.ok){
-      const d=await r.json();if(d&&d[0])K=d[0];
-      renderDashboard();
-      const ok=document.getElementById('pOk');
-      ok.textContent='✓ Gespeichert!';ok.classList.add('show');
-      setTimeout(()=>ok.classList.remove('show'),3000);
-    }else{throw new Error();}
-  }catch(e){
-    const err=document.getElementById('pErr');
-    err.textContent='⚠️ Fehler beim Speichern.';err.classList.add('show');
+  try {
+    const r = await fetch(`${SB}/rest/v1/kunden?id=eq.${K.id}`, {
+      method: 'PATCH',
+      headers: { 'Content-Type': 'application/json', apikey: KEY, Authorization: `Bearer ${KEY}`, Prefer: 'return=representation' },
+      body: JSON.stringify(body)
+    });
+    if(r.ok) {
+      const d = await r.json();
+      if(d && d[0]) K = d[0];
+      render();
+      const ok = document.getElementById('pOk');
+      ok.textContent = '✓ Gespeichert!';
+      ok.classList.add('show');
+      setTimeout(() => ok.classList.remove('show'), 3000);
+    } else { throw new Error(); }
+  } catch(e) {
+    const err = document.getElementById('pErr');
+    err.textContent = '⚠️ Fehler beim Speichern';
+    err.classList.add('show');
   }
-  btn.disabled=false;btn.textContent='Speichern';
+  btn.disabled = false; btn.textContent = 'Speichern';
 }
 
-function go(id,el){
-  document.querySelectorAll('.section').forEach(s=>s.classList.remove('active'));
-  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('s-'+id).classList.add('active');
+function go(id, el) {
+  if(el.classList.contains('locked')) return;
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t => t.classList.remove('active'));
+  document.getElementById('sec-' + id).classList.add('active');
   el.classList.add('active');
-  if(id==='an')loadAnfragen();
-  if(id==='su'&&allT.length===0)loadTrainer();
 }
-function showToast(msg,type=''){
-  const t=document.getElementById('toast');
-  t.textContent=msg;
-  t.className='toast'+(type?' '+type:'');
-  t.classList.add('show');
-  clearTimeout(t._t);
-  t._t=setTimeout(()=>t.classList.remove('show'),3200);
+
+function logout() {
+  localStorage.removeItem('vexfit_session');
+  location.href = 'login.html';
 }
-function setSel(id,val){if(!val)return;const s=document.getElementById(id);if(!s)return;for(let o of s.options){if(o.text===val||o.value===val){o.selected=true;break;}}}
-function logout(){localStorage.removeItem('vexfit_session');location.href='login.html';}
 </script>
 </body>
 </html>
